@@ -16,3 +16,8 @@
 configure.wrf*
 *.backup
 *.f90
+*.inc
+*.f
+*.F90
+*#
+*~
