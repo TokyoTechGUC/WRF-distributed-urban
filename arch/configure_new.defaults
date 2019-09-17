@@ -89,7 +89,7 @@ OMPCPP          =       # -D_OPENMP
 OMP             =       # -mp -Minfo=mp -Mrecursive
 OMPCC           =       # -mp
 SFC             =       pgf90
-SCC             =       gcc
+SCC             =       pgcc -DFSEEKO64_OK
 CCOMP           =       pgcc
 DM_FC           =       mpif90 -f90=$(SFC)
 DM_CC           =       mpicc -cc=$(SCC)
@@ -103,7 +103,7 @@ CFLAGS_LOCAL    =       -w -O3
 LDFLAGS_LOCAL   =       
 CPLUSPLUSLIB    =       
 ESMF_LDFLAG     =       $(CPLUSPLUSLIB)
-FCOPTIM         =       -fastsse -Mvect=noaltcode -Msmartalloc -Mprefetch=distance:8 -Mfprelaxed # -Minfo=all =Mneginfo=all
+FCOPTIM         =       -O3 #-fastsse -Mvect=noaltcode -Msmartalloc -Mprefetch=distance:8 -Mfprelaxed # -Minfo=all =Mneginfo=all
 FCREDUCEDOPT	=       $(FCOPTIM)
 FCNOOPT		=       -O0
 FCDEBUG         =       # -g $(FCNOOPT)

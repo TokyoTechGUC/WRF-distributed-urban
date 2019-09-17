@@ -267,6 +267,7 @@ MODULE module_sf_urban
                     UTYPE,TA,QA,UA,U1,V1,SSG,SSGD,SSGQ,LLG,RAIN,RHOO, & ! I
                     ZA,DECLIN,COSZ,OMG,XLAT,DELT,ZNT,                 & ! I
                     CHS, CHS2,                                        & ! I
+!to here
                     TR, TB, TG, TC, QC, UC,                           & ! H
                     TRL,TBL,TGL,                                      & ! H
                     XXXR, XXXB, XXXG, XXXC,                           & ! H
@@ -275,8 +276,21 @@ MODULE module_sf_urban
                     GZ1OZ0,                                           & ! O
                     CMR_URB,CHR_URB,CMC_URB,CHC_URB,                  & ! I/O
                     U10,V10,TH2,Q2,UST                                & ! O
-                    )
-
+! Nakayoshi roughness length
+                   ,z0_grd,zh_grd,veg_grd,ave_BH_grd,xlong,xtime,inaka,jnaka &!)
+		   ,pai_grd,fai_grd &
+		   ,SVF_3d,TSP,CD_ORG,CD_naka &
+! Nakayoshi HB output test
+                   ,SR_naka,RR_naka,HR_naka,ELER_naka,G0R_naka       &
+                   ,SB_naka,RB_naka,HB_naka,ELEB_naka,G0B_naka       &
+                   ,SG_naka,RG_naka,HG_naka,ELEG_naka,G0G_naka       &
+                   ,LNET_naka,LW_naka,SW_naka,G_naka,RN_naka         &
+                   ,FLXTH_naka,FLXHUM_naka,ALPHAC_naka,CHS_naka      &
+! to here
+                   ,canopy_temp_profile                              &!VARQUEZ 20150324
+                   ,TH_025ZR_URB,TH_050ZR_URB                        &!VARQUEZ 20150324
+                   ,TH_075ZR_URB,TH_100ZR_URB,ZR,Z0C                 &!VARQUEZ 20150324
+                   ,TH_200ZR_URB   )                                  !KAWANO  20150415
    IMPLICIT NONE
 
    REAL, PARAMETER    :: CP=0.24          ! heat capacity of dry air  [cgs unit]
@@ -345,6 +359,19 @@ MODULE module_sf_urban
    REAL, INTENT(INOUT) :: CMC_URB
    REAL, INTENT(INOUT) :: CHC_URB
 
+! Nakayoshi roughness length
+   REAL, INTENT(IN)    :: XLONG,veg_grd,z0_grd,ave_BH_grd,pai_grd,fai_grd
+   REAL, INTENT(OUT  ) :: zh_grd
+   REAL, INTENT(IN)    :: XTIME
+   integer::            inaka,jnaka
+   REAL                :: CHS_naka1,CHS2_naka,CHS_default,CHS2_default  !
+   REAL                :: TS_complete_naka     !complete surface temperature
+   REAL                :: VEG_LOCAL
+   REAL,parameter      :: VEG_MAX=1.0 !VARQUEZ 20170207
+! To here
+
+   INTEGER, INTENT(IN) :: CANOPY_TEMP_PROFILE  !VARQUEZ 20150318
+
 !-------------------------------------------------------------------------------
 ! O: output variables from Urban to LSM 
 !-------------------------------------------------------------------------------
@@ -369,7 +396,19 @@ MODULE module_sf_urban
 !m   REAL, INTENT(OUT) :: CHS,CHS2 ! CH*U at za and 2 m             [m/s]
    REAL, INTENT(OUT) :: UST    ! friction velocity                [m/s]
 
+   REAL, INTENT(OUT) :: TH_025ZR_URB                    !VARQUEZ 20150324
+   REAL, INTENT(OUT) :: TH_050ZR_URB                    !VARQUEZ 20150324
+   REAL, INTENT(OUT) :: TH_075ZR_URB                    !VARQUEZ 20150324
+   REAL, INTENT(OUT) :: TH_100ZR_URB                    !VARQUEZ 20150324
+   REAL, INTENT(OUT) :: TH_200ZR_URB                    !KAWANO  20150415
 
+! Nakayoshi 20120903 HB check output
+  real, intent (OUT)::SR_naka,RR_naka,HR_naka,ELER_naka,G0R_naka
+  real, intent (OUT)::SB_naka,RB_naka,HB_naka,ELEB_naka,G0B_naka
+  real, intent (OUT)::SG_naka,RG_naka,HG_naka,ELEG_naka,G0G_naka
+  real, intent (OUT)::LNET_naka,LW_naka,SW_naka,G_naka,RN_naka
+  real, intent (OUT)::FLXTH_naka,FLXHUM_naka,ALPHAC_naka,CHS_naka
+!
 !-------------------------------------------------------------------------------
 ! H: Historical (state) variables of Urban : LSM <--> Urban
 !-------------------------------------------------------------------------------
@@ -399,7 +438,8 @@ MODULE module_sf_urban
 ! L:  Local variables from read_param
 !-------------------------------------------------------------------------------
 
-   REAL :: ZR, Z0C, Z0HC, ZDC, SVF, R, RW, HGT, AH
+   REAL :: Z0HC, ZDC, SVF, R, RW, HGT, AH
+   REAL, INTENT(OUT) :: ZR,Z0C
    REAL :: SIGMA_ZED
    REAL :: CAPR, CAPB, CAPG, AKSR, AKSB, AKSG, ALBR, ALBB, ALBG 
    REAL :: EPSR, EPSB, EPSG, Z0R,  Z0B,  Z0G,  Z0HB, Z0HG
@@ -473,9 +513,17 @@ MODULE module_sf_urban
    REAL :: PSIX, PSIT, PSIX2, PSIT2, PSIX10, PSIT10
 
    REAL :: TRP, TBP, TGP, TCP, QCP, TST, QST
+   REAL :: TSP,T1VS,CHC_1,HOVL,Vloc,Vmod,SVF_3d !Nakayoshi 20121107
+   REAL :: PAI_LOCAL,FAI_LOCAL !Nakayoshi 20121204
 
    INTEGER :: iteration, K 
    INTEGER :: tloc
+!Nakayoshi 20121212
+   REAL :: CD_ORG,CHS_ORG,CD_NAKA
+!Nakayoshi
+!   CHS_default=CHS
+!   CHS2_default=CHS2
+!to here
 
 !-------------------------------------------------------------------------------
 ! Set parameters
@@ -499,14 +547,81 @@ MODULE module_sf_urban
                    BOUNDR,BOUNDB,BOUNDG,CH_SCHEME,TS_SCHEME,      &
                    AKANDA_URBAN)
 
+!  print*,"urban",inaka,jnaka,utype,akanda_urban
 ! Miao, 2007/01/17, cal. ah
    if(ahoption==1) AH=AH*ahdiuprf(tloc)
 
-   IF( ZDC+Z0C+2. >= ZA) THEN
-    CALL wrf_error_fatal ("ZDC + Z0C + 2m is larger than the 1st WRF level "// &
-                           "Stop in subroutine urban - change ZDC and Z0C" ) 
+! Nakayoshi roughness length
+   ZDC=0.
+! Nakayoshi 20140124 set the maximum value of vegetation fraction
+!   VEG_LOCAL=veg_grd
+   if(veg_grd.gt.veg_max)then
+    VEG_LOCAL=veg_max
+   else
+    VEG_LOCAL=veg_grd
+   endif
+! 20140124
+   if(ave_BH_grd.lt.3.5)then
+      ZR=3.5
+   else
+      ZR=ave_BH_grd
+   endif
+   if(Z0_GRD.lt.0.1) then
+      Z0C=0.1 !0.2861
+   else
+      Z0C=Z0_GRD
+   endif
+!      ZR=ave_BH_grd
+!      Z0C=Z0_GRD
+      if(Z0_GRD.gt.AVE_BH_GRD)then
+         CALL wrf_error_fatal ("Z0_GRD greater than AVE_BH_GRD " )
+      endif
+!   endif
+   AH=0.
+   IF( Z0C+2. >= ZA) THEN
+    print*,"Z0C:",Z0C,"ZA:",ZA,"i:",inaka,"j:",jnaka
+    CALL wrf_error_fatal ("Z0C + 2m is larger than the 1st WRF level "// &
+                           "Stop in subroutine urban" )
    END IF
+! to here
 
+!NAKAYOSHI DEBUG PAI FAI
+   if((PAI_GRD.lt.0.05).or.(FAI_GRD.lt.0.05))then
+      PAI_LOCAL=0.05
+      FAI_LOCAL=0.05
+   else
+      PAI_LOCAL=PAI_GRD
+      FAI_LOCAL=FAI_GRD
+   endif
+
+   R=PAI_LOCAL
+   RW=1-R
+
+!!  print*,"PAI:",PAI_grd,"PAI_LOCAL:",PAI_LOCAL,inaka,jnaka
+!!  print*,"FAI:",FAI_grd,"FAI_LOCAL:",FAI_LOCAL,inaka,jnaka
+
+! Nakayoshi 2012.11.7 SVF calculation KANDA&KAWAI
+   HovL=FAI_LOCAL*PAI_LOCAL**(-0.5)/(1.-PAI_LOCAL**0.5)
+   Vloc=cos(atan(2.*HovL))*(2.-4./pi*atan(cos(atan(2.*HovL))))
+   Vmod=0.1120*PAI_LOCAL*Vloc-0.4817*PAI_LOCAL+0.0246*Vloc+0.9570
+   SVF_3d=Vloc*Vmod
+   SVF=SVF_3d
+   IF(.NOT.SHADOW) THEN              ! no shadow effects model
+      HGT=FAI_LOCAL
+   ELSE
+      HGT=FAI_LOCAL*1.0832*PAI_LOCAL**(-0.331)  !
+   ENDIF
+!!   print*,"HovL:",HovL,"Vloc:",Vloc,"Vmod:",Vmod,"HGT:",HGT !Debug PAI,FAI
+! to here
+
+! Nakayoshi Comment out
+!   IF( ZDC+Z0C+2. >= ZA) THEN
+!    CALL wrf_error_fatal ("ZDC + Z0C + 2m is larger than the 1st WRF level "// &
+!                           "Stop in subroutine urban - change ZDC and Z0C" )
+!   END IF
+! to here
+
+!
    IF(.NOT.LSOLAR) THEN
      SSGD = SRATIO*SSG
      SSGQ = SSG - SSGD
@@ -526,7 +641,7 @@ MODULE module_sf_urban
 ! Renew surface and layer temperatures
 !-------------------------------------------------------------------------------
 
-   SX=(SSGD+SSGQ)/697.7/60.  ! downward short wave radition [ly/min]
+   SX=(SSGD+SSGQ)/697.7/60.  ! downward short wave radition [ly/min] !wrong ly/sec = cal/cm2/sec
    SD=SSGD/697.7/60.         ! downward direct short wave radiation
    SQ=SSGQ/697.7/60.         ! downward diffuse short wave radiation
    RX=LLG/697.7/60.          ! downward long wave radiation
@@ -537,7 +652,8 @@ MODULE module_sf_urban
    TGP=TG
    TCP=TC
    QCP=QC
-
+   TSP=(TR*R+TB*W+TG*RW)/(R+RW+W) !Nakayoshi 20121212
+   QS=Qa                          !Nakayoshi 20121212
    TAV=TA*(1.+0.61*QA)
    PS=RHOO*287.*TAV/100. ![hPa]
 
@@ -637,6 +753,7 @@ MODULE module_sf_urban
 
    END IF
 
+
 !-------------------------------------------------------------------------------
 ! Roof
 !-------------------------------------------------------------------------------
@@ -653,13 +770,41 @@ MODULE module_sf_urban
    ! Alternative option for MOST using SFCDIF routine from Noah
    ! Virtual temperatures needed by SFCDIF
    T1VR = TRP* (1.0+ 0.61 * QA) 
+   T1VS = TSP* (1.0+ 0.61 * QS)  !Nakayoshi 20121107
    TH2V = (TA + ( 0.0098 * ZA)) * (1.0+ 0.61 * QA)
   
    ! note that CHR_URB contains UA (=CHR_MOS*UA)
    RLMO_URB=0.0
-   CALL SFCDIF_URB (ZA,Z0R,T1VR,TH2V,UA,AKANDA_URBAN,CMR_URB,CHR_URB,RLMO_URB,CDR)
-   ALPHAR =  RHO*CP*CHR_URB
-   CHR=ALPHAR/RHO/CP/UA
+
+!Nakayoshi
+!Comment out by Nakayoshi
+!!   CALL SFCDIF_URB (ZA,Z0R,T1VR,TH2V,UA,AKANDA_URBAN,CMR_URB,CHR_URB,RLMO_URB,CDR,Z0HC)
+!!   ALPHAR =  RHO*CP*CHR_URB
+!!   CHR=ALPHAR/RHO/CP/UA
+!to here
+!________________________________________________
+   T1VC=T1VS
+   CALL SFCDIF_URB_ZT_VEG(ZA,Z0C,T1VC,TH2V,UA,AKANDA_URBAN,CMC_URB,CHC_URB,RLMO_URB,CDC,&
+!Nakayoshi add
+   Z0HC,VEG_LOCAL)  !actual roughness length for heat
+   zh_grd=Z0HC
+   ALPHAC =  RHO*CP*CHC_URB
+!   print*,"urban",TSP,Ta,Qa,za,z0c,z0hc,veg_local,akanda_urban
+   CHC=ALPHAC/RHO/CP/UA  !canopy bulk transfer coefficient
+   CHR=CHC*  R/(R+W+RW)  !local bulk transfer coef for roof
+   CHB=CHC*  W/(R+W+RW)  !local bulk transfer coef for building wall (2*HGT)
+   CHG=CHC*  RW/(R+W+RW) !local bulk transfer coef for floor
+   ALPHAR = RHO*CP*CHR*UA
+   ALPHAB = RHO*CP*CHB*UA
+   ALPHAG = RHO*CP*CHG*UA
+
+!!   if(Z0_GRD.gt.0)then
+!!      print*,"XLAT:",XLAT,"XLONG:",XLONG
+!!      print*,"Z0C:",Z0C,"Z0HC:",Z0HC,"CHC:",CHC
+!!      print*,"R,W,RW",R,W,RW
+!!      print*,"UA",UA
+!!   endif
+!________________________________________________
 
    IF(RAIN > 1.) BETR=0.7  
 
@@ -731,8 +876,22 @@ MODULE module_sf_urban
 
    END IF
 
+! Nakayoshi 20120903 HB check
+   SR_naka =SR
+   RR_naka=RR
+   HR_naka=HR
+   ELER_naka=ELER
+   G0R_naka =G0R
+! to here
+
    FLXTHR=HR/RHO/CP/100.
    FLXHUMR=ELER/RHO/EL/100.
+
+!Nakayoshi
+!!   print*,"FLXTHR:",FLXTHR,"FLXHUMR:",FLXHUMR
+!!   print*,"TR:",TR,"[K]"
+!!   print*,"RR:",RR*697.7*10,"[W/m2]"
+!to here
 
 !-------------------------------------------------------------------------------
 !  Wall and Road 
@@ -749,34 +908,38 @@ MODULE module_sf_urban
    ! CALL mos(XXXC,ALPHAC,CDC,BHC,RIBC,Z,Z0C,UA,TA,TCP,RHO)
    ! Virtual temperatures needed by SFCDIF routine from Noah
 
-   T1VC = TCP* (1.0+ 0.61 * QA) 
-   RLMO_URB=0.0
-   CALL SFCDIF_URB(ZA,Z0C,T1VC,TH2V,UA,AKANDA_URBAN,CMC_URB,CHC_URB,RLMO_URB,CDC)
-   ALPHAC =  RHO*CP*CHC_URB
+!Comment out by Nakayoshi
+!!   T1VC = TCP* (1.0+ 0.61 * QA)
+!!   RLMO_URB=0.0
+!!   CALL SFCDIF_URB(ZA,Z0C,T1VC,TH2V,UA,AKANDA_URBAN,CMC_URB,CHC_URB,RLMO_URB,CDC,Z0HC)
+!!   zh_grd=Z0HC
+!!   ALPHAC =  RHO*CP*CHC_URB
 
-   IF (CH_SCHEME == 1) THEN 
+!!   IF (CH_SCHEME == 1) THEN
 
-     Z=ZDC
-     BHB=LOG(Z0B/Z0HB)/0.4
-     BHG=LOG(Z0G/Z0HG)/0.4
-     RIBB=(9.8*2./(TCP+TBP))*(TCP-TBP)*(Z+Z0B)/(UC*UC)
-     RIBG=(9.8*2./(TCP+TGP))*(TCP-TGP)*(Z+Z0G)/(UC*UC)
+!!     Z=ZDC
+!!     BHB=LOG(Z0B/Z0HB)/0.4
+!!     BHG=LOG(Z0G/Z0HG)/0.4
+!!     RIBB=(9.8*2./(TCP+TBP))*(TCP-TBP)*(Z+Z0B)/(UC*UC)
+!!     RIBG=(9.8*2./(TCP+TGP))*(TCP-TGP)*(Z+Z0G)/(UC*UC)
 
-     CALL mos(XXXB,ALPHAB,CDB,BHB,RIBB,Z,Z0B,UC,TCP,TBP,RHO)
-     CALL mos(XXXG,ALPHAG,CDG,BHG,RIBG,Z,Z0G,UC,TCP,TGP,RHO)
+!!     CALL mos(XXXB,ALPHAB,CDB,BHB,RIBB,Z,Z0B,UC,TCP,TBP,RHO)
+!!     CALL mos(XXXG,ALPHAG,CDG,BHG,RIBG,Z,Z0G,UC,TCP,TGP,RHO)
 
-   ELSE
+!!   ELSE
 
-     ALPHAB=RHO*CP*(6.15+4.18*UC)/1200.
-     IF(UC > 5.) ALPHAB=RHO*CP*(7.51*UC**0.78)/1200.
-     ALPHAG=RHO*CP*(6.15+4.18*UC)/1200.
-     IF(UC > 5.) ALPHAG=RHO*CP*(7.51*UC**0.78)/1200.
+!!     ALPHAB=RHO*CP*(6.15+4.18*UC)/1200.
+!!     IF(UC > 5.) ALPHAB=RHO*CP*(7.51*UC**0.78)/1200.
+!!     ALPHAG=RHO*CP*(6.15+4.18*UC)/1200.
+!!     IF(UC > 5.) ALPHAG=RHO*CP*(7.51*UC**0.78)/1200.
 
-   END IF
+!!   END IF
 
-   CHC=ALPHAC/RHO/CP/UA
-   CHB=ALPHAB/RHO/CP/UC
-   CHG=ALPHAG/RHO/CP/UC
+!!   CHC=ALPHAC/RHO/CP/UA
+!!   CHB=ALPHAB/RHO/CP/UC
+!!   CHG=ALPHAG/RHO/CP/UC
+
+!__________________________________________________________
 
    BETB=0.0
    IF(RAIN > 1.) BETG=0.7
@@ -841,28 +1004,42 @@ MODULE module_sf_urban
        DRGDTB=DRGDTB1+DRGDTB2
        DRGDTG=DRGDTG1+DRGDTG2
 
-       HB=RHO*CP*CHB*UC*(TBP-TCP)*100.
-       HG=RHO*CP*CHG*UC*(TGP-TCP)*100.
+!Nakayoshi
+       HB=RHO*CP*CHB*UA*(TBP-TA)*100.
+       HG=RHO*CP*CHG*UA*(TGP-TA)*100.
+!!       HB=RHO*CP*CHB*UC*(TBP-TCP)*100.
+!!       HG=RHO*CP*CHG*UC*(TGP-TCP)*100.
 
-       DTCDTB=W*ALPHAB/(RW*ALPHAC+RW*ALPHAG+W*ALPHAB)
-       DTCDTG=RW*ALPHAG/(RW*ALPHAC+RW*ALPHAG+W*ALPHAB)
+!!       DTCDTB=W*ALPHAB/(RW*ALPHAC+RW*ALPHAG+W*ALPHAB)
+!!       DTCDTG=RW*ALPHAG/(RW*ALPHAC+RW*ALPHAG+W*ALPHAB)
 
-       DHBDTB=RHO*CP*CHB*UC*(1.-DTCDTB)*100.
-       DHBDTG=RHO*CP*CHB*UC*(0.-DTCDTG)*100.
-       DHGDTG=RHO*CP*CHG*UC*(1.-DTCDTG)*100.
-       DHGDTB=RHO*CP*CHG*UC*(0.-DTCDTB)*100.
 
-       ELEB=RHO*EL*CHB*UC*BETB*(QS0B-QCP)*100.
-       ELEG=RHO*EL*CHG*UC*BETG*(QS0G-QCP)*100.
+       DHBDTB=RHO*CP*CHB*UA*100.
+       DHBDTG=0.
+       DHGDTG=RHO*CP*CHG*UA*100.
+       DHGDTB=0.
+!!       DHBDTB=RHO*CP*CHB*UC*(1.-DTCDTB)*100.
+!!       DHBDTG=RHO*CP*CHB*UC*(0.-DTCDTG)*100.
+!!       DHGDTG=RHO*CP*CHG*UC*(1.-DTCDTG)*100.
+!!       DHGDTB=RHO*CP*CHG*UC*(0.-DTCDTB)*100.
 
-       DQCDTB=W*ALPHAB*BETB*DQS0BDTB/(RW*ALPHAC+RW*ALPHAG*BETG+W*ALPHAB*BETB)
-       DQCDTG=RW*ALPHAG*BETG*DQS0GDTG/(RW*ALPHAC+RW*ALPHAG*BETG+W*ALPHAB*BETB)
+       ELEB=RHO*EL*CHB*UA*BETB*(QS0B-QA)*100.
+       ELEG=RHO*EL*CHG*UA*BETG*(QS0G-QA)*100.
+!!       ELEB=RHO*EL*CHB*UC*BETB*(QS0B-QCP)*100.
+!!       ELEG=RHO*EL*CHG*UC*BETG*(QS0G-QCP)*100.
 
-       DELEBDTB=RHO*EL*CHB*UC*BETB*(DQS0BDTB-DQCDTB)*100.
-       DELEBDTG=RHO*EL*CHB*UC*BETB*(0.-DQCDTG)*100.
-       DELEGDTG=RHO*EL*CHG*UC*BETG*(DQS0GDTG-DQCDTG)*100.
-       DELEGDTB=RHO*EL*CHG*UC*BETG*(0.-DQCDTB)*100.
+!!       DQCDTB=W*ALPHAB*BETB*DQS0BDTB/(RW*ALPHAC+RW*ALPHAG*BETG+W*ALPHAB*BETB)
+!!       DQCDTG=RW*ALPHAG*BETG*DQS0GDTG/(RW*ALPHAC+RW*ALPHAG*BETG+W*ALPHAB*BETB)
 
+       DELEBDTB=RHO*EL*CHB*UA*BETB*DQS0BDTB*100.
+       DELEBDTG=0.
+       DELEGDTG=RHO*EL*CHG*UA*BETG*DQS0GDTG*100.
+       DELEGDTB=0.
+!!       DELEBDTB=RHO*EL*CHB*UC*BETB*(DQS0BDTB-DQCDTB)*100.
+!!       DELEBDTG=RHO*EL*CHB*UC*BETB*(0.-DQCDTG)*100.
+!!       DELEGDTG=RHO*EL*CHG*UC*BETG*(DQS0GDTG-DQCDTG)*100.
+!!       DELEGDTB=RHO*EL*CHG*UC*BETG*(0.-DQCDTB)*100.
+! to here
        G0B=AKSB*(TBP-TBL(1))/(DZB(1)/2.)
        G0G=AKSG*(TGP-TGL(1))/(DZG(1)/2.)
 
@@ -888,21 +1065,27 @@ MODULE module_sf_urban
        TBP = TB
        TGP = TG
 
-       TC1=RW*ALPHAC+RW*ALPHAG+W*ALPHAB
-       TC2=RW*ALPHAC*TA+RW*ALPHAG*TGP+W*ALPHAB*TBP
-       TC=TC2/TC1
+! Nakayoshi Comment out (not necessary for CH top down scheme)
+!!       TC1=RW*ALPHAC+RW*ALPHAG+W*ALPHAB
+!!       TC2=RW*ALPHAC*TA+RW*ALPHAG*TGP+W*ALPHAB*TBP
+!!       TC=TC2/TC1
 
-       QC1=RW*ALPHAC+RW*ALPHAG*BETG+W*ALPHAB*BETB
-       QC2=RW*ALPHAC*QA+RW*ALPHAG*BETG*QS0G+W*ALPHAB*BETB*QS0B
-       QC=QC2/QC1
+!!       QC1=RW*ALPHAC+RW*ALPHAG*BETG+W*ALPHAB*BETB
+!!       QC2=RW*ALPHAC*QA+RW*ALPHAG*BETG*QS0G+W*ALPHAB*BETB*QS0B
+!!       QC=QC2/QC1
 
-       DTC=TCP - TC
-       TCP=TC
-       QCP=QC
+!!       DTC=TCP - TC
+!!       TCP=TC
+!!       QCP=QC
+! to here
 
+! Nakayoshi
        IF( ABS(F) < 0.000001 .AND. ABS(DTB) < 0.000001 &
-        .AND. ABS(GF) < 0.000001 .AND. ABS(DTG) < 0.000001 &
-        .AND. ABS(DTC) < 0.000001) EXIT
+        .AND. ABS(GF) < 0.000001 .AND. ABS(DTG) < 0.000001) EXIT
+!!       IF( ABS(F) < 0.000001 .AND. ABS(DTB) < 0.000001 &
+!!        .AND. ABS(GF) < 0.000001 .AND. ABS(DTG) < 0.000001 &
+!!        .AND. ABS(DTC) < 0.000001) EXIT
+! to here
 
      END DO
 
@@ -970,6 +1153,18 @@ MODULE module_sf_urban
        QCP=QC
 
    END IF
+! Nakayoshi 20120903 HB check
+   SG_naka =SG
+   RG_naka=RG
+   HG_naka=HG
+   ELEG_naka=ELEG
+   G0G_naka =G0G
+   SB_naka =SB
+   RB_naka=RB
+   HB_naka=HB
+   ELEB_naka=ELEB
+   G0B_naka =G0B
+! to here
 
 
    FLXTHB=HB/RHO/CP/100.
@@ -977,11 +1172,20 @@ MODULE module_sf_urban
    FLXTHG=HG/RHO/CP/100.
    FLXHUMG=ELEG/RHO/EL/100.
 
+!Nakayoshi
+!!   print*,"FLXTHB:",FLXTHB,"FLXHUMB:",FLXHUMB,"FLXTHG:",FLXTHG,"FLXHUMG:",FLXHUMG
+!!   print*,"TB:",TB,"TG:",TG
+!!   print*,"RB:",RB,"RG:",RG
+! to here
+
 !-------------------------------------------------------------------------------
 ! Total Fluxes from Urban Canopy
 !-------------------------------------------------------------------------------
 
-   FLXUV  = ( R*CDR + RW*CDC )*UA*UA
+! Nakayoshi roughness length
+!!   FLXUV  = ( R*CDR + RW*CDC )*UA*UA
+   FLXUV  = ( CDC )*UA*UA
+!______________________________________
 ! Miao, 2007/01/17, cal. ah
    if(ahoption==1) then
      FLXTH  = ( R*FLXTHR  + W*FLXTHB  + RW*FLXTHG ) + AH/RHOO/CPP
@@ -1010,6 +1214,19 @@ MODULE module_sf_urban
    TST = -FLXTH/UST               ! T* [K]
    QST = -FLXHUM/UST              ! q* [-]
 
+!  write(6,*)"ust  fluxuv  i  j  xtime"
+!  write(6,*) ust,flxuv, inaka, jnaka, xtime
+! Nakayoshi 20120903 HB check
+   LNET_naka =LNET*697.7*60
+   LW_naka=LW
+   SW_naka=SW
+   G_naka=G
+   RN_naka =RN
+   FLXTH_naka =SH
+   FLXHUM_naka=LH
+   ALPHAC_naka=ALPHAC/(RHO*CP)
+! to here
+
 !------------------------------------------------------
 !  diagnostic GRID AVERAGED  PSIM  PSIH  TS QS --> WRF
 !------------------------------------------------------
@@ -1033,15 +1250,35 @@ MODULE module_sf_urban
    END IF
 
    GZ1OZ0 = ALOG(Z/Z0)
-   CD = 0.4**2./(ALOG(Z/Z0)-PSIM)**2.
-!
-!m   CH = 0.4**2./(ALOG(Z/Z0)-PSIM)/(ALOG(Z/Z0H)-PSIH)
-!m   CHS = 0.4*UST/(ALOG(Z/Z0H)-PSIH)
+   CD = 0.4**2./(ALOG(Z/Z0)-PSIM)**2.  !drag_coefficient [-]
+   CD_ORG=CDC       !Nakayoshi 20121212
+   CD_NAKA=CMC_URB !Nakayoshi 20121212
+!Nakayoshi
+   CHS_naka =  0.4*UST/(ALOG(Z/Z0H)-PSIH) !CH*UA
+!to here
+
+!m   CH = 0.4**2./(ALOG(Z/Z0)-PSIM)/(ALOG(Z/Z0H)-PSIH)  !CH
+!m   CHS = 0.4*UST/(ALOG(Z/Z0H)-PSIH)      !CH*U
 !m   TS = TA + FLXTH/CH/UA    ! surface potential temp (flux temp)
 !m   QS = QA + FLXHUM/CH/UA   ! surface humidity
 !
-   TS = TA + FLXTH/CHS    ! surface potential temp (flux temp)
-   QS = QA + FLXHUM/CHS   ! surface humidity
+! Nakayoshi 20120903
+!   TS = TA + FLXTH/CHS    ! surface potential temp (flux temp)
+!   QS = QA + FLXHUM/CHS   ! surface humidity
+   TS = TA + FLXTH/(ALPHAC/(RHO*CP))    ! surface potential temp (flux temp)
+   QS = QA + FLXHUM/(ALPHAC/(RHO*CP))   ! surface humidity
+! to here
+!Nakayoshi for debug
+!   if((inaka.ge.70).and.(inaka.le.80).and.(jnaka.ge.69).and.(jnaka.le.71))then
+!      print*,"time:",xtime,"i:",inaka,"j:",jnaka
+!      print*,"CHS_naka2:",CHS_naka2,"CHS_default:",CHS_default
+!      print*,"CHS_naka1:",CHS_naka1,"CHC:",CHC !Canopy bulk transfer coefficient
+!      print*,"CHR:",CHR,"CHB:",CHB,"CHG:",CHG
+!      print*,"TS:",TS,"TA:",TA,"FLXTH:",FLXTH * RHOO * CPP,"SH:",SH
+!      print*,"FLXTHR:",FLXTHR * RHOO * CPP,"FLXTHB:",FLXTHB * RHOO * CPP,"FLXTHG:", FLXTHG * RHOO * CPP
+!      print*,"TS_complete:","TR:",TR,"TB:",TB,"TG:",TG,"UA:",UA
+!   endif
+!to here
 
 !-------------------------------------------------------
 !  diagnostic  GRID AVERAGED  U10  V10  TH2  Q2 --> WRF
@@ -1062,6 +1299,14 @@ MODULE module_sf_urban
 !
 !m   CHS2 = 0.4*UST/(ALOG(2./Z0H)-PSIH2)
 !
+
+! Nakayoshi
+   CHS2_naka = 0.4*UST/(ALOG(2./Z0H)-PSIH2) !CH*U
+!   if((inaka.ge.70).and.(inaka.le.80).and.(jnaka.ge.69).and.(jnaka.le.71))then
+!      print*,"CHS2:",CHS2,"CHS2_default:",CHS2_default
+!      print*," "
+!   endif
+! to here
 
    XXX10 = (10./Z)*XXX
    IF ( XXX10 >= 1. ) XXX10 = 1.
@@ -1087,15 +1332,94 @@ MODULE module_sf_urban
 
    U10 = U1 * (PSIX10/PSIX)       ! u at 10 m [m/s]
    V10 = V1 * (PSIX10/PSIX)       ! v at 10 m [m/s]
+!Nakayoshi
+   IF(Z0C.gt.10.)then
+      U10=0.
+      V10=0.
+   endif
+!_________________________
 
 !   TH2 = TS + (TA-TS)*(PSIT2/PSIT)   ! potential temp at 2 m [K]
 !  TH2 = TS + (TA-TS)*(PSIT2/PSIT)   ! Fei: this seems to be temp (not potential) at 2 m [K]
 !Fei: consistant with M-O theory
-   TH2 = TS + (TA-TS) *(CHS/CHS2) 
+   TH2 = TS + (TA-TS) *(CHS_naka/CHS2_naka)
 
-   Q2 = QS + (QA-QS)*(PSIT2/PSIT)    ! humidity at 2 m       [-]
+!   Q2 = QS + (QA-QS)*(PSIT2/PSIT)    ! humidity at 2 m       [-]
+   Q2 = QS + (QA-QS)*(CHS_naka/CHS2_naka)     ! humidity at 2 m       [-]
 
 !   TS = (LW/SIG_SI/0.88)**0.25       ! Radiative temperature [K]
+
+   IF( CANOPY_TEMP_PROFILE == 1 ) THEN !VARQUEZ 20150324
+    XXX2 = (0.25*ZR/Z)*XXX             !VARQUEZ 20150324
+     IF ( XXX2 >= 1. ) XXX2 = 1.       !VARQUEZ 20150324
+     IF ( XXX2 <= -5. ) XXX2 = -5.     !VARQUEZ 20150324
+
+     IF ( XXX2 > 0 ) THEN              !VARQUEZ 20150324
+       PSIH2 = -5. * XXX2              !VARQUEZ 20150324
+     ELSE                              !VARQUEZ 20150324
+       X = (1.-16.*XXX2)**0.25         !VARQUEZ 20150324
+       PSIH2 = 2.*ALOG((1.+X*X)/2.)    !VARQUEZ 20150324
+     END IF                            !VARQUEZ 20150324
+    CHS2_naka = 0.4*UST/(ALOG(0.25*ZR/Z0H)-PSIH2) !VARQUEZ 20150324
+    TH_025ZR_URB = 0.
+    TH_025ZR_URB = TS + (TA-TS) *(CHS_naka/CHS2_naka) !VARQUEZ 20150324
+
+    XXX2 = (0.5*ZR/Z)*XXX              !VARQUEZ 20150324
+     IF ( XXX2 >= 1. ) XXX2 = 1.       !VARQUEZ 20150324
+     IF ( XXX2 <= -5. ) XXX2 = -5.     !VARQUEZ 20150324
+
+     IF ( XXX2 > 0 ) THEN              !VARQUEZ 20150324
+       PSIH2 = -5. * XXX2              !VARQUEZ 20150324
+     ELSE                              !VARQUEZ 20150324
+       X = (1.-16.*XXX2)**0.25         !VARQUEZ 20150324
+       PSIH2 = 2.*ALOG((1.+X*X)/2.)    !VARQUEZ 20150324
+     END IF                            !VARQUEZ 20150324
+    CHS2_naka = 0.4*UST/(ALOG(0.5*ZR/Z0H)-PSIH2) !VARQUEZ 20150324
+    TH_050ZR_URB = 0.
+    TH_050ZR_URB = TS + (TA-TS) *(CHS_naka/CHS2_naka)!VARQUEZ 20150324
+
+    XXX2 = (0.75*ZR/Z)*XXX             !VARQUEZ 20150324
+     IF ( XXX2 >= 1. ) XXX2 = 1.       !VARQUEZ 20150324
+     IF ( XXX2 <= -5. ) XXX2 = -5.     !VARQUEZ 20150324
+
+     IF ( XXX2 > 0 ) THEN              !VARQUEZ 20150324
+       PSIH2 = -5. * XXX2              !VARQUEZ 20150324
+     ELSE                              !VARQUEZ 20150324
+       X = (1.-16.*XXX2)**0.25         !VARQUEZ 20150324
+       PSIH2 = 2.*ALOG((1.+X*X)/2.)    !VARQUEZ 20150324
+     END IF                            !VARQUEZ 20150324
+    CHS2_naka = 0.4*UST/(ALOG(0.75*ZR/Z0H)-PSIH2) !VARQUEZ 20150324
+    TH_075ZR_URB = 0.
+    TH_075ZR_URB = TS + (TA-TS) *(CHS_naka/CHS2_naka) !VARQUEZ 20150324
+
+    XXX2 = (1.0*ZR/Z)*XXX              !VARQUEZ 20150324
+     IF ( XXX2 >= 1. ) XXX2 = 1.       !VARQUEZ 20150324
+     IF ( XXX2 <= -5. ) XXX2 = -5.     !VARQUEZ 20150324
+
+     IF ( XXX2 > 0 ) THEN              !VARQUEZ 20150324
+       PSIH2 = -5. * XXX2              !VARQUEZ 20150324
+     ELSE                              !VARQUEZ 20150324
+       X = (1.-16.*XXX2)**0.25         !VARQUEZ 20150324
+       PSIH2 = 2.*ALOG((1.+X*X)/2.)    !VARQUEZ 20150324
+     END IF                            !VARQUEZ 20150324
+    CHS2_naka = 0.4*UST/(ALOG(1.0*ZR/Z0H)-PSIH2) !VARQUEZ 20150324
+    TH_100ZR_URB = 0.
+    TH_100ZR_URB = TS + (TA-TS) *(CHS_naka/CHS2_naka) !VARQUEZ 20150324
+
+    XXX2 = (2.0*ZR/Z)*XXX              !KAWANO  20150415
+     IF ( XXX2 >= 1. ) XXX2 = 1.       !KAWANO  20150415
+     IF ( XXX2 <= -5. ) XXX2 = -5.     !KAWANO  20150415
+
+     IF ( XXX2 > 0 ) THEN              !KAWANO  20150415
+       PSIH2 = -5. * XXX2              !KAWANO  20150415
+     ELSE                              !KAWANO  20150415
+       X = (1.-16.*XXX2)**0.25         !KAWANO  20150415
+       PSIH2 = 2.*ALOG((1.+X*X)/2.)    !KAWANO  20150415
+     END IF                            !KAWANO  20150415
+    CHS2_naka = 0.4*UST/(ALOG(2.0*ZR/Z0H)-PSIH2) !KAWANO  20150415
+    TH_200ZR_URB = 0.
+    TH_200ZR_URB = TS + (TA-TS) *(CHS_naka/CHS2_naka) !KAWANO  20150415
+   ENDIF                               !VARQUEZ 20150324
 
    END SUBROUTINE urban
 !===============================================================================
@@ -2007,7 +2331,9 @@ MODULE module_sf_urban
       
 !m
       FRC_URB2D(I,J)=0.
-      UTYPE_URB2D(I,J)=0
+!      UTYPE_URB2D(I,J)=0
+      UTYPE_URB2D(I,J)=2                      !Nakayoshi 20130123 mod_frc_urb
+      UTYPE_URB       =UTYPE_URB2D(I,J)       !Nakayoshi 20130123 mod_frc_urb
 
             IF( IVGTYP(I,J) == ISURBAN)  THEN
                UTYPE_URB2D(I,J) = 2  ! for default. high-intensity
@@ -2029,7 +2355,6 @@ MODULE module_sf_urban
                UTYPE_URB = UTYPE_URB2D(I,J)  !  Commercial/Industrial/Transportation
                FRC_URB2D(I,J) = FRC_URB_TBL(UTYPE_URB) 
             ENDIF
-
 
       QC_URB2D(I,J)=0.01
 
@@ -2156,6 +2481,8 @@ MODULE module_sf_urban
      ENDIF        !restart
     END DO
    END DO
+
+
    RETURN
    END SUBROUTINE urban_var_init
 !===========================================================================
@@ -2219,9 +2546,425 @@ MODULE module_sf_urban
 
      RETURN
 END SUBROUTINE bisection
+
 !===========================================================================
 
-SUBROUTINE SFCDIF_URB (ZLM,Z0,THZ0,THLM,SFCSPD,AKANDA,AKMS,AKHS,RLMO,CD)
+SUBROUTINE SFCDIF_URB_ZT_VEG (ZLM,Z0,THZ0,THLM,SFCSPD,AKANDA,AKMS,AKHS,RLMO,CD,&
+! Nakayoshi roughness length
+	               ZT,VEG)   ! Added by Nakayoshi
+
+! ----------------------------------------------------------------------
+! SUBROUTINE SFCDIF_URB (Urban version of SFCDIF_off)
+! ----------------------------------------------------------------------
+! CALCULATE SURFACE LAYER EXCHANGE COEFFICIENTS VIA ITERATIVE PROCESS.
+! SEE CHEN ET AL (1997, BLM)
+! ----------------------------------------------------------------------
+
+      IMPLICIT NONE
+      REAL     WWST, WWST2, G, VKRM, EXCM, BETA, BTG, ELFC, WOLD, WNEW
+      REAL     PIHF, EPSU2, EPSUST, EPSIT, EPSA, ZTMIN, ZTMAX, HPBL,     &
+     & SQVISC
+      REAL     RIC, RRIC, FHNEU, RFC,RLMO_THR, RFAC, ZZ, PSLMU, PSLMS, PSLHU,     &
+     & PSLHS
+      REAL     XX, PSPMU, YY, PSPMS, PSPHU, PSPHS, ZLM, Z0, THZ0, THLM
+      REAL     SFCSPD, AKANDA, AKMS, AKHS, ZU, ZT, RDZ, CXCH
+      REAL     DTHV, DU2, BTGH, WSTAR2, USTAR, ZSLU, ZSLT, RLOGU, RLOGT
+      REAL     RLMO, ZETALT, ZETALU, ZETAU, ZETAT, XLU4, XLT4, XU4, XT4
+! Nakayoshi 20120903
+      REAL     VEG
+! to here
+!CC   ......REAL ZTFC
+
+      REAL     XLU, XLT, XU, XT, PSMZ, SIMM, PSHZ, SIMH, USTARK, RLMN,  &
+     &         RLMA
+
+      INTEGER  ITRMX, ILECH, ITR
+      REAL,    INTENT(OUT) :: CD
+      PARAMETER                                                         &
+     &        (WWST = 1.2,WWST2 = WWST * WWST,G = 9.8,VKRM = 0.40,      &
+     &         EXCM = 0.001                                             &
+     &        ,BETA = 1./270.,BTG = BETA * G,ELFC = VKRM * BTG          &
+     &                  ,WOLD =.15,WNEW = 1. - WOLD,ITRMX = 05,         &
+     &                   PIHF = 3.14159265/2.)
+      PARAMETER                                                         &
+     &         (EPSU2 = 1.E-4,EPSUST = 0.07,EPSIT = 1.E-4,EPSA = 1.E-8  &
+     &         ,ZTMIN = -5.,ZTMAX = 1.,HPBL = 1000.0                    &
+     &          ,SQVISC = 258.2)
+      PARAMETER                                                         &
+     &       (RIC = 0.183,RRIC = 1.0/ RIC,FHNEU = 0.8,RFC = 0.191       &
+     &        ,RLMO_THR = 0.001,RFAC = RIC / (FHNEU * RFC * RFC))
+
+! ----------------------------------------------------------------------
+! NOTE: THE TWO CODE BLOCKS BELOW DEFINE FUNCTIONS
+! ----------------------------------------------------------------------
+! LECH'S SURFACE FUNCTIONS
+! ----------------------------------------------------------------------
+      PSLMU (ZZ)= -0.96* log (1.0-4.5* ZZ)
+      PSLMS (ZZ)= ZZ * RRIC -2.076* (1. -1./ (ZZ +1.))
+      PSLHU (ZZ)= -0.96* log (1.0-4.5* ZZ)
+
+! ----------------------------------------------------------------------
+! PAULSON'S SURFACE FUNCTIONS
+! ----------------------------------------------------------------------
+      PSLHS (ZZ)= ZZ * RFAC -2.076* (1. -1./ (ZZ +1.))
+      PSPMU (XX)= -2.* log ( (XX +1.)*0.5) - log ( (XX * XX +1.)*0.5)   &
+     &        +2.* ATAN (XX)                                            &
+     &- PIHF
+      PSPMS (YY)= 5.* YY
+      PSPHU (XX)= -2.* log ( (XX * XX +1.)*0.5)
+
+! ----------------------------------------------------------------------
+! THIS ROUTINE SFCDIF CAN HANDLE BOTH OVER OPEN WATER (SEA, OCEAN) AND
+! OVER SOLID SURFACE (LAND, SEA-ICE).
+! ----------------------------------------------------------------------
+      PSPHS (YY)= 5.* YY
+
+! ----------------------------------------------------------------------
+!     ZTFC: RATIO OF ZOH/ZOM  LESS OR EQUAL THAN 1
+!     C......ZTFC=0.1
+!     CZIL: CONSTANT C IN Zilitinkevich, S. S.1995,:NOTE ABOUT ZT
+! ----------------------------------------------------------------------
+      ILECH = 0
+
+! ----------------------------------------------------------------------
+!      ZILFC = - CZIL * VKRM * SQVISC
+!     C.......ZT=Z0*ZTFC
+      ZU = Z0
+      RDZ = 1./ ZLM
+      CXCH = EXCM * RDZ
+      DTHV = THLM - THZ0
+
+! ----------------------------------------------------------------------
+! BELJARS CORRECTION OF USTAR
+! ----------------------------------------------------------------------
+      DU2 = MAX (SFCSPD * SFCSPD,EPSU2)
+!cc   If statements to avoid TANGENT LINEAR problems near zero
+      BTGH = BTG * HPBL
+      IF (BTGH * AKHS * DTHV .ne. 0.0) THEN
+         WSTAR2 = WWST2* ABS (BTGH * AKHS * DTHV)** (2./3.)
+      ELSE
+         WSTAR2 = 0.0
+      END IF
+
+! ----------------------------------------------------------------------
+! ZILITINKEVITCH APPROACH FOR ZT
+! ----------------------------------------------------------------------
+      USTAR = MAX (SQRT (AKMS * SQRT (DU2+ WSTAR2)),EPSUST)
+
+! ----------------------------------------------------------------------
+! KCL/TL Try Kanda approach instead (Kanda et al. 2007, JAMC)
+!      ZT = EXP (ZILFC * SQRT (USTAR * Z0))* Z0
+! Nakayoshi 2012/09/03 vegetaion add
+      ZT = EXP (2.0-(AKANDA-0.9*VEG**0.29)*(SQVISC**2 * USTAR * Z0)**0.25)* Z0
+! to here
+      ZSLU = ZLM + ZU
+
+      ZSLT = ZLM + ZT
+      RLOGU = log (ZSLU / ZU)
+
+      RLOGT = log (ZSLT / ZT)
+
+      RLMO = ELFC * AKHS * DTHV / USTAR **3
+! ----------------------------------------------------------------------
+! 1./MONIN-OBUKKHOV LENGTH-SCALE
+! ----------------------------------------------------------------------
+      DO ITR = 1,ITRMX
+         ZETALT = MAX (ZSLT * RLMO,ZTMIN)
+         RLMO = ZETALT / ZSLT
+         ZETALU = ZSLU * RLMO
+         ZETAU = ZU * RLMO
+
+         ZETAT = ZT * RLMO
+         IF (ILECH .eq. 0) THEN
+            IF (RLMO .lt. 0.0)THEN
+               XLU4 = 1. -16.* ZETALU
+               XLT4 = 1. -16.* ZETALT
+               XU4 = 1. -16.* ZETAU
+
+               XT4 = 1. -16.* ZETAT
+               XLU = SQRT (SQRT (XLU4))
+               XLT = SQRT (SQRT (XLT4))
+               XU = SQRT (SQRT (XU4))
+
+               XT = SQRT (SQRT (XT4))
+
+               PSMZ = PSPMU (XU)
+               SIMM = PSPMU (XLU) - PSMZ + RLOGU
+               PSHZ = PSPHU (XT)
+               SIMH = PSPHU (XLT) - PSHZ + RLOGT
+            ELSE
+               ZETALU = MIN (ZETALU,ZTMAX)
+               ZETALT = MIN (ZETALT,ZTMAX)
+               PSMZ = PSPMS (ZETAU)
+               SIMM = PSPMS (ZETALU) - PSMZ + RLOGU
+               PSHZ = PSPHS (ZETAT)
+               SIMH = PSPHS (ZETALT) - PSHZ + RLOGT
+            END IF
+! ----------------------------------------------------------------------
+! LECH'S FUNCTIONS
+! ----------------------------------------------------------------------
+         ELSE
+            IF (RLMO .lt. 0.)THEN
+               PSMZ = PSLMU (ZETAU)
+               SIMM = PSLMU (ZETALU) - PSMZ + RLOGU
+               PSHZ = PSLHU (ZETAT)
+               SIMH = PSLHU (ZETALT) - PSHZ + RLOGT
+            ELSE
+               ZETALU = MIN (ZETALU,ZTMAX)
+               ZETALT = MIN (ZETALT,ZTMAX)
+               PSMZ = PSLMS (ZETAU)
+               SIMM = PSLMS (ZETALU) - PSMZ + RLOGU
+               PSHZ = PSLHS (ZETAT)
+               SIMH = PSLHS (ZETALT) - PSHZ + RLOGT
+            END IF
+! ----------------------------------------------------------------------
+! BELJAARS CORRECTION FOR USTAR
+! ----------------------------------------------------------------------
+         END IF
+            USTAR = MAX (SQRT (AKMS * SQRT (DU2+ WSTAR2)),EPSUST)
+            !KCL/TL
+            !ZT = EXP (ZILFC * SQRT (USTAR * Z0))* Z0
+!            ZT = EXP (2.0-AKANDA*(SQVISC**2 * USTAR * Z0)**0.25)* Z0
+! Nakayoshi 2012/09/03 vegetaion add
+            ZT = EXP (2.0-(AKANDA-0.9*VEG**0.29)*(SQVISC**2 * USTAR * Z0)**0.25)* Z0
+! to here
+            ZSLT = ZLM + ZT
+            RLOGT = log (ZSLT / ZT)
+            USTARK = USTAR * VKRM
+            AKMS = MAX (USTARK / SIMM,CXCH)
+            AKHS = MAX (USTARK / SIMH,CXCH)
+!
+         IF (BTGH * AKHS * DTHV .ne. 0.0) THEN
+            WSTAR2 = WWST2* ABS (BTGH * AKHS * DTHV)** (2./3.)
+         ELSE
+            WSTAR2 = 0.0
+         END IF
+!-----------------------------------------------------------------------
+         RLMN = ELFC * AKHS * DTHV / USTAR **3
+!-----------------------------------------------------------------------
+!     IF(ABS((RLMN-RLMO)/RLMA).LT.EPSIT)    GO TO 110
+!-----------------------------------------------------------------------
+         RLMA = RLMO * WOLD+ RLMN * WNEW
+!-----------------------------------------------------------------------
+         RLMO = RLMA
+
+      END DO
+
+      CD = USTAR*USTAR/SFCSPD**2
+!      print*,sfcspd,ustar,akms,akhs
+!Nakayoshi roughness length
+!!      print*,"Z0:",Z0,"ZT:",ZT,"USTAR:",USTAR
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! ----------------------------------------------------------------------
+  END SUBROUTINE SFCDIF_URB_ZT_VEG
+! ----------------------------------------------------------------------
+!===========================================================================
+
+SUBROUTINE SFCDIF_URB_ZT (ZLM,Z0,THZ0,THLM,SFCSPD,AKANDA,AKMS,AKHS,RLMO,CD,&
+! Nakayoshi roughness length
+	               ZT)   ! Added by Nakayoshi
+
+! ----------------------------------------------------------------------
+! SUBROUTINE SFCDIF_URB (Urban version of SFCDIF_off)
+! ----------------------------------------------------------------------
+! CALCULATE SURFACE LAYER EXCHANGE COEFFICIENTS VIA ITERATIVE PROCESS.
+! SEE CHEN ET AL (1997, BLM)
+! ----------------------------------------------------------------------
+
+      IMPLICIT NONE
+      REAL     WWST, WWST2, G, VKRM, EXCM, BETA, BTG, ELFC, WOLD, WNEW
+      REAL     PIHF, EPSU2, EPSUST, EPSIT, EPSA, ZTMIN, ZTMAX, HPBL,     &
+     & SQVISC
+      REAL     RIC, RRIC, FHNEU, RFC,RLMO_THR, RFAC, ZZ, PSLMU, PSLMS, PSLHU,     &
+     & PSLHS
+      REAL     XX, PSPMU, YY, PSPMS, PSPHU, PSPHS, ZLM, Z0, THZ0, THLM
+      REAL     SFCSPD, AKANDA, AKMS, AKHS, ZU, ZT, RDZ, CXCH
+      REAL     DTHV, DU2, BTGH, WSTAR2, USTAR, ZSLU, ZSLT, RLOGU, RLOGT
+      REAL     RLMO, ZETALT, ZETALU, ZETAU, ZETAT, XLU4, XLT4, XU4, XT4
+!CC   ......REAL ZTFC
+
+      REAL     XLU, XLT, XU, XT, PSMZ, SIMM, PSHZ, SIMH, USTARK, RLMN,  &
+     &         RLMA
+
+      INTEGER  ITRMX, ILECH, ITR
+      REAL,    INTENT(OUT) :: CD
+      PARAMETER                                                         &
+     &        (WWST = 1.2,WWST2 = WWST * WWST,G = 9.8,VKRM = 0.40,      &
+     &         EXCM = 0.001                                             &
+     &        ,BETA = 1./270.,BTG = BETA * G,ELFC = VKRM * BTG          &
+     &                  ,WOLD =.15,WNEW = 1. - WOLD,ITRMX = 05,         &
+     &                   PIHF = 3.14159265/2.)
+      PARAMETER                                                         &
+     &         (EPSU2 = 1.E-4,EPSUST = 0.07,EPSIT = 1.E-4,EPSA = 1.E-8  &
+     &         ,ZTMIN = -5.,ZTMAX = 1.,HPBL = 1000.0                    &
+     &          ,SQVISC = 258.2)
+      PARAMETER                                                         &
+     &       (RIC = 0.183,RRIC = 1.0/ RIC,FHNEU = 0.8,RFC = 0.191       &
+     &        ,RLMO_THR = 0.001,RFAC = RIC / (FHNEU * RFC * RFC))
+
+! ----------------------------------------------------------------------
+! NOTE: THE TWO CODE BLOCKS BELOW DEFINE FUNCTIONS
+! ----------------------------------------------------------------------
+! LECH'S SURFACE FUNCTIONS
+! ----------------------------------------------------------------------
+      PSLMU (ZZ)= -0.96* log (1.0-4.5* ZZ)
+      PSLMS (ZZ)= ZZ * RRIC -2.076* (1. -1./ (ZZ +1.))
+      PSLHU (ZZ)= -0.96* log (1.0-4.5* ZZ)
+
+! ----------------------------------------------------------------------
+! PAULSON'S SURFACE FUNCTIONS
+! ----------------------------------------------------------------------
+      PSLHS (ZZ)= ZZ * RFAC -2.076* (1. -1./ (ZZ +1.))
+      PSPMU (XX)= -2.* log ( (XX +1.)*0.5) - log ( (XX * XX +1.)*0.5)   &
+     &        +2.* ATAN (XX)                                            &
+     &- PIHF
+      PSPMS (YY)= 5.* YY
+      PSPHU (XX)= -2.* log ( (XX * XX +1.)*0.5)
+
+! ----------------------------------------------------------------------
+! THIS ROUTINE SFCDIF CAN HANDLE BOTH OVER OPEN WATER (SEA, OCEAN) AND
+! OVER SOLID SURFACE (LAND, SEA-ICE).
+! ----------------------------------------------------------------------
+      PSPHS (YY)= 5.* YY
+
+! ----------------------------------------------------------------------
+!     ZTFC: RATIO OF ZOH/ZOM  LESS OR EQUAL THAN 1
+!     C......ZTFC=0.1
+!     CZIL: CONSTANT C IN Zilitinkevich, S. S.1995,:NOTE ABOUT ZT
+! ----------------------------------------------------------------------
+      ILECH = 0
+
+! ----------------------------------------------------------------------
+!      ZILFC = - CZIL * VKRM * SQVISC
+!     C.......ZT=Z0*ZTFC
+      ZU = Z0
+      RDZ = 1./ ZLM
+      CXCH = EXCM * RDZ
+      DTHV = THLM - THZ0
+
+! ----------------------------------------------------------------------
+! BELJARS CORRECTION OF USTAR
+! ----------------------------------------------------------------------
+      DU2 = MAX (SFCSPD * SFCSPD,EPSU2)
+!cc   If statements to avoid TANGENT LINEAR problems near zero
+      BTGH = BTG * HPBL
+      IF (BTGH * AKHS * DTHV .ne. 0.0) THEN
+         WSTAR2 = WWST2* ABS (BTGH * AKHS * DTHV)** (2./3.)
+      ELSE
+         WSTAR2 = 0.0
+      END IF
+
+! ----------------------------------------------------------------------
+! ZILITINKEVITCH APPROACH FOR ZT
+! ----------------------------------------------------------------------
+      USTAR = MAX (SQRT (AKMS * SQRT (DU2+ WSTAR2)),EPSUST)
+
+! ----------------------------------------------------------------------
+! KCL/TL Try Kanda approach instead (Kanda et al. 2007, JAMC)
+!      ZT = EXP (ZILFC * SQRT (USTAR * Z0))* Z0
+      ZT = EXP (2.0-AKANDA*(SQVISC**2 * USTAR * Z0)**0.25)* Z0
+
+      ZSLU = ZLM + ZU
+
+      ZSLT = ZLM + ZT
+      RLOGU = log (ZSLU / ZU)
+
+      RLOGT = log (ZSLT / ZT)
+
+      RLMO = ELFC * AKHS * DTHV / USTAR **3
+! ----------------------------------------------------------------------
+! 1./MONIN-OBUKKHOV LENGTH-SCALE
+! ----------------------------------------------------------------------
+      DO ITR = 1,ITRMX
+         ZETALT = MAX (ZSLT * RLMO,ZTMIN)
+         RLMO = ZETALT / ZSLT
+         ZETALU = ZSLU * RLMO
+         ZETAU = ZU * RLMO
+
+         ZETAT = ZT * RLMO
+         IF (ILECH .eq. 0) THEN
+            IF (RLMO .lt. 0.0)THEN
+               XLU4 = 1. -16.* ZETALU
+               XLT4 = 1. -16.* ZETALT
+               XU4 = 1. -16.* ZETAU
+
+               XT4 = 1. -16.* ZETAT
+               XLU = SQRT (SQRT (XLU4))
+               XLT = SQRT (SQRT (XLT4))
+               XU = SQRT (SQRT (XU4))
+
+               XT = SQRT (SQRT (XT4))
+
+               PSMZ = PSPMU (XU)
+               SIMM = PSPMU (XLU) - PSMZ + RLOGU
+               PSHZ = PSPHU (XT)
+               SIMH = PSPHU (XLT) - PSHZ + RLOGT
+            ELSE
+               ZETALU = MIN (ZETALU,ZTMAX)
+               ZETALT = MIN (ZETALT,ZTMAX)
+               PSMZ = PSPMS (ZETAU)
+               SIMM = PSPMS (ZETALU) - PSMZ + RLOGU
+               PSHZ = PSPHS (ZETAT)
+               SIMH = PSPHS (ZETALT) - PSHZ + RLOGT
+            END IF
+! ----------------------------------------------------------------------
+! LECH'S FUNCTIONS
+! ----------------------------------------------------------------------
+         ELSE
+            IF (RLMO .lt. 0.)THEN
+               PSMZ = PSLMU (ZETAU)
+               SIMM = PSLMU (ZETALU) - PSMZ + RLOGU
+               PSHZ = PSLHU (ZETAT)
+               SIMH = PSLHU (ZETALT) - PSHZ + RLOGT
+            ELSE
+               ZETALU = MIN (ZETALU,ZTMAX)
+               ZETALT = MIN (ZETALT,ZTMAX)
+               PSMZ = PSLMS (ZETAU)
+               SIMM = PSLMS (ZETALU) - PSMZ + RLOGU
+               PSHZ = PSLHS (ZETAT)
+               SIMH = PSLHS (ZETALT) - PSHZ + RLOGT
+            END IF
+! ----------------------------------------------------------------------
+! BELJAARS CORRECTION FOR USTAR
+! ----------------------------------------------------------------------
+         END IF
+            USTAR = MAX (SQRT (AKMS * SQRT (DU2+ WSTAR2)),EPSUST)
+            !KCL/TL
+            !ZT = EXP (ZILFC * SQRT (USTAR * Z0))* Z0
+            ZT = EXP (2.0-AKANDA*(SQVISC**2 * USTAR * Z0)**0.25)* Z0
+            ZSLT = ZLM + ZT
+            RLOGT = log (ZSLT / ZT)
+            USTARK = USTAR * VKRM
+            AKMS = MAX (USTARK / SIMM,CXCH)
+            AKHS = MAX (USTARK / SIMH,CXCH)
+!
+         IF (BTGH * AKHS * DTHV .ne. 0.0) THEN
+            WSTAR2 = WWST2* ABS (BTGH * AKHS * DTHV)** (2./3.)
+         ELSE
+            WSTAR2 = 0.0
+         END IF
+!-----------------------------------------------------------------------
+         RLMN = ELFC * AKHS * DTHV / USTAR **3
+!-----------------------------------------------------------------------
+!     IF(ABS((RLMN-RLMO)/RLMA).LT.EPSIT)    GO TO 110
+!-----------------------------------------------------------------------
+         RLMA = RLMO * WOLD+ RLMN * WNEW
+!-----------------------------------------------------------------------
+         RLMO = RLMA
+
+      END DO
+
+      CD = USTAR*USTAR/SFCSPD**2
+!Nakayoshi roughness length
+!!      print*,"Z0:",Z0,"ZT:",ZT,"USTAR:",USTAR
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! ----------------------------------------------------------------------
+  END SUBROUTINE SFCDIF_URB_ZT
+! ----------------------------------------------------------------------
+
+!===========================================================================
+
+SUBROUTINE SFCDIF_URB (ZLM,Z0,THZ0,THLM,SFCSPD,AKANDA,AKMS,AKHS,RLMO,CD) !Original
 
 ! ----------------------------------------------------------------------
 ! SUBROUTINE SFCDIF_URB (Urban version of SFCDIF_off)
@@ -2417,5 +3160,6 @@ SUBROUTINE SFCDIF_URB (ZLM,Z0,THZ0,THLM,SFCSPD,AKANDA,AKMS,AKHS,RLMO,CD)
 ! ----------------------------------------------------------------------
   END SUBROUTINE SFCDIF_URB
 ! ----------------------------------------------------------------------
+
 !===========================================================================
 END MODULE module_sf_urban

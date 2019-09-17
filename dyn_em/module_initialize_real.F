@@ -96,6 +96,8 @@ CONTAINS
 
       INTEGER :: ns
 
+      INTEGER :: offset_zd !VARQUEZ 20150318
+
       !  Local data
 
       INTEGER :: error
@@ -422,6 +424,18 @@ integer::oops1,oops2
             END DO
          END IF
       END IF
+
+      CALL nl_get_offset_zd  ( 1 , offset_zd )                                        !VARQUEZ 20150318
+         IF ( offset_zd == 1 ) then                                                   !VARQUEZ 20150318
+            WRITE ( a_message , * ) ' Adding displacement height (DISP) to topography'!VARQUEZ 20150318
+            CALL wrf_message ( a_message )                                            !VARQUEZ 20150318
+         DO j=jts,jte                                                                 !VARQUEZ 20150318
+               DO i=its,ite                                                           !VARQUEZ 20150318
+                    if(grid%disphgt(i,j) <= 0.) cycle                                 !VARQUEZ 20150318
+                    grid%ht_gc(i,j)=grid%ht_gc(i,j)+grid%disphgt(i,j)                       !VARQUEZ 20150318
+               END DO                                                                 !VARQUEZ 20150318
+         END DO                                                                       !VARQUEZ 20150318
+         END IF                                                                       !VARQUEZ 20150318
 
       !  Is there any vertical interpolation to do?  The "old" data comes in on the correct
       !  vertical locations already.

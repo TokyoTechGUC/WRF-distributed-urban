@@ -280,7 +280,7 @@ until ( $validresponse ) {
 
   $opt -- ;
 
-  printf "\nEnter selection [%d-%d] : ",1,$opt ;
+  printf "\nEnter selection [%d-%d](NOTE: 3 recommended for Tsubame 2.5) : ",1,$opt ;
   $response = <STDIN> ;
 
   if ( $response == -1 ) { exit ; }

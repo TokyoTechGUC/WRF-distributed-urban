@@ -535,7 +535,38 @@ BENCH_START(surf_driver_tim)
      &        ,NOAHRES=grid%noahres                                       &
 !mynn mp@
      &         ,ch=grid%ch,tsq=grid%tsq,qsq=grid%qsq,cov=grid%cov &
-     &                                                              )
+!Nakayoshi roughness length
+     &        ,Z0_GRD=grid%z0_grd                                  &
+     &        ,ZH_GRD=grid%zh_grd                                  &
+     &        ,VEG_GRD=grid%veg_grd                                &
+     &        ,ave_BH_GRD=grid%ave_BH_GRD                          &
+     &        ,xlong_urb2d=grid%XLONG                              & !I urban
+     &        ,xtime=grid%xtime                                    &
+     &        ,za=grid%za                                          &
+     &        ,PAI_GRD=grid%pai_grd                                          &
+     &        ,FAI_GRD=grid%fai_grd                                          &
+     &        ,SVF_3D_GRID=grid%svf_3d_grid,TSP_GRID=grid%tsp_grid          &   !20121212
+     &        ,CD_ORG_GRID=grid%cd_org_grid,CD_NAKA_GRID=grid%cd_naka_grid  &  !20121212
+! Nakayoshi HB output test
+     &        ,SR_GRID=grid%sr_grid,RR_GRID=grid%rr_grid,HR_GRID=grid%hr_grid,ELER_GRID=grid%eler_grid,G0R_GRID=grid%g0r_grid &
+     &        ,SB_GRID=grid%sb_grid,RB_GRID=grid%rb_grid,HB_GRID=grid%hb_grid,ELEB_GRID=grid%eleb_grid,G0B_GRID=grid%g0b_grid &
+     &        ,SG_GRID=grid%sg_grid,RG_GRID=grid%rg_grid,HG_GRID=grid%hg_grid,ELEG_GRID=grid%eleg_grid,G0G_GRID=grid%g0g_grid &
+     &        ,LNET_GRID=grid%lnet_grid,LW_GRID=grid%lw_grid,SW_GRID=grid%sw_grid,G_GRID=grid%g_grid,RN_GRID=grid%rn_grid     &
+     &        ,FLXTH_GRID=grid%flxth_grid,FLXHUM_GRID=grid%flxhum_grid,ALPHAC_GRID=grid%alphac_grid,CHS_GRID=grid%chs_grid    &
+! to here
+! Nakayoshi EB terms in natural categor
+	      ,SH1_RURAL=grid%sh1_rural,LH1_RURAL=grid%lh1_rural,GRD1_RURAL=grid%grd1_rural,TSK1_RURAL=grid%tsk1_rural         &
+              ,QQQ1_RURAL=grid%qqq1_rural,UST1_RURAL=grid%ust1_rural,UST_URB2d=grid%ust_urb2d                                  &
+! Nakayoshi urban fraction change 20130119
+	      ,SECOND=grid%second,MOD_FRC_URB2D=grid%mod_frc_urb2d   &
+              ,CANOPY_TEMP_PROFILE=config_flags%canopy_temp_profile  &  !VARQUEZ 20150324
+              ,T_025ZR_URB2D=grid%t_025zr_urb2d                      &  !VARQUEZ 20150324
+              ,T_050ZR_URB2D=grid%t_050zr_urb2d                      &  !VARQUEZ 20150324
+              ,T_075ZR_URB2D=grid%t_075zr_urb2d                      &  !VARQUEZ 20150324
+              ,T_100ZR_URB2D=grid%t_100zr_urb2d                      &  !VARQUEZ 20150324
+              ,T_200ZR_URB2D=grid%t_200zr_urb2d                      &  !KAWANO  20150415
+              ,ZR_URB2D=grid%zr_urb2d,Z0C_URB2D=grid%z0c_urb2d)                        !VARQUEZ 20150324
+! to here
 BENCH_END(surf_driver_tim)
 
 !*********
@@ -591,6 +622,20 @@ BENCH_START(pbl_driver_tim)
      &        ,J_START=grid%j_start,J_END=min(grid%j_end, jde-1)          &
      &        ,KTS=k_start, KTE=min(k_end,kde-1)                          &
      &        ,NUM_TILES=grid%num_tiles                                   &
+          !  AHE and AME
+     &        ,AHE0 =grid%ahe0, AHE1 =grid%ahe1, AHE2 =grid%ahe2, AHE3 =grid%ahe3  &
+     &        ,AHE4 =grid%ahe4, AHE5 =grid%ahe5, AHE6 =grid%ahe6, AHE7 =grid%ahe7  &
+     &        ,AHE8 =grid%ahe8, AHE9 =grid%ahe9, AHE10=grid%ahe10,AHE11=grid%ahe11 &
+     &        ,AHE12=grid%ahe12,AHE13=grid%ahe13,AHE14=grid%ahe14,AHE15=grid%ahe15 &
+     &        ,AHE16=grid%ahe16,AHE17=grid%ahe17,AHE18=grid%ahe18,AHE19=grid%ahe19 &
+     &        ,AHE20=grid%ahe20,AHE21=grid%ahe21,AHE22=grid%ahe22,AHE23=grid%ahe23 &
+     &        ,AME0 =grid%ame0, AME1 =grid%ame1, AME2 =grid%ame2, AME3 =grid%ame3  &
+     &        ,AME4 =grid%ame4, AME5 =grid%ame5, AME6 =grid%ame6, AME7 =grid%ame7  &
+     &        ,AME8 =grid%ame8, AME9 =grid%ame9, AME10=grid%ame10,AME11=grid%ame11 &
+     &        ,AME12=grid%ame12,AME13=grid%ame13,AME14=grid%ame14,AME15=grid%ame15 &
+     &        ,AME16=grid%ame16,AME17=grid%ame17,AME18=grid%ame18,AME19=grid%ame19 &
+     &        ,AME20=grid%ame20,AME21=grid%ame21,AME22=grid%ame22,AME23=grid%ame23 &
+     &        ,AHE  =grid%ahe,  AME  =grid%ame,  GMT=grid%gmt, XTIME=grid%xtime
           ! Variables Required by ACM PBL  - jp
      &        ,ZNU=grid%znu,ZNW=grid%znw,MUT=grid%mut,P_TOP=grid%p_top    &
           ! Variables required by TEMF PBL - WA 9/9/08

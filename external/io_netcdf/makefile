@@ -2,16 +2,16 @@
 
 OBJSL   = wrf_io.o field_routines.o module_wrfsi_static.o
 OBJS    = $(OBJSL)
-CODE    = ext_ncd_get_dom_ti.code ext_ncd_get_var_td.code ext_ncd_get_var_ti.code ext_ncd_put_dom_ti.code ext_ncd_put_var_td.code ext_ncd_put_var_ti.code transpose.code 
+CODE    = ext_ncd_get_dom_ti.code ext_ncd_get_var_td.code ext_ncd_get_var_ti.code ext_ncd_put_dom_ti.code ext_ncd_put_var_td.code ext_ncd_put_var_ti.code transpose.code
 FFLAGS  =  $(FCFLAGS) -I$(NETCDFPATH)/include -I../ioapi_share
-LIBS    = -L$(NETCDFPATH)/lib -lnetcdf
+LIBS    = -L$(NETCDFPATH)/lib64 -lnetcdff -lnetcdf -L/gs/hs1/tga-wrf-group/support/pnetcdf/lib -lpnetcdf -L/gs/hs1/tga-wrf-group/support/hdf5/lib -lhdf5_hl -lhdf5 -L/usr/lib64 -lz -L/usr/lib/x86_64-linux-gnu/hdf5/serial -L/usr/lib/x86_64-linux-gnu
 CPP1    = $(CPP) -C -P $(TRADFLAG)
 M4      = m4 -Uinclude -Uindex -Ulen
 AR      = ar
 
 .SUFFIXES:      .F90 .f .o .code
 
-all : libwrfio_nf.a 
+all : libwrfio_nf.a
 
 libwrfio_nf.a:         $(OBJS) $(CODE)
 			/bin/rm -f $@
