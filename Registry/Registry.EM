@@ -119,7 +119,7 @@ state    real   ZR_URB2D             ij       misc        1        -     rh01du=
 state    real   Z0C_URB2D            ij       misc        1        -     rh01du=(copy_fcnm)                "Z0C_URB2D"     "Assumed Roughness Length for Momentum at the Canyon" "m"
 state    real   AHE            ij       misc        1        -     rh01du=(copy_fcnm)  "AHE "   "anthropogenic heat emission"  "w m-2"
 state    real   AME            ij       misc        1        -     rh01du=(copy_fcnm)  "AME "   "anthropogenic mositure emission"  "w m-2"
-state    real   AHE24h         i{hr}j   misc        1        -     ir "AHE24H" "Anthropogenic heat emission" "W m-2"
+state    real   AHE24h         i{hr}j   misc        1        -     i01r "AHE24H" "Anthropogenic heat emission" "W m-2"
 state    real   AME0           ij       misc        1        -     i01r01du=(copy_fcnm)  "AME0"   "anthropogenic mositure emission"  "w m-2"
 state    real   AME1           ij       misc        1        -     i01r01du=(copy_fcnm)  "AME1"   "anthropogenic mositure emission"  "w m-2"
 state    real   AME2           ij       misc        1        -     i01r01du=(copy_fcnm)  "AME2"   "anthropogenic mositure emission"  "w m-2"
