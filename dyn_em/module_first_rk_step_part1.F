@@ -624,12 +624,7 @@ BENCH_START(pbl_driver_tim)
      &        ,NUM_TILES=grid%num_tiles                                   &
           !  AHE and AME
      &        , ahe24h=grid%ahe24h &
-     &        ,AME0 =grid%ame0, AME1 =grid%ame1, AME2 =grid%ame2, AME3 =grid%ame3  &
-     &        ,AME4 =grid%ame4, AME5 =grid%ame5, AME6 =grid%ame6, AME7 =grid%ame7  &
-     &        ,AME8 =grid%ame8, AME9 =grid%ame9, AME10=grid%ame10,AME11=grid%ame11 &
-     &        ,AME12=grid%ame12,AME13=grid%ame13,AME14=grid%ame14,AME15=grid%ame15 &
-     &        ,AME16=grid%ame16,AME17=grid%ame17,AME18=grid%ame18,AME19=grid%ame19 &
-     &        ,AME20=grid%ame20,AME21=grid%ame21,AME22=grid%ame22,AME23=grid%ame23 &
+     &        , ame24h=grid%ame24h &
      &        ,AHE  =grid%ahe,  AME  =grid%ame,  GMT=grid%gmt, XTIME=grid%xtime
           ! Variables Required by ACM PBL  - jp
      &        ,ZNU=grid%znu,ZNW=grid%znw,MUT=grid%mut,P_TOP=grid%p_top    &

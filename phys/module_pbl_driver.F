@@ -38,10 +38,7 @@ CONTAINS
                  ,ims,ime, jms,jme, kms,kme                        &
                  ,i_start,i_end, j_start,j_end, kts,kte, num_tiles &
              !  AHE and AME
-                 , ahe24h &
-                 ,AME0, AME1, AME2, AME3, AME4, AME5, AME6, AME7   &
-                 ,AME8, AME9, AME10,AME11,AME12,AME13,AME14,AME15  &
-                 ,AME16,AME17,AME18,AME19,AME20,AME21,AME22,AME23  &
+                 , ahe24h, ame24h &
                  ,AHE,AME,gmt,xtime                                &
              ! Optional
                  ,hol, mol, regime                                 &
@@ -414,13 +411,8 @@ CONTAINS
                INTENT(IN)    :: XICE, SNOW, LH
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-   REAL,    DIMENSION( 0:23 , 0:23 )        :: FLG_GMT
-   INTEGER                                     :: iii,jjj,kkk,IGMT
-   REAL, DIMENSION(ims:ime, 0:23, jms:jme), INTENT(IN) :: ahe24h
-   REAL,       DIMENSION( ims:ime , jms:jme ),INTENT(IN)  ::      &
-                 AME0, AME1, AME2, AME3, AME4, AME5, AME6, AME7,  &
-                 AME8, AME9, AME10,AME11,AME12,AME13,AME14,AME15, &
-                 AME16,AME17,AME18,AME19,AME20,AME21,AME22,AME23
+   INTEGER                                     :: kkk, IGMT
+   REAL, DIMENSION(ims:ime, 0:23, jms:jme), INTENT(IN) :: ahe24h, ame24h
    REAL,       DIMENSION( ims:ime , jms:jme ),                    &
                INTENT(OUT)                     :: AHE,  AME
    REAL,       INTENT(IN)                      :: gmt,xtime
@@ -868,16 +860,6 @@ CONTAINS
 ! Adding Anthropogenic Heat and Mositure emissions onto tendencies as sources
 !       by M.Kanda, 19 June 2007
 ! AHE and AME makes no direct effect on MOST, but just on Ta above the ground
-!
-        DO iii=0,23
-        DO jjj=0,23
-    FLG_GMT(iii,jjj)=0.0
-        ENDDO
-        ENDDO
-!
-        DO iii=0,23
-    FLG_GMT(iii,iii)=1.0
-        ENDDO
 !
     IGMT = MOD(INT(gmt+xtime/60.0),24)
 !    write(33,*) gmt,xtime,IGMT
@@ -1445,26 +1427,12 @@ CONTAINS
 !       by M.Kanda, 19 June 2007
 ! AHE and AME makes no direct effect on MOST, but just on Ta above the ground
 !
-       DO j=jts,jte
+     DO j=jts,jte
        DO i=its,ite
-!
-  AHE(i, j) = ahe24h(i, IGMT, j) / 1200.0
-!
-  AME(i,j) =(FLG_GMT(0,IGMT)* AME0(i,j) +FLG_GMT(1,IGMT)* AME1(i,j)      &
-            +FLG_GMT(2,IGMT)* AME2(i,j) +FLG_GMT(3,IGMT)* AME3(i,j)      &
-            +FLG_GMT(4,IGMT)* AME4(i,j) +FLG_GMT(5,IGMT)* AME5(i,j)      &
-            +FLG_GMT(6,IGMT)* AME6(i,j) +FLG_GMT(7,IGMT)* AME7(i,j)      &
-            +FLG_GMT(8,IGMT)* AME8(i,j) +FLG_GMT(9,IGMT)* AME9(i,j)      &
-            +FLG_GMT(10,IGMT)*AME10(i,j)+FLG_GMT(11,IGMT)*AME11(i,j)     &
-            +FLG_GMT(12,IGMT)*AME12(i,j)+FLG_GMT(13,IGMT)*AME13(i,j)     &
-            +FLG_GMT(14,IGMT)*AME14(i,j)+FLG_GMT(15,IGMT)*AME15(i,j)     &
-            +FLG_GMT(16,IGMT)*AME16(i,j)+FLG_GMT(17,IGMT)*AME17(i,j)     &
-            +FLG_GMT(18,IGMT)*AME18(i,j)+FLG_GMT(19,IGMT)*AME19(i,j)     &
-            +FLG_GMT(20,IGMT)*AME20(i,j)+FLG_GMT(21,IGMT)*AME21(i,j)     &
-            +FLG_GMT(22,IGMT)*AME22(i,j)+FLG_GMT(23,IGMT)*AME23(i,j))    &
-            /(2.45*1000000.0)
-      ENDDO
-      ENDDO
+         AHE(i, j) = ahe24h(i, IGMT, j) / 1200.0
+         AME(i, j) = ame24h(i, IGMT, j) / 2.45e6
+       ENDDO
+     ENDDO
 !
    kkk=1
       DO j=jts,jte
