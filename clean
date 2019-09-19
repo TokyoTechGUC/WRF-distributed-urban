@@ -35,7 +35,6 @@ if ( "$arg" == '-a' || "$arg" == '-aa' ) then
     /bin/cp Registry/Registry Registry/Registry.backup
     /bin/rm -f Registry/Registry
   endif
-  /bin/rm -fr ./netcdf_links
   /bin/rm -fr tools/code_dbase
   ( cd external ; make -i superclean )
   ( cd external/io_grib1/WGRIB ; make clean )
@@ -53,14 +52,14 @@ if ( "$arg" == '-a' || "$arg" == '-aa' ) then
 	  */ozone.formatted */ozone_lat.formatted */ozone_plev.formatted \
 	  */gribmap.txt */tr??t?? */co2_trans) >& /dev/null
   endif
-  cp ./configure.wrf.kanda ./configure.wrf
+  cp ./configure.wrf.dnk ./configure.wrf
 endif
 
 #cms++
 
 if ( -d chem ) then
   if ( -e chem/KPP )then
-    ( cd chem/KPP; ./clean_kpp ) 
+    ( cd chem/KPP; ./clean_kpp )
   endif
 endif
 #cms--
