@@ -411,7 +411,7 @@ CONTAINS
                INTENT(IN)    :: XICE, SNOW, LH
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-   INTEGER                                     :: kkk, IGMT
+   INTEGER                                     :: IGMT
    REAL, DIMENSION(ims:ime, 0:23, jms:jme), INTENT(IN) :: ahe24h, ame24h
    REAL,       DIMENSION( ims:ime , jms:jme ),                    &
                INTENT(OUT)                     :: AHE,  AME
@@ -1434,13 +1434,12 @@ CONTAINS
        ENDDO
      ENDDO
 !
-   kkk=1
-      DO j=jts,jte
-      DO i=its,ite
-    rthblten(i,kkk,j)=rthblten(i,kkk,j)+(AHE(i,j)/dz8w(i,kkk,j))
-    rqvblten(i,kkk,j)=rqvblten(i,kkk,j)+(AME(i,j)/dz8w(i,kkk,j))
-      ENDDO
-      ENDDO
+     DO j=jts,jte
+       DO i=its,ite
+         rthblten(i,1,j)=rthblten(i,1,j)+(AHE(i,j)/dz8w(i,1,j))
+         rqvblten(i,1,j)=rqvblten(i,1,j)+(AME(i,j)/dz8w(i,1,j))
+       ENDDO
+     ENDDO
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
    ENDDO
