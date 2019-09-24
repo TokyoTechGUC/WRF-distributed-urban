@@ -71,3 +71,6 @@ dimspec    %       2     namelist=kdvel                    z     klevs_for_dvel
 dimspec    airc    2     namelist=kemit_aircraft           z     ac_emissions_zdim
 dimspec    .       3     namelist=erosion_dim              z     dust_erosion_dimension
 endif
+
+# Dimensions for AHE
+dimspec    hr      2     constant=(0:23)                   z     hours_per_day

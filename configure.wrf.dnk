@@ -91,12 +91,12 @@ LIBWRFLIB = libwrflib.a
 
 #### Architecture specific settings ####
 
-# Settings for x86_64 Linux, gfortran compiler with gcc   (serial)
+# Settings for x86_64 Linux, gfortran compiler with gcc   (smpar)
 #
 DMPARALLEL      =        1
-OMPCPP          =       # -D_OPENMP
-OMP             =       # -fopenmp
-OMPCC           =       # -fopenmp
+OMPCPP          =        -D_OPENMP
+OMP             =        -fopenmp
+OMPCC           =        -fopenmp
 SFC             =       gfortran
 SCC             =       gcc
 CCOMP           =       gcc
@@ -190,14 +190,14 @@ REGISTRY        =    Registry
                       $(WRF_SRC_ROOT_DIR)/frame/pack_utils.o
 
  LIB_EXTERNAL    = \
-                      -L$(WRF_SRC_ROOT_DIR)/external/io_netcdf -lwrfio_nf -L/home/satoru/final_parameters/wrf_31_git/netcdf_links/lib -lnetcdff -lnetcdf
+                      -L$(WRF_SRC_ROOT_DIR)/external/io_netcdf -lwrfio_nf -L/home/satoru/final_parameters/wrf331/netcdf_links/lib -lnetcdff -lnetcdf
 
 LIB             =    $(LIB_BUNDLED) $(LIB_EXTERNAL) $(LIB_LOCAL)
 LDFLAGS         =    $(OMP) $(FCFLAGS) $(LDFLAGS_LOCAL)
 ENVCOMPDEFS     =
 WRF_CHEM	=	0
 CPPFLAGS        =    $(ARCHFLAGS) $(ENVCOMPDEFS) -I$(LIBINCLUDE) $(TRADFLAG)
-NETCDFPATH      =    /home/satoru/final_parameters/wrf_31_git/netcdf_links
+NETCDFPATH      =    /home/satoru/final_parameters/wrf331/netcdf_links
 PNETCDFPATH     =
 
 bundled:  wrf_ioapi_includes wrfio_grib_share wrfio_grib1 wrfio_int esmf_time fftpack

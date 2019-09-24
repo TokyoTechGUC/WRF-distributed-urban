@@ -25,3 +25,14 @@ wrf.exe
 wrfinput_d01
 wrfinput_d02
 ```
+
+# Variable naming convention:
+
+- `i`, `j`: horizontal dimension, `k`: vertical dimension,
+- `t`: tile (1 tile per processor),
+- `m`: memory,
+- `d`: domain.
+
+Example:
+- `ids`: Start index of `i`-dimension of the whole domain,
+- `ite`: End index of `i`-dimension of the current tile.

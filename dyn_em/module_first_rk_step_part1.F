@@ -330,7 +330,7 @@ BENCH_START(rad_driver_tim)
      &        ,M_PS_1=grid%m_ps_1, M_PS_2=grid%m_ps_2, AEROSOLC_1=grid%aerosolc_1        &
      &        ,AEROSOLC_2=grid%aerosolc_2, M_HYBI0=grid%m_hybi                      &
      &        ,ABSTOT=grid%abstot, ABSNXT=grid%absnxt, EMSTOT=grid%emstot                &
-     &        ,RADTACTTIME=grid%radtacttime                                         &  
+     &        ,RADTACTTIME=grid%radtacttime                                         &
 #ifdef WRF_CHEM
      &        ,CU_RAD_FEEDBACK=config_flags%cu_rad_feedback                &
      &        ,AER_RA_FEEDBACK=config_flags%aer_ra_feedback                &
@@ -341,14 +341,14 @@ BENCH_START(rad_driver_tim)
      &        ,TAUAER600=grid%tauaer3, TAUAER999=grid%tauaer4 & ! jcb
      &        ,GAER300=grid%gaer1, GAER400=grid%gaer2, GAER600=grid%gaer3, GAER999=grid%gaer4 & ! jcb
      &        ,WAER300=grid%waer1, WAER400=grid%waer2, WAER600=grid%waer3, WAER999=grid%waer4 & ! jcb
-     &        ,TAUAERlw1  =grid%tauaerlw1,  TAUAERlw2=grid%tauaerlw2    & 
-     &        ,TAUAERlw3  =grid%tauaerlw3,  TAUAERlw4=grid%tauaerlw4    & 
-     &        ,TAUAERlw5  =grid%tauaerlw5,  TAUAERlw6=grid%tauaerlw6    & 
-     &        ,TAUAERlw7  =grid%tauaerlw7,  TAUAERlw8=grid%tauaerlw8    & 
-     &        ,TAUAERlw9  =grid%tauaerlw9,  TAUAERlw10=grid%tauaerlw10    & 
-     &        ,TAUAERlw11 =grid%tauaerlw11, TAUAERlw12=grid%tauaerlw12    & 
-     &        ,TAUAERlw13 =grid%tauaerlw13, TAUAERlw14=grid%tauaerlw14    & 
-     &        ,TAUAERlw15 =grid%tauaerlw15, TAUAERlw16=grid%tauaerlw16   & 
+     &        ,TAUAERlw1  =grid%tauaerlw1,  TAUAERlw2=grid%tauaerlw2    &
+     &        ,TAUAERlw3  =grid%tauaerlw3,  TAUAERlw4=grid%tauaerlw4    &
+     &        ,TAUAERlw5  =grid%tauaerlw5,  TAUAERlw6=grid%tauaerlw6    &
+     &        ,TAUAERlw7  =grid%tauaerlw7,  TAUAERlw8=grid%tauaerlw8    &
+     &        ,TAUAERlw9  =grid%tauaerlw9,  TAUAERlw10=grid%tauaerlw10    &
+     &        ,TAUAERlw11 =grid%tauaerlw11, TAUAERlw12=grid%tauaerlw12    &
+     &        ,TAUAERlw13 =grid%tauaerlw13, TAUAERlw14=grid%tauaerlw14    &
+     &        ,TAUAERlw15 =grid%tauaerlw15, TAUAERlw16=grid%tauaerlw16   &
      &        ,progn=config_flags%progn                                            &
 #endif
      &         ,slope_rad=config_flags%slope_rad,topo_shading=config_flags%topo_shading     &
@@ -392,7 +392,7 @@ BENCH_START(surf_driver_tim)
      &        ,P8W=grid%p_hyd_w            ,PBLH=grid%pblh          ,PI_PHY=pi_phy      &
      &        ,PSFC=grid%psfc          ,PSHLTR=grid%pshltr      ,PSIH=psih          &
      &        ,BLDT=grid%bldt     ,CURR_SECS=curr_secs, ADAPT_STEP_FLAG=adapt_step_flag  &
-     &        ,BLDTACTTIME=grid%bldtacttime                                              & 
+     &        ,BLDTACTTIME=grid%bldtacttime                                              &
      &        ,PSIM=psim          ,P_PHY=grid%p_hyd        ,Q10=grid%q10            &
      &        ,Q2=grid%q2              ,QFX=grid%qfx            ,QSFC=grid%qsfc          &
      &        ,QSHLTR=grid%qshltr      ,QZ0=grid%qz0            ,RAINCV=grid%raincv      &
@@ -578,7 +578,7 @@ BENCH_START(pbl_driver_tim)
      &         AKHS=grid%akhs          ,AKMS=grid%akms                              &
      &        ,BL_PBL_PHYSICS=config_flags%bl_pbl_physics                           &
      &        ,BLDT=grid%bldt, CURR_SECS=curr_secs, ADAPT_STEP_FLAG=adapt_step_flag &
-     &        ,BLDTACTTIME=grid%bldtacttime                               &  
+     &        ,BLDTACTTIME=grid%bldtacttime                               &
      &        ,BR=br              ,CHKLOWQ=chklowq    ,CT=grid%ct                   &
      &        ,DT=grid%dt              ,DX=grid%dx              ,DZ8W=dz8w          &
      &        ,EXCH_H=grid%exch_h     ,EXCH_M=grid%exch_m                           &
@@ -623,18 +623,8 @@ BENCH_START(pbl_driver_tim)
      &        ,KTS=k_start, KTE=min(k_end,kde-1)                          &
      &        ,NUM_TILES=grid%num_tiles                                   &
           !  AHE and AME
-     &        ,AHE0 =grid%ahe0, AHE1 =grid%ahe1, AHE2 =grid%ahe2, AHE3 =grid%ahe3  &
-     &        ,AHE4 =grid%ahe4, AHE5 =grid%ahe5, AHE6 =grid%ahe6, AHE7 =grid%ahe7  &
-     &        ,AHE8 =grid%ahe8, AHE9 =grid%ahe9, AHE10=grid%ahe10,AHE11=grid%ahe11 &
-     &        ,AHE12=grid%ahe12,AHE13=grid%ahe13,AHE14=grid%ahe14,AHE15=grid%ahe15 &
-     &        ,AHE16=grid%ahe16,AHE17=grid%ahe17,AHE18=grid%ahe18,AHE19=grid%ahe19 &
-     &        ,AHE20=grid%ahe20,AHE21=grid%ahe21,AHE22=grid%ahe22,AHE23=grid%ahe23 &
-     &        ,AME0 =grid%ame0, AME1 =grid%ame1, AME2 =grid%ame2, AME3 =grid%ame3  &
-     &        ,AME4 =grid%ame4, AME5 =grid%ame5, AME6 =grid%ame6, AME7 =grid%ame7  &
-     &        ,AME8 =grid%ame8, AME9 =grid%ame9, AME10=grid%ame10,AME11=grid%ame11 &
-     &        ,AME12=grid%ame12,AME13=grid%ame13,AME14=grid%ame14,AME15=grid%ame15 &
-     &        ,AME16=grid%ame16,AME17=grid%ame17,AME18=grid%ame18,AME19=grid%ame19 &
-     &        ,AME20=grid%ame20,AME21=grid%ame21,AME22=grid%ame22,AME23=grid%ame23 &
+     &        , ahe24h=grid%ahe24h &
+     &        , ame24h=grid%ame24h &
      &        ,AHE  =grid%ahe,  AME  =grid%ame,  GMT=grid%gmt, XTIME=grid%xtime
           ! Variables Required by ACM PBL  - jp
      &        ,ZNU=grid%znu,ZNW=grid%znw,MUT=grid%mut,P_TOP=grid%p_top    &
@@ -682,19 +672,19 @@ BENCH_START(pbl_driver_tim)
      &        ,WPERT2D=grid%wpert2d                                       &
      &        ,XLAT_V=grid%xlat_v,XLONG_V=grid%xlong_v                    &
      &        )
-                                                         
+
 
 BENCH_END(pbl_driver_tim)
 
 !*****
-! fire 
+! fire
 
 ! Jan Mandel's call to SFIRE
 
       IF ((grid%sr_x > 0 .OR. grid%sr_y > 0) .AND. config_flags%ifire == 2) THEN
 
 BENCH_START(fire_driver_tim)
-        if(config_flags%ifire.eq.2)then 
+        if(config_flags%ifire.eq.2)then
             ! initialization moved to start_em:start_domain_em
 !            if(grid%initestep.eq.1) &
 !            call sfire_driver_em_init (  grid , config_flags    &
@@ -733,7 +723,7 @@ BENCH_START(cu_driver_tim)
                  ! Other arguments
      &             ,ITIMESTEP=grid%itimestep ,DT=grid%dt      ,DX=grid%dx              &
      &             ,CUDT=grid%cudt,CURR_SECS=curr_secs,ADAPT_STEP_FLAG=adapt_step_flag &
-     &             ,CUDTACTTIME=grid%cudtacttime                                       & 
+     &             ,CUDTACTTIME=grid%cudtacttime                                       &
      &             ,RAINC=grid%rainc   ,RAINCV=grid%raincv   ,PRATEC=grid%pratec       &
      &             ,NCA=grid%nca                                                       &
      &             ,HTOP=grid%cutop     ,HBOT=grid%cubot       ,KPBL=grid%kpbl         &
