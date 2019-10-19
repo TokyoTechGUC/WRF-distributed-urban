@@ -522,7 +522,6 @@ CONTAINS
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: AKMS_URB2D
 !
      REAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: UST_URB2D
-!     REAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: FRC_URB2D
      REAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: FRC_URB2D
      INTEGER, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: UTYPE_URB2D
 
@@ -550,33 +549,34 @@ CONTAINS
      REAL :: U10_URB    ! wind u component at 10 m         [m/s]
      REAL :: V10_URB    ! wind v component at 10 m         [m/s]
      REAL :: TH2_URB    ! potential temperature at 2 m     [K]
-     REAL :: TH_025ZR_URB  !VARQUEZ 20150324  Potential temperature at 0.25ZR from ground level (K)
-     REAL :: TH_050ZR_URB  !VARQUEZ 20150324  Potential temperature at 0.50ZR from ground level (K)
-     REAL :: TH_075ZR_URB  !VARQUEZ 20150324  Potential temperature at 0.75ZR from ground level (K)
-     REAL :: TH_100ZR_URB  !VARQUEZ 20150324  Potential temperature at 1.00ZR from ground level (K)
-     REAL :: TH_200ZR_URB  !KAWANO  20150415  Potential temperature at 2.00ZR from ground level (K)
-     REAL :: Z0C_URB, ZR_URB !VARQUEZ 20150324
+     REAL :: TH_025ZR_URB  ! Potential temperature at 0.25ZR from ground level (K)
+     REAL :: TH_050ZR_URB  ! Potential temperature at 0.50ZR from ground level (K)
+     REAL :: TH_075ZR_URB  ! Potential temperature at 0.75ZR from ground level (K)
+     REAL :: TH_100ZR_URB  ! Potential temperature at 1.00ZR from ground level (K)
+     REAL :: TH_200ZR_URB  ! Potential temperature at 2.00ZR from ground level (K)
+     REAL :: Z0C_URB, ZR_URB
      REAL :: Q2_URB     ! humidity at 2 m                  [-]
      REAL :: CHS_URB
      REAL :: CHS2_URB
      REAL :: UST_URB
 
 ! Nakayoshi 20120903 HB check output
-     real::SR_naka,RR_naka,HR_naka,ELER_naka,G0R_naka
-     real::SB_naka,RB_naka,HB_naka,ELEB_naka,G0B_naka
-     real::SG_naka,RG_naka,HG_naka,ELEG_naka,G0G_naka
-     real::LNET_naka,LW_naka,SW_naka,G_naka,RN_naka
-     real::FLXTH_naka,FLXHUM_naka,ALPHAC_naka,CHS_naka
+     REAL :: SR_naka, RR_naka, HR_naka, ELER_naka, G0R_naka
+     REAL :: SB_naka, RB_naka, HB_naka, ELEB_naka, G0B_naka
+     REAL :: SG_naka, RG_naka, HG_naka, ELEG_naka, G0G_naka
+     REAL :: LNET_naka, LW_naka, SW_naka, G_naka, RN_naka
+     REAL :: FLXTH_naka, FLXHUM_naka, ALPHAC_naka, CHS_naka
 
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::SR_GRID,RR_GRID,HR_GRID,ELER_GRID,G0R_GRID
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::SG_GRID,RG_GRID,HG_GRID,ELEG_GRID,G0G_GRID
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::SB_GRID,RB_GRID,HB_GRID,ELEB_GRID,G0B_GRID
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::LNET_GRID,LW_GRID,SW_GRID,G_GRID,RN_GRID
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::FLXTH_GRID,FLXHUM_GRID,ALPHAC_GRID,CHS_GRID
+     REAL, OPTIONAL, DIMENSION(ims:ime, jms:jme), INTENT(OUT) :: &
+       SR_GRID, RR_GRID, HR_GRID, ELER_GRID, G0R_GRID, &
+       SG_GRID, RG_GRID, HG_GRID, ELEG_GRID, G0G_GRID, &
+       SB_GRID, RB_GRID, HB_GRID, ELEB_GRID, G0B_GRID, &
+       LNET_GRID, LW_GRID, SW_GRID, G_GRID, RN_GRID, &
+       FLXTH_GRID, FLXHUM_GRID, ALPHAC_GRID, CHS_GRID
 ! to here
 
 ! Variables for multi-layer UCM (Martilli et al. 2002)
-   REAL, OPTIONAL, INTENT(IN  )   ::                                   GMT 
+   REAL, OPTIONAL, INTENT(IN  )   ::                                   GMT
    INTEGER, OPTIONAL, INTENT(IN  ) ::                               JULDAY
    REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN   )        ::XLAT, XLONG
    INTEGER, INTENT(IN  ) ::                               NUM_URBAN_LAYERS
@@ -639,22 +639,8 @@ CONTAINS
   REAL, PARAMETER  :: CAPA=R_D/CP
   REAL :: APELM,APES,SFCTH2,PSFC
   real, intent(in) :: xice_threshold
-  character(len=80) :: message_text
+  character(len=128) :: message_text
 
-!Nakayoshi roughness length
-! IF(ITIMESTEP.EQ.1)THEN
-!  print*,"initialize sh1_rural etc"
-!  zh_grd=0. !initial value and value exept for urban
-! Nakayoshi 20130109 debug EB terms in natural category
-!  sh1_rural=0.
-!  lh1_rural=0.
-!  grd1_rural=0.
-!  tsk1_rural=0.
-!  qqq1_rural=0.
-!  ust1_rural=0.
-!  VEG_GRD  =0. !20130418
-! ENDIF
-!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! MEK MAY 2007
       FDTLIW=DT/ROWLIW
 ! MEK JUL2007
@@ -673,11 +659,10 @@ CONTAINS
         SLDPTH(NS)=DZS(NS)
       ENDDO
 
-!    print*,"noah",its,ite,jts,jte
-      DO J=jts,jte                  !!!!!!!!! j loop
+      DO J=jts,jte
 
          IF(ITIMESTEP.EQ.1)THEN
-            DO 50 I=its,ite           !!!!!!!!!! i loop
+            DO 50 I=its,ite
 !*** initialize soil conditions for IHOP 31 May case
 !          IF((XLAND(I,J)-1.5) < 0.)THEN
 !             if (I==108.and.j==85) then
@@ -714,7 +699,7 @@ CONTAINS
                   ENDIF
                ENDIF
 !
-50          CONTINUE      !!!end of initial first loop
+50          CONTINUE
             ENDIF               ! end of initialization over ocean
 
 !-----------------------------------------------------------------------
@@ -787,22 +772,22 @@ CONTAINS
                   ENDIF
                ENDIF
 !***
-               IF((XLAND(I,J)-1.5).GE.0.)THEN                   ! begining of land/sea if block 200
-! Open water points                            !In open water case,urban is not considered Nakayoshi
+               IF((XLAND(I,J)-1.5).GE.0.)THEN                   ! begining of land/sea if block
+! Open water points
+! In open water case,urban is not considered Nakayoshi
                   TSK_RURAL(I,J)=TSK(I,J)
                   HFX_RURAL(I,J)=HFX(I,J)
                   QFX_RURAL(I,J)=QFX(I,J)
                   LH_RURAL(I,J)=LH(I,J)
                   EMISS_RURAL(I,J)=EMISS(I,J)
                   GRDFLX_RURAL(I,J)=GRDFLX(I,J)
-! Nakayoshi
+
                   sh1_rural(I,J)=HFX_RURAL(I,J)
                   lh1_rural(I,J)=LH_RURAL(I,J)
                   grd1_rural(I,J)=GRDFLX_RURAL(I,J)
                   tsk1_rural(I,J)=TSK_RURAL(I,J)
                   qqq1_rural(I,J)=QSFC(I,J)
                   ust1_rural(I,J)=UST(I,J)
-! to here
                ELSE
 ! Land or sea-ice case
 
@@ -888,22 +873,22 @@ CONTAINS
 
 !Fei: urban. for urban surface, if calling UCM, redefine the natural surface in cities as
 ! the "NATURAL" category in the VEGPARM.TBL
-	
+
                   IF(SF_URBAN_PHYSICS == 1.OR. SF_URBAN_PHYSICS==2.OR.SF_URBAN_PHYSICS==3 ) THEN
 ! urban dominant grid
                      IF( IVGTYP(I,J) == ISURBAN .or. IVGTYP(I,J) == 31 .or. &
                           IVGTYP(I,J) == 32 .or. IVGTYP(I,J) == 33) THEN
 ! Nakayoshi mod_frc_urb2d 20130122
                         FRC_URB2D(I,J)=MOD_FRC_URB2D(I,J)  !Nakayoshi 20121108
-!!                    VEGTYP = NATURAL
-!!                    write(6,*)"natural",natural
-!!                    SHDFAC = SHDTBL(NATURAL)
-!!                    ALBEDOK =0.2         !  0.2
-!!                    ALBBRD  =0.2         !0.2
-!!                    EMISSI = 0.98                                 !for VEGTYP=5
+                        if (.false.) then
+                          VEGTYP = NATURAL
+                          SHDFAC = SHDTBL(NATURAL)
+                          ALBEDOK =0.2         !  0.2
+                          ALBBRD  =0.2         !0.2
+                          EMISSI = 0.98                                 !for VEGTYP=5
+                        end if
                         VEGTYP = nint(SECOND(i,j))
                        ! SHDFAC = SHDTBL(VEGTYP)           !Varquez 20170207 Stop using the table for vegetation fraction. Could be overestimated.
-!                  print *,vegtyp,albedok,albbrd,emissi,i,j !debug
                      ENDIF
                      IF ( MOD_FRC_URB2D(I,J).ge. 0.01 ) THEN
 !!                IF ( FRC_URB2D(I,J) < 0.99 ) THEN
@@ -934,14 +919,14 @@ CONTAINS
                      ENDIF
                   ENDIF
 
-                  IF( IVGTYP(I,J) == ISURBAN .or. IVGTYP(I,J) == 31 .or. &
-                       IVGTYP(I,J) == 32 .or. IVGTYP(I,J) == 33) THEN
-                     if(VEGTYP.eq.IVGTYP(I,J))THEN
-                        print*,"error ivgtyp and second are the same"
-                        print *,VEGTYP,IVGTYP(i,j),T1,i,j !debug
-                        stop
+                  if (ivgtyp(i,j) == isurban .or. ivgtyp(i,j) == 31 .or. &
+                      ivgtyp(i,j) == 32 .or. ivgtyp(i,j) == 33) then
+                     if (vegtyp == ivgtyp(i,j)) then
+                        write (message_text, *) "IVGTYP and SECOND are the same", &
+                          vegtyp, ivgtyp(i, j), t1, i, j
+                        call wrf_error_fatal(message_text)
                      endif
-                  ENDIF
+                  endif
 
 #if 0
                   IF(IPRINT) THEN
@@ -974,7 +959,7 @@ CONTAINS
                      xlai = lai(i,j)
                   endif
 
-                  IF(vegtyp.ne.20)then !Nakayoshi !VARQUEZ 20170207 to suit MODIFIED_IGBP_MODIS_NOAH
+                  if (vegtyp .ne. 20) then !Nakayoshi !VARQUEZ 20170207 to suit MODIFIED_IGBP_MODIS_NOAH
                      CALL SFLX (FFROZP, ICE, ISURBAN, DT,ZLVL,NSOIL,SLDPTH,     &    !C
                           LOCAL,                                           &    !L
                           LUTYPE, SLTYPE,                                  &    !CL
@@ -997,8 +982,10 @@ CONTAINS
                           RIBB,                                            &
                           SMCWLT,SMCDRY,SMCREF,SMCMAX,NROOT)
                   ELSE
-                     print*,"vegtype:20,sflx doesnot call"
-                  ENDIF  !nakauys
+                    call wrf_message("vegtype is 20, do not call SFLX")
+                  ENDIF
+
+
                   lai(i,j) = xlai
 
 #if 0
@@ -1057,12 +1044,12 @@ CONTAINS
                   SNOTIME(I,J) = SNOTIME1
 
 ! Nakayoshi 20130109 debug EB terms in natural category
-                  sh1_rural(i,j)=SHEAT
-                  lh1_rural(i,j)=eta
-                  grd1_rural(i,j)=ssoil
-                  tsk1_rural(i,j)=t1
-                  qqq1_rural(i,j)=Q1/(1.0-Q1)
-                  ust1_rural(i,j)=ust(i,j)
+                  sh1_rural(i,j) = SHEAT
+                  lh1_rural(i,j) = eta
+                  grd1_rural(i,j) = ssoil
+                  tsk1_rural(i,j) = t1
+                  qqq1_rural(i,j) = Q1 / (1.0 - Q1)
+                  ust1_rural(i,j) = ust(i,j)
 
 !      prevent diagnostic ground q (q1) from being greater than qsat(tsk)
 !      as happens over snow cover where the cqs2 value also becomes irrelevant
@@ -1097,11 +1084,11 @@ CONTAINS
 ! Input variables lsm --> urban
 
 
-! Nakayoshi mod_frc_urb2d 20130122
 !          IF( IVGTYP(I,J) == ISURBAN .or. IVGTYP(I,J) == 31 .or. &
 !              IVGTYP(I,J) == 32 .or. IVGTYP(I,J) == 33 ) THEN
-                     IF( MOD_FRC_URB2D(I,J).ge. 0.01 ) THEN
-! to here
+
+           IF( MOD_FRC_URB2D(I,J).ge. 0.01 ) THEN
+
 ! Call urban
 
 !
@@ -1128,25 +1115,14 @@ CONTAINS
 
 ! Nakayoshi roughness length
                         XLONG_URB = XLONG_URB2D(I,J)  ! [deg]
-                        Z0_GRD_URB= Z0_GRD(I,J)       ! [m]
-                        Max_vegfra = 1-mod_frc_urb2d(i,j)            !20130418
-                        IF((0.01*VEGFRA(I,J)).lt.Min_vegfra)then     !20130418
-                           VEG_GRD_URB=Min_vegfra                    !20130418
-                        ELSEIF((0.01*VEGFRA(I,J)).gt.Max_vegfra)then !20130418
-                           VEG_GRD_URB=Max_vegfra                    !20130418
-                        ELSE                                         !20130418
-                           VEG_GRD_URB=0.01*VEGFRA(I,J)              !20130418
-                        ENDIF                                        !20130418
-                        VEG_GRD(I,J)=VEG_GRD_URB                     !20130418
-                        AVE_BH_GRD_URB= AVE_BH_GRD(I,J)
-                        PAI_GRD_URB=PAI_GRD(I,J)
-                        FAI_GRD_URB=FAI_GRD(I,J)
-!            if(Z0_GRD(i,j).gt.0)then
-!               print*,"noahdrv ","I:",i,"j:",j
-!               print*, "Z0:",Z0_GRD(i,j),Z0_GRD_URB
-!               print*, "BH:",ave_bh_grd(i,j),ave_bh_grd_urb
-!            endif
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        Z0_GRD_URB = Z0_GRD(I,J)       ! [m]
+                        Max_vegfra = 1 - mod_frc_urb2d(i, j)
+                        VEG_GRD_URB = max(min_vegfra, &
+                                          min(max_vegfra, 0.01 * vegfra(i, j)))
+                        VEG_GRD(I, J) = VEG_GRD_URB
+                        AVE_BH_GRD_URB = AVE_BH_GRD(I,J)
+                        PAI_GRD_URB = PAI_GRD(I,J)
+                        FAI_GRD_URB = FAI_GRD(I,J)
 
                         LSOLAR_URB = .FALSE.
 
@@ -1286,39 +1262,32 @@ CONTAINS
 
                         TS_URB2D(I,J) = TS_URB
 
-! Nakayoshi mod_frc_urb2d 20130122
-!!            ALBEDO(I,J) = FRC_URB2D(I,J)*ALB_URB+(1-FRC_URB2D(I,J))*ALBEDOK   ![-]
-!!            HFX(I,J)    = FRC_URB2D(I,J)*SH_URB+(1-FRC_URB2D(I,J))*SHEAT         ![W/m/m]
-!!            QFX(I,J)    = FRC_URB2D(I,J)*LH_KINEMATIC_URB &
-!!                     + (1-FRC_URB2D(I,J))*ETA_KINEMATIC                ![kg/m/m/s]
-!!            LH(I,J)     = FRC_URB2D(I,J)*LH_URB+(1-FRC_URB2D(I,J))*ETA            ![W/m/m]
-!!            GRDFLX(I,J) = FRC_URB2D(I,J)*G_URB+(1-FRC_URB2D(I,J))*SSOIL       ![W/m/m]
-!!            TSK(I,J)    = FRC_URB2D(I,J)*TS_URB+(1-FRC_URB2D(I,J))*T1            ![K]
-!!            Q1 = FRC_URB2D(I,J)*QS_URB+(1-FRC_URB2D(I,J))*Q1            ![-]
+#if 0
+            ALBEDO(I,J) = FRC_URB2D(I,J)*ALB_URB+(1-FRC_URB2D(I,J))*ALBEDOK   ![-]
+            HFX(I,J) = FRC_URB2D(I,J)*SH_URB+(1-FRC_URB2D(I,J))*SHEAT         ![W/m/m]
+            QFX(I,J) = FRC_URB2D(I,J)*LH_KINEMATIC_URB &
+                     + (1-FRC_URB2D(I,J))*ETA_KINEMATIC                ![kg/m/m/s]
+            LH(I,J) = FRC_URB2D(I,J)*LH_URB+(1-FRC_URB2D(I,J))*ETA            ![W/m/m]
+            GRDFLX(I,J) = FRC_URB2D(I,J)*G_URB+(1-FRC_URB2D(I,J))*SSOIL       ![W/m/m]
+            TSK(I,J) = FRC_URB2D(I,J)*TS_URB+(1-FRC_URB2D(I,J))*T1            ![K]
+            Q1 = FRC_URB2D(I,J)*QS_URB+(1-FRC_URB2D(I,J))*Q1            ![-]
 ! Convert QSFC back to mixing ratio
-!!            QSFC(I,J)= Q1/(1.0-Q1)
-!!            UST(I,J)= FRC_URB2D(I,J)*UST_URB+(1-FRC_URB2D(I,J))*UST(I,J)      ![m/s]
+            QSFC(I,J)= Q1/(1.0-Q1)
+            UST(I,J)= FRC_URB2D(I,J)*UST_URB+(1-FRC_URB2D(I,J))*UST(I,J)      ![m/s]
+#endif
 
-!	      print*,i,j,"alb",alb_urb,albedok,xtime
-!	      print*,i,j,"hfx",sh_urb,sheat,mod_frc_urb2d(i,j)
-!	      print*,i,j,"qfx",lh_urb,eta,ivgtyp(i,j)
-!	      print*,i,j,"grd",g_urb,ssoil
-!	      print*,i,j,"tsk",ts_urb,t1
-!	      print*,i,j,"qqq",qs_urb,q1
-!	      print*,i,j,"ust",ust_urb,ust(i,j)
-                        ALBEDO(I,J) = MOD_FRC_URB2D(I,J)*ALB_URB+(1-MOD_FRC_URB2D(I,J))*ALBEDOK   ![-]
-                        HFX(I,J)    = MOD_FRC_URB2D(I,J)*SH_URB+(1-MOD_FRC_URB2D(I,J))*SHEAT         ![W/m/m]
-                        QFX(I,J)    = MOD_FRC_URB2D(I,J)*LH_KINEMATIC_URB &
-                             + (1-MOD_FRC_URB2D(I,J))*ETA_KINEMATIC                ![kg/m/m/s]
-                        LH(I,J)     = MOD_FRC_URB2D(I,J)*LH_URB+(1-MOD_FRC_URB2D(I,J))*ETA            ![W/m/m]
-                        GRDFLX(I,J) = MOD_FRC_URB2D(I,J)*G_URB+(1-MOD_FRC_URB2D(I,J))*SSOIL       ![W/m/m]
-                        TSK(I,J)    = MOD_FRC_URB2D(I,J)*TS_URB+(1-MOD_FRC_URB2D(I,J))*T1            ![K]
-                        Q1          = MOD_FRC_URB2D(I,J)*QS_URB+(1-MOD_FRC_URB2D(I,J))*Q1            ![-]
-! Convert QSFC back to mixing ratio
-                        QSFC(I,J)   = Q1/(1.0-Q1)
-                        UST(I,J)    = sqrt(MOD_FRC_URB2D(I,J)*UST_URB**2+(1-MOD_FRC_URB2D(I,J))*UST(I,J)**2)      ![m/s]
-!to here
-!
+            ALBEDO(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), ALB_URB, ALBEDOK)   ![-]
+            HFX(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), SH_URB, SHEAT)         ![W/m/m]
+            QFX(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), LH_KINEMATIC_URB, &
+                                         ETA_KINEMATIC)                ![kg/m/m/s]
+            LH(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), LH_URB, ETA)            ![W/m/m]
+            GRDFLX(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), G_URB, SSOIL)       ![W/m/m]
+            TSK(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), TS_URB, T1)            ![K]
+            Q1 = weight_by_frc_urb(MOD_FRC_URB2D(I,J), QS_URB, Q1)            ![-]
+            ! Convert QSFC back to mixing ratio
+            QSFC(I,J) = Q1 / (1.0 - Q1)
+            UST(I,J) = sqrt(weight_by_frc_urb(MOD_FRC_URB2D(I,J), UST_URB ** 2, &
+                                              UST(I,J) ** 2))      ![m/s]
 
 #if 0
                         IF(IPRINT)THEN
@@ -1373,21 +1342,16 @@ CONTAINS
                         UST_URB2D(I,J)   = UST_URB
                         AKMS_URB2D(I,J)  = KARMAN * UST_URB2D(I,J)/(GZ1OZ0_URB2D(I,J)-PSIM_URB2D(I,J))
 
-!Nakayoshi roughness length did and then cancel
                         ZH_GRD(I,J)      = ZH_GRD_URB
-!!	    CHS2(I,J)        = CHS2_URB
-!!	    CHS(I,J)         = CHS_URB
-!!	    CQS2(I,J)        = CHS2_URB
-! to here
-                        IF(canopy_temp_profile == 1) THEN    !VARQUEZ 20150324
-                         TH_025ZR(i,j) = TH_025ZR_URB  !VARQUEZ 20150324
-                         TH_050ZR(i,j) = TH_050ZR_URB  !VARQUEZ 20150324
-                         TH_075ZR(i,j) = TH_075ZR_URB  !VARQUEZ 20150324
-                         TH_100ZR(i,j) = TH_100ZR_URB  !VARQUEZ 20150324
-                         TH_200ZR(i,j) = TH_200ZR_URB  !KAWANO  20150415
-                         ZR_URB2D(i,j)       = ZR_URB
-                         Z0C_URB2D(i,j)      = Z0C_URB
-                        ENDIF                                !VARQUEZ 20150324
+                        IF (canopy_temp_profile == 1) THEN
+                         TH_025ZR(i, j) = TH_025ZR_URB
+                         TH_050ZR(i, j) = TH_050ZR_URB
+                         TH_075ZR(i, j) = TH_075ZR_URB
+                         TH_100ZR(i, j) = TH_100ZR_URB
+                         TH_200ZR(i, j) = TH_200ZR_URB
+                         ZR_URB2D(i, j) = ZR_URB
+                         Z0C_URB2D(i, j) = Z0C_URB
+                        ENDIF
 
                         IF (PRESENT(CMR_SFCDIF)) THEN
                            CMR_SFCDIF(I,J) = CMR_URB
@@ -1395,7 +1359,7 @@ CONTAINS
                            CMC_SFCDIF(I,J) = CMC_URB
                            CHC_SFCDIF(I,J) = CHC_URB
                         ENDIF
-                     END IF                                 ! ebd if mod_frc if block
+                     END IF
 
                   ENDIF                                   ! end of UCM CALL if block
 !--------------------------------------
@@ -1421,7 +1385,7 @@ CONTAINS
                      SNOPCX(I,J)=SNOPCX(I,J)-SNOMLT/FDTLIW
                   ENDIF
 
-               ENDIF                               ! end of land/sea if block 200
+               ENDIF                                                           ! endif of land-sea test
 
  100      CONTINUE                               ! of I loop
 
@@ -1456,7 +1420,7 @@ CONTAINS
 
        ENDIF
 
-       
+
        IF (SF_URBAN_PHYSICS == 3) THEN
 
 
@@ -1469,7 +1433,7 @@ CONTAINS
             b_q_bep(i,kts:kte,j)=0.
          end do
          end do
-          
+
        CALL BEP_BEM(frc_urb2d,utype_urb2d,itimestep,dz8w,dt,u_phy,v_phy, &
                 th_phy,rho,p_phy,swdown,glw,                           &
                 gmt,julday,xlong,xlat,declin_urb,cosz_urb2d,omg_urb2d, &
@@ -1504,7 +1468,7 @@ CONTAINS
             a_u_bep(i,k,j)=a_u_bep(i,k,j)*frc_urb2d(i,j)
             a_v_bep(i,k,j)=a_v_bep(i,k,j)*frc_urb2d(i,j)
             a_t_bep(i,k,j)=a_t_bep(i,k,j)*frc_urb2d(i,j)
-            a_q_bep(i,k,j)=0.        
+            a_q_bep(i,k,j)=0.
             a_e_bep(i,k,j)=0.
             b_u_bep(i,k,j)=b_u_bep(i,k,j)*frc_urb2d(i,j)
             b_v_bep(i,k,j)=b_v_bep(i,k,j)*frc_urb2d(i,j)
@@ -1534,26 +1498,26 @@ CONTAINS
             vmom=(1.-frc_urb2d(i,j))*ust(i,j)*ust(i,j)*v_phy(i,1,j)/               &
                          ((u_phy(i,1,j)**2+v_phy(i,1,j)**2.)**.5)+vmom_urb(i,j)
             sf_bep(i,1,j)=1.
-           
+
 ! compute upward longwave radiation from the rural part and total
 !           rl_up_rural=-emiss_rural(i,j)*sigma_sb*(tsk_rural(i,j)**4.)-(1.-emiss_rural(i,j))*glw(i,j)
-!           rl_up_tot=(1.-frc_urb2d(i,j))*rl_up_rural+frc_urb2d(i,j)*rl_up_urb(i,j)   
+!           rl_up_tot=(1.-frc_urb2d(i,j))*rl_up_rural+frc_urb2d(i,j)*rl_up_urb(i,j)
 !           emiss(i,j)=(1.-frc_urb2d(i,j))*emiss_rural(i,j)+frc_urb2d(i,j)*emiss_urb(i,j)
 ! using the emissivity and the total longwave upward radiation estimate the averaged skin temperature
            IF (FRC_URB2D(I,J).GT.0.) THEN
               rl_up_rural=-emiss_rural(i,j)*sigma_sb*(tsk_rural(i,j)**4.)-(1.-emiss_rural(i,j))*glw(i,j)
-              rl_up_tot=(1.-frc_urb2d(i,j))*rl_up_rural+frc_urb2d(i,j)*rl_up_urb(i,j)   
+              rl_up_tot=(1.-frc_urb2d(i,j))*rl_up_rural+frc_urb2d(i,j)*rl_up_urb(i,j)
               emiss(i,j)=(1.-frc_urb2d(i,j))*emiss_rural(i,j)+frc_urb2d(i,j)*emiss_urb(i,j)
               ts_urb2d(i,j)=(max(0.,(-rl_up_urb(i,j)-(1.-emiss_urb(i,j))*glw(i,j))/emiss_urb(i,j)/sigma_sb))**0.25
               tsk(i,j)=(max(0., (-1.*rl_up_tot-(1.-emiss(i,j))*glw(i,j) )/emiss(i,j)/sigma_sb))**.25
-           rs_abs_tot=(1.-frc_urb2d(i,j))*swdown(i,j)*(1.-albedo(i,j))+frc_urb2d(i,j)*rs_abs_urb(i,j)  
+           rs_abs_tot=(1.-frc_urb2d(i,j))*swdown(i,j)*(1.-albedo(i,j))+frc_urb2d(i,j)*rs_abs_urb(i,j)
           if(swdown(i,j).gt.0.)then
            albedo(i,j)=1.-rs_abs_tot/swdown(i,j)
           else
            albedo(i,j)=alb_rural(i,j)
           endif
 ! rename *_urb to sh_urb2d,lh_urb2d,g_urb2d,rn_urb2d
-         grdflx(i,j)= (1.-frc_urb2d(i,j))*grdflx_rural(i,j)+frc_urb2d(i,j)*grdflx_urb(i,j) 
+         grdflx(i,j)= (1.-frc_urb2d(i,j))*grdflx_rural(i,j)+frc_urb2d(i,j)*grdflx_urb(i,j)
          qfx(i,j)=(1.-frc_urb2d(i,j))*qfx_rural(i,j)+qfx_urb(i,j)
 !        lh(i,j)=(1.-frc_urb2d(i,j))*qfx_rural(i,j)*xlv
          lh(i,j)=qfx(i,j)*xlv
@@ -1605,6 +1569,14 @@ CONTAINS
 !------------------------------------------------------
    END SUBROUTINE lsm
 !------------------------------------------------------
+
+  function weight_by_frc_urb(frc_urb, x, y)
+    implicit none
+    real :: frc_urb, x, y
+    real :: weight_by_frc_urb
+
+    weight_by_frc_urb = frc_urb * x + (1 - frc_urb) * y
+  end function weight_by_frc_urb
 
   SUBROUTINE LSMINIT(VEGFRA,SNOW,SNOWC,SNOWH,CANWAT,SMSTAV,    &
                      SMSTOT, SFCRUNOFF,UDRUNOFF,ACSNOW,        &

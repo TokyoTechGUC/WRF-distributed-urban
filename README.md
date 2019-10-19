@@ -1,3 +1,7 @@
+# Installation
+
+`m4 libnetcdf-dev libnetcdff-dev libpnetcdf-dev`
+
 # Benchmark
 
 On Surface Pro 6, 8 core, it takes 1 hour to simulate 3 hour.
