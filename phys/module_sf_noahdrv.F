@@ -70,26 +70,26 @@ CONTAINS
                   a_u_bep,a_v_bep,a_t_bep,a_q_bep,              & !O multi-layer urban
                   a_e_bep,b_u_bep,b_v_bep,                      & !O multi-layer urban
                   b_t_bep,b_q_bep,b_e_bep,dlg_bep,              & !O multi-layer urban
-                  dl_u_bep,sf_bep,vl_bep                        &   !O multi-layer urban
+                  dl_u_bep,sf_bep,vl_bep,                       & !O multi-layer urban
 ! Nakayoshi roughness lengh
-                ,z0_grd,zh_grd,veg_grd,ave_BH_grd               &
-		,xlong_urb2d,xtime,za,pai_grd,fai_grd           &
-                ,SVF_3d_grid,TSP_grid,CD_ORG_GRID,CD_naka_GRID  &  !20121212
+                  z0_grd, zh_grd, veg_grd, ave_BH_grd,                &
+                  xlong_urb2d, xtime, za, pai_grd, fai_grd,           &
+                  SVF_3d_grid, TSP_grid, CD_ORG_GRID, CD_naka_GRID,   &
 ! Nakayoshi HB output test
-                ,SR_GRID,RR_GRID,HR_GRID,ELER_GRID,G0R_GRID       &
-                ,SB_GRID,RB_GRID,HB_GRID,ELEB_GRID,G0B_GRID       &
-                ,SG_GRID,RG_GRID,HG_GRID,ELEG_GRID,G0G_GRID       &
-                ,LNET_GRID,LW_GRID,SW_GRID,G_GRID,RN_GRID         &
-                ,FLXTH_GRID,FLXHUM_GRID,ALPHAC_GRID,CHS_GRID      &
-! Nakayoshi EB terms in natural categor
-                ,sh1_rural,lh1_rural,grd1_rural,tsk1_rural        &
-		,qqq1_rural,ust1_rural                            &
+                  SR_GRID, RR_GRID, HR_GRID, ELER_GRID, G0R_GRID,     &
+                  SB_GRID, RB_GRID, HB_GRID, ELEB_GRID, G0B_GRID,     &
+                  SG_GRID, RG_GRID, HG_GRID, ELEG_GRID, G0G_GRID,     &
+                  LNET_GRID, LW_GRID, SW_GRID, G_GRID, RN_GRID,       &
+                  FLXTH_GRID, FLXHUM_GRID, ALPHAC_GRID, CHS_GRID,     &
+! Nakayoshi EB terms in natural category
+                  sh1_rural, lh1_rural, grd1_rural, tsk1_rural,       &
+                  qqq1_rural, ust1_rural,                             &
 ! Nakayoshi mod_urb_frc 20130122
-               ,second ,mod_frc_urb2d                             &
-               ,canopy_temp_profile                               & !VARQUEZ 20150324
-               ,th_025zr,th_050zr,th_075zr,th_100zr,zr_urb2d,z0c_urb2d & !VARQUEZ 20150324
-               ,th_200zr        )                                   !KAWANO  20150415
-! to here
+                  second, mod_frc_urb2d,                              &
+                  canopy_temp_profile,                                &
+                  th_025zr, th_050zr, th_075zr, th_100zr,             &
+                  zr_urb2d, z0c_urb2d, th_200zr                       &
+                  )
 
 !----------------------------------------------------------------
     IMPLICIT NONE
@@ -484,9 +484,8 @@ CONTAINS
      REAL :: CD_ORG     !20121212
      REAL :: CD_NAKA    !20121212
      REAL :: Max_vegfra ! 20130418  1-mod_frc_urb2d
-!     REAL,PARAMETER :: Min_vegfra=0.2 ! 20130418
-     REAL,PARAMETER :: Min_vegfra=0.1 ! 20130418 confirm if min_vegfra has consisitent with rural_urb_frc_v2.f90
-     real,intent(in)::xtime
+     REAL, PARAMETER :: Min_vegfra = 0.1 ! 20130418 confirm if min_vegfra has consisitent with rural_urb_frc_v2.f90
+     REAL, INTENT(IN) :: XTIME
 
 ! state variable surface_driver <--> lsm <--> urban
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(INOUT) :: TR_URB2D
@@ -880,38 +879,41 @@ CONTAINS
                           IVGTYP(I,J) == 32 .or. IVGTYP(I,J) == 33) THEN
 ! Nakayoshi mod_frc_urb2d 20130122
                         FRC_URB2D(I,J)=MOD_FRC_URB2D(I,J)  !Nakayoshi 20121108
-                        if (.false.) then
-                          VEGTYP = NATURAL
-                          SHDFAC = SHDTBL(NATURAL)
-                          ALBEDOK =0.2         !  0.2
-                          ALBBRD  =0.2         !0.2
-                          EMISSI = 0.98                                 !for VEGTYP=5
-                        end if
+#if 0
+                        VEGTYP = NATURAL
+                        SHDFAC = SHDTBL(NATURAL)
+                        ALBEDOK =0.2         !  0.2
+                        ALBBRD  =0.2         !0.2
+                        EMISSI = 0.98                                 !for VEGTYP=5
+#endif
                         VEGTYP = nint(SECOND(i,j))
-                       ! SHDFAC = SHDTBL(VEGTYP)           !Varquez 20170207 Stop using the table for vegetation fraction. Could be overestimated.
                      ENDIF
-                     IF ( MOD_FRC_URB2D(I,J).ge. 0.01 ) THEN
-!!                IF ( FRC_URB2D(I,J) < 0.99 ) THEN
-                        IF ( MOD_FRC_URB2D(I,J).le.0.99 ) THEN
-! Don't mind if urban is dominant or not, urban fraction is over 1%
+                     IF ( MOD_FRC_URB2D(I,J) >= 0.01 ) THEN
+#if 0
+                     IF ( FRC_URB2D(I,J) < 0.99 ) THEN
+#endif
+                        IF ( MOD_FRC_URB2D(I,J) <= 0.99 ) THEN
+                        ! Don't mind if urban is dominant or not,
+                        ! urban fraction is over 1%
                            if(sf_urban_physics.eq.1)then
-! Nakayoshi mod_frc_urb2d 20130122
-!!         	     T1= ( TSK(I,J) -FRC_URB2D(I,J) * TS_URB2D (I,J) )/ (1-FRC_URB2D(I,J))
-                              T1= ( TSK(I,J) -MOD_FRC_URB2D(I,J) * TS_URB2D (I,J))/(1-MOD_FRC_URB2D(I,J)) !for stability
-! to here
+#if 0
+                             T1= ( TSK(I,J) -FRC_URB2D(I,J) * TS_URB2D (I,J) )/ (1-FRC_URB2D(I,J))
+#endif
+                             T1= ( TSK(I,J) -MOD_FRC_URB2D(I,J) * TS_URB2D (I,J))/(1-MOD_FRC_URB2D(I,J)) !for stability
                            elseif((sf_urban_physics.eq.2).OR.(sf_urban_physics.eq.3))then
                               r1= (tsk(i,j)**4.)
                               r2= frc_urb2d(i,j)*(ts_urb2d(i,j)**4.)
                               r3= (1.-frc_urb2d(i,j))
                               t1= ((r1-r2)/r3)**.25
                            endif
-                        ELSE   ! all urban grid
+                        ELSE
+                           ! all urban grid
                            T1 = TSK(I,J)
                         ENDIF
-                     ELSE            !Nakayoshi mod_frc_urb
-! urban is less than 1%
-                        T1 = TSK(I,J) !Nakayoshi mod_frc_urb
-                     ENDIF           !Nakayoshi mod_frc_urb
+                     ELSE
+                        ! urban is less than 1%
+                        T1 = TSK(I,J)
+                     ENDIF
                   ELSE  !slab urban
                      IF( IVGTYP(I,J) == ISURBAN .or. IVGTYP(I,J) == 31 .or. &
                           IVGTYP(I,J) == 32 .or. IVGTYP(I,J) == 33) THEN
@@ -1084,8 +1086,10 @@ CONTAINS
 ! Input variables lsm --> urban
 
 
-!          IF( IVGTYP(I,J) == ISURBAN .or. IVGTYP(I,J) == 31 .or. &
-!              IVGTYP(I,J) == 32 .or. IVGTYP(I,J) == 33 ) THEN
+#if 0
+           IF( IVGTYP(I,J) == ISURBAN .or. IVGTYP(I,J) == 31 .or. &
+               IVGTYP(I,J) == 32 .or. IVGTYP(I,J) == 33 ) THEN
+#endif
 
            IF( MOD_FRC_URB2D(I,J).ge. 0.01 ) THEN
 
@@ -1171,7 +1175,7 @@ CONTAINS
 !
 ! Call urban
 
-                        CALL urban(LSOLAR_URB,                                      & ! I
+                        CALL urban(LSOLAR_URB,                                & ! I
                              num_roof_layers,num_wall_layers,num_road_layers, & ! C
                              DZR,DZB,DZG,                                     & ! C
                              UTYPE_URB,TA_URB,QA_URB,UA_URB,U1_URB,V1_URB,SSG_URB, & ! I
@@ -1187,51 +1191,21 @@ CONTAINS
                              GZ1OZ0_URB,                                      & !O
                              CMR_URB, CHR_URB, CMC_URB, CHC_URB,              &
                              U10_URB, V10_URB, TH2_URB, Q2_URB,               & ! O
-                             UST_URB                                          & !O
-! Nakayoshi roughness length
-                             ,z0_grd_urb,zh_grd_urb,veg_grd_urb,ave_BH_grd_urb,xlong_urb,xtime,i,j &
-                             ,pai_grd_urb,fai_grd_urb                     &
-                             ,SVF_3d,TSP,CD_ORG,CD_naka               &
-! Nakayoshi HB output test
-                             ,SR_naka,RR_naka,HR_naka,ELER_naka,G0R_naka       &
-                             ,SB_naka,RB_naka,HB_naka,ELEB_naka,G0B_naka       &
-                             ,SG_naka,RG_naka,HG_naka,ELEG_naka,G0G_naka       &
-                             ,LNET_naka,LW_naka,SW_naka,G_naka,RN_naka         &
-                             ,FLXTH_naka,FLXHUM_naka,ALPHAC_naka,CHS_naka      &
-! to here
-                             ,canopy_temp_profile                              &!VARQUEZ 20150324
-                             ,TH_025ZR_URB,TH_050ZR_URB                        &!VARQUEZ 20150324
-                             ,TH_075ZR_URB,TH_100ZR_URB,ZR_URB,Z0C_URB         &!VARQUEZ 20150324
-                             ,TH_200ZR_URB )                                    !KAWANO  20150415
-! Nakayoshi local heat balance output 2012.9.7
-                        SR_GRID(I,J)=SR_naka
-                        RR_GRID(I,J)=RR_naka
-                        HR_GRID(I,J)=HR_naka
-                        ELER_GRID(I,J)=ELER_naka
-                        G0R_GRID(I,J)=G0R_naka
-                        SG_GRID(I,J)=SG_naka
-                        RG_GRID(I,J)=RG_naka
-                        HG_GRID(I,J)=HG_naka
-                        ELEG_GRID(I,J)=ELEG_naka
-                        G0G_GRID(I,J)=G0G_naka
-                        SB_GRID(I,J)=SB_naka
-                        RB_GRID(I,J)=RB_naka
-                        HB_GRID(I,J)=HB_naka
-                        ELEB_GRID(I,J)=ELEB_naka
-                        G0B_GRID(I,J)=G0B_naka
-                        LNET_GRID(I,J)=LNET_naka
-                        LW_GRID (I,J)=LW_naka
-                        SW_GRID(I,J)=SW_naka
-                        G_GRID(I,J)=G_naka
-                        RN_GRID(I,J)=RN_naka
-                        FLXTH_GRID (I,J)=FLXTH_naka
-                        FLXHUM_GRID(I,J)=FLXHUM_naka
-                        ALPHAC_GRID(I,J)=ALPHAC_naka
-                        CHS_GRID(I,J)=CHS_naka
-                        SVF_3d_grid(I,J)=SVF_3d    !20121212
-                        TSP_grid(i,j)=TSP          !20121212
-                        CD_ORG_GRID(I,J)=CD_ORG    !20121212
-                        CD_naka_GRID(I,J)=CD_naka  !20121212
+                             UST_URB,                                         & !O
+                             z0_grd_urb, zh_grd_urb, veg_grd_urb,             &
+                             ave_BH_grd_urb, xlong_urb, xtime, i, j,          &
+                             pai_grd_urb, fai_grd_urb,                        &
+                             SVF_3d, TSP, CD_ORG, CD_naka,                    &
+                             SR_naka, RR_naka, HR_naka, ELER_naka, G0R_naka,  &
+                             SB_naka, RB_naka, HB_naka, ELEB_naka, G0B_naka,  &
+                             SG_naka, RG_naka, HG_naka, ELEG_naka, G0G_naka,  &
+                             LNET_naka, LW_naka, SW_naka, G_naka, RN_naka,    &
+                             FLXTH_naka, FLXHUM_naka, ALPHAC_naka, CHS_naka,  &
+                             canopy_temp_profile,                             &
+                             TH_025ZR_URB, TH_050ZR_URB,                      &
+                             TH_075ZR_URB, TH_100ZR_URB, ZR_URB, Z0C_URB,     &
+                             TH_200ZR_URB                                     &
+                             )
 
 #if 0
                         IF(IPRINT) THEN
@@ -1259,6 +1233,36 @@ CONTAINS
                                 'Q2_URB',Q2_URB,'CHS_URB',CHS_URB,'CHS2_URB',CHS2_URB
                         endif
 #endif
+
+                        ! Local heat balance output
+                        SR_GRID(I, J) = SR_naka
+                        RR_GRID(I, J) = RR_naka
+                        HR_GRID(I, J) = HR_naka
+                        ELER_GRID(I, J) = ELER_naka
+                        G0R_GRID(I, J) = G0R_naka
+                        SG_GRID(I, J) = SG_naka
+                        RG_GRID(I, J) = RG_naka
+                        HG_GRID(I, J) = HG_naka
+                        ELEG_GRID(I, J) = ELEG_naka
+                        G0G_GRID(I, J) = G0G_naka
+                        SB_GRID(I, J) = SB_naka
+                        RB_GRID(I, J) = RB_naka
+                        HB_GRID(I, J) = HB_naka
+                        ELEB_GRID(I, J) = ELEB_naka
+                        G0B_GRID(I, J) = G0B_naka
+                        LNET_GRID(I, J) = LNET_naka
+                        LW_GRID (I, J) = LW_naka
+                        SW_GRID(I, J) = SW_naka
+                        G_GRID(I, J) = G_naka
+                        RN_GRID(I, J) = RN_naka
+                        FLXTH_GRID(I, J) = FLXTH_naka
+                        FLXHUM_GRID(I, J) = FLXHUM_naka
+                        ALPHAC_GRID(I, J) = ALPHAC_naka
+                        CHS_GRID(I, J) = CHS_naka
+                        SVF_3d_grid(I, J) = SVF_3d
+                        TSP_grid(i, j) = TSP
+                        CD_ORG_GRID(I, J) = CD_ORG
+                        CD_naka_GRID(I, J) = CD_naka
 
                         TS_URB2D(I,J) = TS_URB
 
