@@ -267,7 +267,6 @@ MODULE module_sf_urban
                     UTYPE,TA,QA,UA,U1,V1,SSG,SSGD,SSGQ,LLG,RAIN,RHOO, & ! I
                     ZA,DECLIN,COSZ,OMG,XLAT,DELT,ZNT,                 & ! I
                     CHS, CHS2,                                        & ! I
-!to here
                     TR, TB, TG, TC, QC, UC,                           & ! H
                     TRL,TBL,TGL,                                      & ! H
                     XXXR, XXXB, XXXG, XXXC,                           & ! H
@@ -276,21 +275,20 @@ MODULE module_sf_urban
                     GZ1OZ0,                                           & ! O
                     CMR_URB,CHR_URB,CMC_URB,CHC_URB,                  & ! I/O
                     U10,V10,TH2,Q2,UST                                & ! O
-! Nakayoshi roughness length
-                   ,z0_grd,zh_grd,veg_grd,ave_BH_grd,xlong,xtime,inaka,jnaka &!)
-		   ,pai_grd,fai_grd &
-		   ,SVF_3d,TSP,CD_ORG,CD_naka &
-! Nakayoshi HB output test
-                   ,SR_naka,RR_naka,HR_naka,ELER_naka,G0R_naka       &
-                   ,SB_naka,RB_naka,HB_naka,ELEB_naka,G0B_naka       &
-                   ,SG_naka,RG_naka,HG_naka,ELEG_naka,G0G_naka       &
-                   ,LNET_naka,LW_naka,SW_naka,G_naka,RN_naka         &
-                   ,FLXTH_naka,FLXHUM_naka,ALPHAC_naka,CHS_naka      &
-! to here
-                   ,canopy_temp_profile                              &!VARQUEZ 20150324
-                   ,TH_025ZR_URB,TH_050ZR_URB                        &!VARQUEZ 20150324
-                   ,TH_075ZR_URB,TH_100ZR_URB,ZR,Z0C                 &!VARQUEZ 20150324
-                   ,TH_200ZR_URB   )                                  !KAWANO  20150415
+                    , z0_grd, zh_grd, veg_grd, ave_BH_grd, xlong, xtime, inaka, jnaka &
+                    , pai_grd, fai_grd                                &
+                    , SVF_3d, TSP, CD_ORG, CD_naka                    &
+                    , SR_naka, RR_naka, HR_naka, ELER_naka, G0R_naka  &
+                    , SB_naka, RB_naka, HB_naka, ELEB_naka, G0B_naka  &
+                    , SG_naka, RG_naka, HG_naka, ELEG_naka, G0G_naka  &
+                    , LNET_naka, LW_naka, SW_naka, G_naka, RN_naka    &
+                    , FLXTH_naka, FLXHUM_naka, ALPHAC_naka, CHS_naka  &
+                    , canopy_temp_profile                             &
+                    , TH_025ZR_URB, TH_050ZR_URB                      &
+                    , TH_075ZR_URB, TH_100ZR_URB, ZR, Z0C             &
+                    , TH_200ZR_URB                                    &
+                    )
+
    IMPLICIT NONE
 
    REAL, PARAMETER    :: CP=0.24          ! heat capacity of dry air  [cgs unit]
@@ -359,18 +357,15 @@ MODULE module_sf_urban
    REAL, INTENT(INOUT) :: CMC_URB
    REAL, INTENT(INOUT) :: CHC_URB
 
-! Nakayoshi roughness length
-   REAL, INTENT(IN)    :: XLONG,veg_grd,z0_grd,ave_BH_grd,pai_grd,fai_grd
-   REAL, INTENT(OUT  ) :: zh_grd
+   REAL, INTENT(IN)    :: XLONG, VEG_GRD, Z0_GRD, AVE_BH_GRD, PAI_GRD, FAI_GRD
+   REAL, INTENT(OUT)   :: ZH_GRD
    REAL, INTENT(IN)    :: XTIME
-   integer::            inaka,jnaka
-   REAL                :: CHS_naka1,CHS2_naka,CHS_default,CHS2_default  !
-   REAL                :: TS_complete_naka     !complete surface temperature
+   INTEGER             :: INAKA, JNAKA
+   REAL                :: CHS_NAKA1, CHS2_NAKA, CHS_DEFAULT, CHS2_DEFAULT
+   REAL                :: TS_COMPLETE_NAKA
    REAL                :: VEG_LOCAL
-   REAL,parameter      :: VEG_MAX=1.0 !VARQUEZ 20170207
-! To here
-
-   INTEGER, INTENT(IN) :: CANOPY_TEMP_PROFILE  !VARQUEZ 20150318
+   REAL, PARAMETER     :: VEG_MAX = 1.0
+   INTEGER, INTENT(IN) :: CANOPY_TEMP_PROFILE
 
 !-------------------------------------------------------------------------------
 ! O: output variables from Urban to LSM
@@ -396,19 +391,20 @@ MODULE module_sf_urban
 !m   REAL, INTENT(OUT) :: CHS,CHS2 ! CH*U at za and 2 m             [m/s]
    REAL, INTENT(OUT) :: UST    ! friction velocity                [m/s]
 
-   REAL, INTENT(OUT) :: TH_025ZR_URB                    !VARQUEZ 20150324
-   REAL, INTENT(OUT) :: TH_050ZR_URB                    !VARQUEZ 20150324
-   REAL, INTENT(OUT) :: TH_075ZR_URB                    !VARQUEZ 20150324
-   REAL, INTENT(OUT) :: TH_100ZR_URB                    !VARQUEZ 20150324
-   REAL, INTENT(OUT) :: TH_200ZR_URB                    !KAWANO  20150415
+   REAL, INTENT(OUT) :: TH_025ZR_URB
+   REAL, INTENT(OUT) :: TH_050ZR_URB
+   REAL, INTENT(OUT) :: TH_075ZR_URB
+   REAL, INTENT(OUT) :: TH_100ZR_URB
+   REAL, INTENT(OUT) :: TH_200ZR_URB
 
-! Nakayoshi 20120903 HB check output
-  real, intent (OUT)::SR_naka,RR_naka,HR_naka,ELER_naka,G0R_naka
-  real, intent (OUT)::SB_naka,RB_naka,HB_naka,ELEB_naka,G0B_naka
-  real, intent (OUT)::SG_naka,RG_naka,HG_naka,ELEG_naka,G0G_naka
-  real, intent (OUT)::LNET_naka,LW_naka,SW_naka,G_naka,RN_naka
-  real, intent (OUT)::FLXTH_naka,FLXHUM_naka,ALPHAC_naka,CHS_naka
-!
+   REAL, INTENT(OUT) :: SR_NAKA, RR_NAKA, HR_NAKA, ELER_NAKA, G0R_NAKA
+   REAL, INTENT(OUT) :: SB_NAKA, RB_NAKA, HB_NAKA, ELEB_NAKA, G0B_NAKA
+   REAL, INTENT(OUT) :: SG_NAKA, RG_NAKA, HG_NAKA, ELEG_NAKA, G0G_NAKA
+   REAL, INTENT(OUT) :: LNET_NAKA, LW_NAKA, SW_NAKA, G_NAKA, RN_NAKA
+   REAL, INTENT(OUT) :: FLXTH_NAKA, FLXHUM_NAKA, ALPHAC_NAKA, CHS_NAKA
+
+   CHARACTER(LEN=512) :: MESSAGE
+
 !-------------------------------------------------------------------------------
 ! H: Historical (state) variables of Urban : LSM <--> Urban
 !-------------------------------------------------------------------------------
@@ -439,7 +435,7 @@ MODULE module_sf_urban
 !-------------------------------------------------------------------------------
 
    REAL :: Z0HC, ZDC, SVF, R, RW, HGT, AH
-   REAL, INTENT(OUT) :: ZR,Z0C
+   REAL, INTENT(OUT) :: ZR, Z0C
    REAL :: SIGMA_ZED
    REAL :: CAPR, CAPB, CAPG, AKSR, AKSB, AKSG, ALBR, ALBB, ALBG
    REAL :: EPSR, EPSB, EPSG, Z0R,  Z0B,  Z0G,  Z0HB, Z0HG
@@ -513,17 +509,12 @@ MODULE module_sf_urban
    REAL :: PSIX, PSIT, PSIX2, PSIT2, PSIX10, PSIT10
 
    REAL :: TRP, TBP, TGP, TCP, QCP, TST, QST
-   REAL :: TSP,T1VS,CHC_1,HOVL,Vloc,Vmod,SVF_3d !Nakayoshi 20121107
-   REAL :: PAI_LOCAL,FAI_LOCAL !Nakayoshi 20121204
+   REAL :: TSP, T1VS, CHC_1, HOVL, VLOC, VMOD, SVF_3D
+   REAL :: PAI_LOCAL, FAI_LOCAL
 
    INTEGER :: iteration, K
    INTEGER :: tloc
-!Nakayoshi 20121212
-   REAL :: CD_ORG,CHS_ORG,CD_NAKA
-!Nakayoshi
-!   CHS_default=CHS
-!   CHS2_default=CHS2
-!to here
+   REAL :: CD_ORG, CHS_ORG, CD_NAKA
 
 !-------------------------------------------------------------------------------
 ! Set parameters
@@ -547,81 +538,55 @@ MODULE module_sf_urban
                    BOUNDR,BOUNDB,BOUNDG,CH_SCHEME,TS_SCHEME,      &
                    AKANDA_URBAN)
 
-!  print*,"urban",inaka,jnaka,utype,akanda_urban
 ! Miao, 2007/01/17, cal. ah
    if(ahoption==1) AH=AH*ahdiuprf(tloc)
 
-! Nakayoshi roughness length
-   ZDC=0.
-! Nakayoshi 20140124 set the maximum value of vegetation fraction
-!   VEG_LOCAL=veg_grd
-   if(veg_grd.gt.veg_max)then
-    VEG_LOCAL=veg_max
-   else
-    VEG_LOCAL=veg_grd
+
+   ZDC = 0.
+   VEG_LOCAL = min(VEG_GRD, VEG_MAX)
+   ZR = max(AVE_BH_GRD, 3.5)
+   Z0C = max(Z0_GRD, 0.1)
+   if (Z0_GRD > AVE_BH_GRD) then
+      CALL wrf_error_fatal("Z0_GRD greater than AVE_BH_GRD")
    endif
-! 20140124
-   if(ave_BH_grd.lt.3.5)then
-      ZR=3.5
-   else
-      ZR=ave_BH_grd
-   endif
-   if(Z0_GRD.lt.0.1) then
-      Z0C=0.1 !0.2861
-   else
-      Z0C=Z0_GRD
-   endif
-!      ZR=ave_BH_grd
-!      Z0C=Z0_GRD
-      if(Z0_GRD.gt.AVE_BH_GRD)then
-         CALL wrf_error_fatal ("Z0_GRD greater than AVE_BH_GRD " )
-      endif
-!   endif
-   AH=0.
-   IF( Z0C+2. >= ZA) THEN
-    print*,"Z0C:",Z0C,"ZA:",ZA,"i:",inaka,"j:",jnaka
+   AH = 0.
+   IF (Z0C + 2. >= ZA) THEN
+    write(MESSAGE, *), "Z0C =", Z0C, "ZA =", ZA, "i =", inaka, "j =", jnaka
     CALL wrf_error_fatal ("Z0C + 2m is larger than the 1st WRF level "// &
-                           "Stop in subroutine urban" )
+                           "Stop in subroutine urban " // MESSAGE )
    END IF
-! to here
 
-!NAKAYOSHI DEBUG PAI FAI
-   if((PAI_GRD.lt.0.05).or.(FAI_GRD.lt.0.05))then
-      PAI_LOCAL=0.05
-      FAI_LOCAL=0.05
+   ! Nakayoshi debug pai fai
+   if ((PAI_GRD < 0.05) .or. (FAI_GRD < 0.05)) then
+      PAI_LOCAL = 0.05
+      FAI_LOCAL = 0.05
    else
-      PAI_LOCAL=PAI_GRD
-      FAI_LOCAL=FAI_GRD
+      PAI_LOCAL = PAI_GRD
+      FAI_LOCAL = FAI_GRD
    endif
 
-   R=PAI_LOCAL
-   RW=1-R
+   R = PAI_LOCAL
+   RW = 1 - R
 
-!!  print*,"PAI:",PAI_grd,"PAI_LOCAL:",PAI_LOCAL,inaka,jnaka
-!!  print*,"FAI:",FAI_grd,"FAI_LOCAL:",FAI_LOCAL,inaka,jnaka
-
-! Nakayoshi 2012.11.7 SVF calculation KANDA&KAWAI
-   HovL=FAI_LOCAL*PAI_LOCAL**(-0.5)/(1.-PAI_LOCAL**0.5)
-   Vloc=cos(atan(2.*HovL))*(2.-4./pi*atan(cos(atan(2.*HovL))))
-   Vmod=0.1120*PAI_LOCAL*Vloc-0.4817*PAI_LOCAL+0.0246*Vloc+0.9570
-   SVF_3d=Vloc*Vmod
-   SVF=SVF_3d
-   IF(.NOT.SHADOW) THEN              ! no shadow effects model
-      HGT=FAI_LOCAL
+   ! Nakayoshi 2012.11.7 SVF calculation KANDA & KAWAI
+   HOVL = FAI_LOCAL * PAI_LOCAL ** (-0.5) / (1. - PAI_LOCAL ** 0.5)
+   VLOC = COS(ATAN(2. * HOVL)) * (2. - 4. / PI * ATAN(COS(ATAN(2. * HOVL))))
+   VMOD = 0.1120 * PAI_LOCAL * VLOC - 0.4817 * PAI_LOCAL + 0.0246 * VLOC + 0.9570
+   SVF_3D = VLOC * VMOD
+   SVF = SVF_3D
+   IF (.NOT. SHADOW) THEN              ! NO SHADOW EFFECTS MODEL
+      HGT = FAI_LOCAL
    ELSE
-      HGT=FAI_LOCAL*1.0832*PAI_LOCAL**(-0.331)  !
+      HGT = FAI_LOCAL * 1.0832 * PAI_LOCAL ** (-0.331)
    ENDIF
-!!   print*,"HovL:",HovL,"Vloc:",Vloc,"Vmod:",Vmod,"HGT:",HGT !Debug PAI,FAI
-! to here
 
-! Nakayoshi Comment out
-!   IF( ZDC+Z0C+2. >= ZA) THEN
-!    CALL wrf_error_fatal ("ZDC + Z0C + 2m is larger than the 1st WRF level "// &
-!                           "Stop in subroutine urban - change ZDC and Z0C" )
-!   END IF
-! to here
+#if 0
+   IF( ZDC+Z0C+2. >= ZA) THEN
+    CALL wrf_error_fatal ("ZDC + Z0C + 2m is larger than the 1st WRF level "// &
+                           "Stop in subroutine urban - change ZDC and Z0C" )
+   END IF
+#endif
 
-!
    IF(.NOT.LSOLAR) THEN
      SSGD = SRATIO*SSG
      SSGQ = SSG - SSGD
@@ -652,8 +617,10 @@ MODULE module_sf_urban
    TGP=TG
    TCP=TC
    QCP=QC
-   TSP=(TR*R+TB*W+TG*RW)/(R+RW+W) !Nakayoshi 20121212
-   QS=Qa                          !Nakayoshi 20121212
+
+   TSP = (TR * R + TB * W + TG * RW) / (R + RW + W)
+   QS = QA
+
    TAV=TA*(1.+0.61*QA)
    PS=RHOO*287.*TAV/100. ![hPa]
 
@@ -753,7 +720,6 @@ MODULE module_sf_urban
 
    END IF
 
-
 !-------------------------------------------------------------------------------
 ! Roof
 !-------------------------------------------------------------------------------
@@ -770,41 +736,28 @@ MODULE module_sf_urban
    ! Alternative option for MOST using SFCDIF routine from Noah
    ! Virtual temperatures needed by SFCDIF
    T1VR = TRP* (1.0+ 0.61 * QA)
-   T1VS = TSP* (1.0+ 0.61 * QS)  !Nakayoshi 20121107
+   T1VS = TSP* (1.0+ 0.61 * QS)
    TH2V = (TA + ( 0.0098 * ZA)) * (1.0+ 0.61 * QA)
 
    ! note that CHR_URB contains UA (=CHR_MOS*UA)
    RLMO_URB=0.0
-
-!Nakayoshi
-!Comment out by Nakayoshi
-!!   CALL SFCDIF_URB (ZA,Z0R,T1VR,TH2V,UA,AKANDA_URBAN,CMR_URB,CHR_URB,RLMO_URB,CDR,Z0HC)
-!!   ALPHAR =  RHO*CP*CHR_URB
-!!   CHR=ALPHAR/RHO/CP/UA
-!to here
-!________________________________________________
-   T1VC=T1VS
-   CALL SFCDIF_URB_ZT_VEG(ZA,Z0C,T1VC,TH2V,UA,AKANDA_URBAN,CMC_URB,CHC_URB,RLMO_URB,CDC,&
-!Nakayoshi add
-   Z0HC,VEG_LOCAL)  !actual roughness length for heat
-   zh_grd=Z0HC
-   ALPHAC =  RHO*CP*CHC_URB
-!   print*,"urban",TSP,Ta,Qa,za,z0c,z0hc,veg_local,akanda_urban
-   CHC=ALPHAC/RHO/CP/UA  !canopy bulk transfer coefficient
-   CHR=CHC*  R/(R+W+RW)  !local bulk transfer coef for roof
-   CHB=CHC*  W/(R+W+RW)  !local bulk transfer coef for building wall (2*HGT)
-   CHG=CHC*  RW/(R+W+RW) !local bulk transfer coef for floor
+#if 0
+   CALL SFCDIF_URB (ZA,Z0R,T1VR,TH2V,UA,AKANDA_URBAN,CMR_URB,CHR_URB,RLMO_URB,CDR)
+   ALPHAR =  RHO*CP*CHR_URB
+   CHR=ALPHAR/RHO/CP/UA
+#endif
+   T1VC = T1VS
+   CALL SFCDIF_URB_ZT_VEG(ZA,Z0C,T1VC,TH2V,UA,AKANDA_URBAN,CMC_URB,CHC_URB,RLMO_URB,CDC,Z0HC,VEG_LOCAL)
+   ! actual roughness length for heat
+   zh_grd = Z0HC
+   ALPHAC = RHO*CP*CHC_URB
+   CHC = ALPHAC/RHO/CP/UA  !canopy bulk transfer coefficient
+   CHR = CHC * R/(R+W+RW)  !local bulk transfer coef for roof
+   CHB = CHC * W/(R+W+RW)  !local bulk transfer coef for building wall (2*HGT)
+   CHG = CHC * RW/(R+W+RW) !local bulk transfer coef for floor
    ALPHAR = RHO*CP*CHR*UA
    ALPHAB = RHO*CP*CHB*UA
    ALPHAG = RHO*CP*CHG*UA
-
-!!   if(Z0_GRD.gt.0)then
-!!      print*,"XLAT:",XLAT,"XLONG:",XLONG
-!!      print*,"Z0C:",Z0C,"Z0HC:",Z0HC,"CHC:",CHC
-!!      print*,"R,W,RW",R,W,RW
-!!      print*,"UA",UA
-!!   endif
-!________________________________________________
 
    IF(RAIN > 1.) BETR=0.7
 
@@ -876,22 +829,14 @@ MODULE module_sf_urban
 
    END IF
 
-! Nakayoshi 20120903 HB check
-   SR_naka =SR
-   RR_naka=RR
-   HR_naka=HR
-   ELER_naka=ELER
-   G0R_naka =G0R
-! to here
+   SR_naka = SR
+   RR_naka = RR
+   HR_naka = HR
+   ELER_naka = ELER
+   G0R_naka = G0R
 
    FLXTHR=HR/RHO/CP/100.
    FLXHUMR=ELER/RHO/EL/100.
-
-!Nakayoshi
-!!   print*,"FLXTHR:",FLXTHR,"FLXHUMR:",FLXHUMR
-!!   print*,"TR:",TR,"[K]"
-!!   print*,"RR:",RR*697.7*10,"[W/m2]"
-!to here
 
 !-------------------------------------------------------------------------------
 !  Wall and Road
@@ -908,38 +853,36 @@ MODULE module_sf_urban
    ! CALL mos(XXXC,ALPHAC,CDC,BHC,RIBC,Z,Z0C,UA,TA,TCP,RHO)
    ! Virtual temperatures needed by SFCDIF routine from Noah
 
-!Comment out by Nakayoshi
-!!   T1VC = TCP* (1.0+ 0.61 * QA)
-!!   RLMO_URB=0.0
-!!   CALL SFCDIF_URB(ZA,Z0C,T1VC,TH2V,UA,AKANDA_URBAN,CMC_URB,CHC_URB,RLMO_URB,CDC,Z0HC)
-!!   zh_grd=Z0HC
-!!   ALPHAC =  RHO*CP*CHC_URB
+#if 0
+   T1VC = TCP* (1.0+ 0.61 * QA)
+   RLMO_URB=0.0
+   CALL SFCDIF_URB(ZA,Z0C,T1VC,TH2V,UA,AKANDA_URBAN,CMC_URB,CHC_URB,RLMO_URB,CDC)
+   ALPHAC =  RHO*CP*CHC_URB
 
-!!   IF (CH_SCHEME == 1) THEN
+   IF (CH_SCHEME == 1) THEN
 
-!!     Z=ZDC
-!!     BHB=LOG(Z0B/Z0HB)/0.4
-!!     BHG=LOG(Z0G/Z0HG)/0.4
-!!     RIBB=(9.8*2./(TCP+TBP))*(TCP-TBP)*(Z+Z0B)/(UC*UC)
-!!     RIBG=(9.8*2./(TCP+TGP))*(TCP-TGP)*(Z+Z0G)/(UC*UC)
+     Z=ZDC
+     BHB=LOG(Z0B/Z0HB)/0.4
+     BHG=LOG(Z0G/Z0HG)/0.4
+     RIBB=(9.8*2./(TCP+TBP))*(TCP-TBP)*(Z+Z0B)/(UC*UC)
+     RIBG=(9.8*2./(TCP+TGP))*(TCP-TGP)*(Z+Z0G)/(UC*UC)
 
-!!     CALL mos(XXXB,ALPHAB,CDB,BHB,RIBB,Z,Z0B,UC,TCP,TBP,RHO)
-!!     CALL mos(XXXG,ALPHAG,CDG,BHG,RIBG,Z,Z0G,UC,TCP,TGP,RHO)
+     CALL mos(XXXB,ALPHAB,CDB,BHB,RIBB,Z,Z0B,UC,TCP,TBP,RHO)
+     CALL mos(XXXG,ALPHAG,CDG,BHG,RIBG,Z,Z0G,UC,TCP,TGP,RHO)
 
-!!   ELSE
+   ELSE
 
-!!     ALPHAB=RHO*CP*(6.15+4.18*UC)/1200.
-!!     IF(UC > 5.) ALPHAB=RHO*CP*(7.51*UC**0.78)/1200.
-!!     ALPHAG=RHO*CP*(6.15+4.18*UC)/1200.
-!!     IF(UC > 5.) ALPHAG=RHO*CP*(7.51*UC**0.78)/1200.
+     ALPHAB=RHO*CP*(6.15+4.18*UC)/1200.
+     IF(UC > 5.) ALPHAB=RHO*CP*(7.51*UC**0.78)/1200.
+     ALPHAG=RHO*CP*(6.15+4.18*UC)/1200.
+     IF(UC > 5.) ALPHAG=RHO*CP*(7.51*UC**0.78)/1200.
 
-!!   END IF
+   END IF
 
-!!   CHC=ALPHAC/RHO/CP/UA
-!!   CHB=ALPHAB/RHO/CP/UC
-!!   CHG=ALPHAG/RHO/CP/UC
-
-!__________________________________________________________
+   CHC=ALPHAC/RHO/CP/UA
+   CHB=ALPHAB/RHO/CP/UC
+   CHG=ALPHAG/RHO/CP/UC
+#endif
 
    BETB=0.0
    IF(RAIN > 1.) BETG=0.7
@@ -1004,42 +947,50 @@ MODULE module_sf_urban
        DRGDTB=DRGDTB1+DRGDTB2
        DRGDTG=DRGDTG1+DRGDTG2
 
-!Nakayoshi
        HB=RHO*CP*CHB*UA*(TBP-TA)*100.
        HG=RHO*CP*CHG*UA*(TGP-TA)*100.
-!!       HB=RHO*CP*CHB*UC*(TBP-TCP)*100.
-!!       HG=RHO*CP*CHG*UC*(TGP-TCP)*100.
+#if 0
+       HB=RHO*CP*CHB*UC*(TBP-TCP)*100.
+       HG=RHO*CP*CHG*UC*(TGP-TCP)*100.
 
-!!       DTCDTB=W*ALPHAB/(RW*ALPHAC+RW*ALPHAG+W*ALPHAB)
-!!       DTCDTG=RW*ALPHAG/(RW*ALPHAC+RW*ALPHAG+W*ALPHAB)
-
+       DTCDTB=W*ALPHAB/(RW*ALPHAC+RW*ALPHAG+W*ALPHAB)
+       DTCDTG=RW*ALPHAG/(RW*ALPHAC+RW*ALPHAG+W*ALPHAB)
+#endif
 
        DHBDTB=RHO*CP*CHB*UA*100.
        DHBDTG=0.
        DHGDTG=RHO*CP*CHG*UA*100.
        DHGDTB=0.
-!!       DHBDTB=RHO*CP*CHB*UC*(1.-DTCDTB)*100.
-!!       DHBDTG=RHO*CP*CHB*UC*(0.-DTCDTG)*100.
-!!       DHGDTG=RHO*CP*CHG*UC*(1.-DTCDTG)*100.
-!!       DHGDTB=RHO*CP*CHG*UC*(0.-DTCDTB)*100.
+#if 0
+       DHBDTB=RHO*CP*CHB*UC*(1.-DTCDTB)*100.
+       DHBDTG=RHO*CP*CHB*UC*(0.-DTCDTG)*100.
+       DHGDTG=RHO*CP*CHG*UC*(1.-DTCDTG)*100.
+       DHGDTB=RHO*CP*CHG*UC*(0.-DTCDTB)*100.
+#endif
 
        ELEB=RHO*EL*CHB*UA*BETB*(QS0B-QA)*100.
        ELEG=RHO*EL*CHG*UA*BETG*(QS0G-QA)*100.
-!!       ELEB=RHO*EL*CHB*UC*BETB*(QS0B-QCP)*100.
-!!       ELEG=RHO*EL*CHG*UC*BETG*(QS0G-QCP)*100.
+#if 0
+       ELEB=RHO*EL*CHB*UC*BETB*(QS0B-QCP)*100.
+       ELEG=RHO*EL*CHG*UC*BETG*(QS0G-QCP)*100.
+#endif
 
-!!       DQCDTB=W*ALPHAB*BETB*DQS0BDTB/(RW*ALPHAC+RW*ALPHAG*BETG+W*ALPHAB*BETB)
-!!       DQCDTG=RW*ALPHAG*BETG*DQS0GDTG/(RW*ALPHAC+RW*ALPHAG*BETG+W*ALPHAB*BETB)
+#if 0
+       DQCDTB=W*ALPHAB*BETB*DQS0BDTB/(RW*ALPHAC+RW*ALPHAG*BETG+W*ALPHAB*BETB)
+       DQCDTG=RW*ALPHAG*BETG*DQS0GDTG/(RW*ALPHAC+RW*ALPHAG*BETG+W*ALPHAB*BETB)
+#endif
 
        DELEBDTB=RHO*EL*CHB*UA*BETB*DQS0BDTB*100.
        DELEBDTG=0.
        DELEGDTG=RHO*EL*CHG*UA*BETG*DQS0GDTG*100.
        DELEGDTB=0.
-!!       DELEBDTB=RHO*EL*CHB*UC*BETB*(DQS0BDTB-DQCDTB)*100.
-!!       DELEBDTG=RHO*EL*CHB*UC*BETB*(0.-DQCDTG)*100.
-!!       DELEGDTG=RHO*EL*CHG*UC*BETG*(DQS0GDTG-DQCDTG)*100.
-!!       DELEGDTB=RHO*EL*CHG*UC*BETG*(0.-DQCDTB)*100.
-! to here
+#if 0
+       DELEBDTB=RHO*EL*CHB*UC*BETB*(DQS0BDTB-DQCDTB)*100.
+       DELEBDTG=RHO*EL*CHB*UC*BETB*(0.-DQCDTG)*100.
+       DELEGDTG=RHO*EL*CHG*UC*BETG*(DQS0GDTG-DQCDTG)*100.
+       DELEGDTB=RHO*EL*CHG*UC*BETG*(0.-DQCDTB)*100.
+#endif
+
        G0B=AKSB*(TBP-TBL(1))/(DZB(1)/2.)
        G0G=AKSG*(TGP-TGL(1))/(DZG(1)/2.)
 
@@ -1065,27 +1016,23 @@ MODULE module_sf_urban
        TBP = TB
        TGP = TG
 
-! Nakayoshi Comment out (not necessary for CH top down scheme)
-!!       TC1=RW*ALPHAC+RW*ALPHAG+W*ALPHAB
-!!       TC2=RW*ALPHAC*TA+RW*ALPHAG*TGP+W*ALPHAB*TBP
-!!       TC=TC2/TC1
+#if 0
+       TC1=RW*ALPHAC+RW*ALPHAG+W*ALPHAB
+       TC2=RW*ALPHAC*TA+RW*ALPHAG*TGP+W*ALPHAB*TBP
+       TC=TC2/TC1
 
-!!       QC1=RW*ALPHAC+RW*ALPHAG*BETG+W*ALPHAB*BETB
-!!       QC2=RW*ALPHAC*QA+RW*ALPHAG*BETG*QS0G+W*ALPHAB*BETB*QS0B
-!!       QC=QC2/QC1
+       QC1=RW*ALPHAC+RW*ALPHAG*BETG+W*ALPHAB*BETB
+       QC2=RW*ALPHAC*QA+RW*ALPHAG*BETG*QS0G+W*ALPHAB*BETB*QS0B
+       QC=QC2/QC1
 
-!!       DTC=TCP - TC
-!!       TCP=TC
-!!       QCP=QC
-! to here
+       DTC=TCP - TC
+       TCP=TC
+       QCP=QC
+#endif
 
-! Nakayoshi
        IF( ABS(F) < 0.000001 .AND. ABS(DTB) < 0.000001 &
-        .AND. ABS(GF) < 0.000001 .AND. ABS(DTG) < 0.000001) EXIT
-!!       IF( ABS(F) < 0.000001 .AND. ABS(DTB) < 0.000001 &
-!!        .AND. ABS(GF) < 0.000001 .AND. ABS(DTG) < 0.000001 &
-!!        .AND. ABS(DTC) < 0.000001) EXIT
-! to here
+        .AND. ABS(GF) < 0.000001 .AND. ABS(DTG) < 0.000001 &
+        .AND. ABS(DTC) < 0.000001) EXIT
 
      END DO
 
@@ -1153,18 +1100,17 @@ MODULE module_sf_urban
        QCP=QC
 
    END IF
-! Nakayoshi 20120903 HB check
-   SG_naka =SG
-   RG_naka=RG
-   HG_naka=HG
-   ELEG_naka=ELEG
-   G0G_naka =G0G
-   SB_naka =SB
-   RB_naka=RB
-   HB_naka=HB
-   ELEB_naka=ELEB
-   G0B_naka =G0B
-! to here
+
+   SG_naka = SG
+   RG_naka = RG
+   HG_naka = HG
+   ELEG_naka = ELEG
+   G0G_naka = G0G
+   SB_naka = SB
+   RB_naka = RB
+   HB_naka = HB
+   ELEB_naka = ELEB
+   G0B_naka = G0B
 
 
    FLXTHB=HB/RHO/CP/100.
@@ -1172,20 +1118,14 @@ MODULE module_sf_urban
    FLXTHG=HG/RHO/CP/100.
    FLXHUMG=ELEG/RHO/EL/100.
 
-!Nakayoshi
-!!   print*,"FLXTHB:",FLXTHB,"FLXHUMB:",FLXHUMB,"FLXTHG:",FLXTHG,"FLXHUMG:",FLXHUMG
-!!   print*,"TB:",TB,"TG:",TG
-!!   print*,"RB:",RB,"RG:",RG
-! to here
-
 !-------------------------------------------------------------------------------
 ! Total Fluxes from Urban Canopy
 !-------------------------------------------------------------------------------
 
-! Nakayoshi roughness length
-!!   FLXUV  = ( R*CDR + RW*CDC )*UA*UA
+#if 0
+   FLXUV  = ( R*CDR + RW*CDC )*UA*UA
+#endif
    FLXUV  = ( CDC )*UA*UA
-!______________________________________
 ! Miao, 2007/01/17, cal. ah
    if(ahoption==1) then
      FLXTH  = ( R*FLXTHR  + W*FLXTHB  + RW*FLXTHG ) + AH/RHOO/CPP
@@ -1214,18 +1154,14 @@ MODULE module_sf_urban
    TST = -FLXTH/UST               ! T* [K]
    QST = -FLXHUM/UST              ! q* [-]
 
-!  write(6,*)"ust  fluxuv  i  j  xtime"
-!  write(6,*) ust,flxuv, inaka, jnaka, xtime
-! Nakayoshi 20120903 HB check
-   LNET_naka =LNET*697.7*60
-   LW_naka=LW
-   SW_naka=SW
-   G_naka=G
-   RN_naka =RN
-   FLXTH_naka =SH
-   FLXHUM_naka=LH
-   ALPHAC_naka=ALPHAC/(RHO*CP)
-! to here
+   LNET_naka = LNET*697.7*60
+   LW_naka = LW
+   SW_naka = SW
+   G_naka = G
+   RN_naka = RN
+   FLXTH_naka = SH
+   FLXHUM_naka = LH
+   ALPHAC_naka = ALPHAC/(RHO*CP)
 
 !------------------------------------------------------
 !  diagnostic GRID AVERAGED  PSIM  PSIH  TS QS --> WRF
@@ -1268,17 +1204,6 @@ MODULE module_sf_urban
    TS = TA + FLXTH/(ALPHAC/(RHO*CP))    ! surface potential temp (flux temp)
    QS = QA + FLXHUM/(ALPHAC/(RHO*CP))   ! surface humidity
 ! to here
-!Nakayoshi for debug
-!   if((inaka.ge.70).and.(inaka.le.80).and.(jnaka.ge.69).and.(jnaka.le.71))then
-!      print*,"time:",xtime,"i:",inaka,"j:",jnaka
-!      print*,"CHS_naka2:",CHS_naka2,"CHS_default:",CHS_default
-!      print*,"CHS_naka1:",CHS_naka1,"CHC:",CHC !Canopy bulk transfer coefficient
-!      print*,"CHR:",CHR,"CHB:",CHB,"CHG:",CHG
-!      print*,"TS:",TS,"TA:",TA,"FLXTH:",FLXTH * RHOO * CPP,"SH:",SH
-!      print*,"FLXTHR:",FLXTHR * RHOO * CPP,"FLXTHB:",FLXTHB * RHOO * CPP,"FLXTHG:", FLXTHG * RHOO * CPP
-!      print*,"TS_complete:","TR:",TR,"TB:",TB,"TG:",TG,"UA:",UA
-!   endif
-!to here
 
 !-------------------------------------------------------
 !  diagnostic  GRID AVERAGED  U10  V10  TH2  Q2 --> WRF
@@ -3116,6 +3041,5 @@ SUBROUTINE SFCDIF_URB (ZLM,Z0,THZ0,THLM,SFCSPD,AKANDA,AKMS,AKHS,RLMO,CD) !Origin
 ! ----------------------------------------------------------------------
   END SUBROUTINE SFCDIF_URB
 ! ----------------------------------------------------------------------
-
 !===========================================================================
 END MODULE module_sf_urban
