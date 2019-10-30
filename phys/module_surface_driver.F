@@ -87,7 +87,7 @@ CONTAINS
      &          ,usemonalb                                            &
      &          ,noahres                                              &
              !  Optional adaptive time step
-     &          ,bldt,curr_secs,adapt_step_flag,bldtacttime           & 
+     &          ,bldt,curr_secs,adapt_step_flag,bldtacttime           &
          ! Optional urban with BEP
      &          ,sf_urban_physics,gmt,xlat,xlong,julday               &
      &          ,num_urban_layers                                     & !multi-layer urban
@@ -96,43 +96,39 @@ CONTAINS
      &          ,tw1lev_urb3d,tw2lev_urb3d                            & !multi-layer urban
      &          ,tglev_urb3d,tflev_urb3d                              & !multi-layer urban
      &          ,sf_ac_urb3d,lf_ac_urb3d,cm_ac_urb3d                  & !multi-layer urban
-     &          ,sfvent_urb3d,lfvent_urb3d                            & !multi-layer urban 
-     &          ,sfwin1_urb3d,sfwin2_urb3d                            & !multi-layer urban       
+     &          ,sfvent_urb3d,lfvent_urb3d                            & !multi-layer urban
+     &          ,sfwin1_urb3d,sfwin2_urb3d                            & !multi-layer urban
      &          ,sfw1_urb3d,sfw2_urb3d,sfr_urb3d,sfg_urb3d            & !multi-layer urban
      &          ,a_u_bep,a_v_bep,a_t_bep,a_q_bep                      &
      &          ,b_u_bep,b_v_bep,b_t_bep,b_q_bep                      &
      &          ,sf_bep,vl_bep                                        &
      &          ,a_e_bep,b_e_bep,dlg_bep                              &
-     &          ,dl_u_bep                                             &                          
+     &          ,dl_u_bep                                             &
          ! Optional urban Bep end
-!Nakayoshi roughness length
-     &          ,z0_grd                                               &
-     &          ,zh_grd                                               &
-     &          ,veg_grd                                              &
-     &          ,ave_BH_grd                                           &
-     &          ,xlong_urb2d                                          &
-     &          ,xtime,za                                             &
-     &          ,pai_grd                                              &
-     &          ,fai_grd                            &
-     &          ,SVF_3d_grid,TSP_grid                                 &  !20121212
-     &          ,CD_ORG_GRID,CD_naka_GRID                             &  !20121212
-! Nakayoshi HB output test
-     &              ,SR_GRID,RR_GRID,HR_GRID,ELER_GRID,G0R_GRID       &
-     &              ,SB_GRID,RB_GRID,HB_GRID,ELEB_GRID,G0B_GRID       &
-     &              ,SG_GRID,RG_GRID,HG_GRID,ELEG_GRID,G0G_GRID       &
-     &              ,LNET_GRID,LW_GRID,SW_GRID,G_GRID,RN_GRID         &
-     &              ,FLXTH_GRID,FLXHUM_GRID,ALPHAC_GRID,CHS_GRID      &
-! to here
-! Nakayoshi EB terms in natural categor
-		   ,sh1_rural,lh1_rural,grd1_rural,tsk1_rural        &
-		   ,qqq1_rural,ust1_rural,ust_urb2d                  &
-! Nakayoshi urban fraction change 20130119
-                   ,second,mod_frc_urb2d                             &
-                   ,canopy_temp_profile,t_025zr_urb2d,t_050zr_urb2d  & !VARQUEZ 20150324
-                   ,t_075zr_urb2d,t_100zr_urb2d,zr_urb2d,z0c_urb2d   & !VARQUEZ 20150324
-                   ,t_200zr_urb2d                                    ) !KAWANO  20150415
+         ! Nakayoshi roughness length
+                , z0_grd                                              &
+                , zh_grd                                              &
+                , veg_grd                                             &
+                , ave_BH_grd                                          &
+                , xlong_urb2d                                         &
+                , xtime, za                                           &
+                , pai_grd                                             &
+                , fai_grd                                             &
+                , SVF_3d_grid, TSP_grid                               &
+                , CD_ORG_GRID, CD_naka_GRID                           &
+                , SR_GRID, RR_GRID, HR_GRID, ELER_GRID, G0R_GRID      &
+                , SB_GRID, RB_GRID, HB_GRID, ELEB_GRID, G0B_GRID      &
+                , SG_GRID, RG_GRID, HG_GRID, ELEG_GRID, G0G_GRID      &
+                , LNET_GRID, LW_GRID, SW_GRID, G_GRID, RN_GRID        &
+                , FLXTH_GRID, FLXHUM_GRID, ALPHAC_GRID, CHS_GRID      &
+                , sh1_rural, lh1_rural, grd1_rural, tsk1_rural        &
+                , qqq1_rural, ust1_rural, ust_urb2d                   &
+                , second, mod_frc_urb2d                               &
+                , canopy_temp_profile, t_025zr_urb2d, t_050zr_urb2d   &
+                , t_075zr_urb2d, t_100zr_urb2d, zr_urb2d, z0c_urb2d   &
+                , t_200zr_urb2d                                       &
+     &                                                             )
 
-              
 #if ( ! NMM_CORE == 1 )
    USE module_state_description, ONLY : SFCLAYSCHEME              &
                                        ,MYJSFCSCHEME              &
@@ -145,7 +141,7 @@ CONTAINS
                                        ,LSMSCHEME                 &
                                        ,RUCLSMSCHEME              &
                                        ,PXLSMSCHEME               &
-                                       ,MYNNSFCSCHEME             
+                                       ,MYNNSFCSCHEME
 #else
    USE module_state_description, ONLY : SFCLAYSCHEME              &
                                        ,MYJSFCSCHEME              &
@@ -158,7 +154,7 @@ CONTAINS
                                        ,PXLSMSCHEME               &
                                        ,TEMFSFCSCHEME             &
                                        ,GFDLSFCSCHEME             &
-                                       ,GFDLSLAB 
+                                       ,GFDLSLAB
 
 
 #endif
@@ -369,8 +365,8 @@ CONTAINS
    INTEGER, INTENT(IN)::   NSCAT
 
    INTEGER, INTENT(IN) :: sf_sfclay_physics, sf_surface_physics,      &
-                          sf_urban_physics,ra_lw_physics, sst_update,  &
-                          canopy_temp_profile                         !VARQUEZ 20150324
+                          sf_urban_physics,ra_lw_physics, sst_update
+   INTEGER, INTENT(IN) :: canopy_temp_profile
    INTEGER, INTENT(IN),OPTIONAL :: sst_skin, tmn_update
 
    INTEGER, DIMENSION(num_tiles), INTENT(IN) ::                       &
@@ -496,7 +492,7 @@ CONTAINS
    REAL,       INTENT(IN   ),OPTIONAL    ::     bldt
    REAL,       INTENT(IN   ),OPTIONAL    ::     curr_secs
    LOGICAL,    INTENT(IN   ),OPTIONAL    ::     adapt_step_flag
-   REAL,       INTENT(INOUT),OPTIONAL    ::     bldtacttime  
+   REAL,       INTENT(INOUT),OPTIONAL    ::     bldtacttime
 
 !  arguments for NCAR surface physics
 
@@ -509,7 +505,7 @@ CONTAINS
    REAL, DIMENSION( ims:ime , jms:jme ), INTENT(INOUT )::   Z0
 
 ! Variables for multi-layer UCM
-   REAL, OPTIONAL, INTENT(IN  )   ::                                   GMT 
+   REAL, OPTIONAL, INTENT(IN  )   ::                                   GMT
    INTEGER, OPTIONAL, INTENT(IN  ) ::                               JULDAY
    REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN   )        ::XLAT, XLONG
    INTEGER, INTENT(IN )::   NUM_URBAN_LAYERS
@@ -559,7 +555,7 @@ CONTAINS
 #if ( EM_CORE==1)
    REAL, DIMENSION( ims:ime , jms:jme ), &
         &OPTIONAL, INTENT(INOUT   ):: ch
-   
+
    REAL, DIMENSION( ims:ime , kms:kme, jms:jme ), &
         &OPTIONAL, INTENT(IN   ):: tsq,qsq,cov
 #endif
@@ -731,68 +727,63 @@ CONTAINS
      REAL,  DIMENSION( ims:ime, jms:jme )  :: GZ1OZ0_URB2D  !urban local var
 !m     REAL, DIMENSION( ims:ime, jms:jme ) :: AKHS_URB2D  !urban local var
      REAL,  DIMENSION( ims:ime, jms:jme )  :: AKMS_URB2D  !urban local var
-     REAL,  DIMENSION( ims:ime, jms:jme )  :: U10_URB2D   !urban local var Nakayoshi
-     REAL,  DIMENSION( ims:ime, jms:jme )  :: V10_URB2D   !urban local var Nakayoshi
-     REAL,  DIMENSION( ims:ime, jms:jme )  :: TH2_URB2D   !urban local var Nakayoshi
-     REAL,  DIMENSION( ims:ime, jms:jme )  :: Q2_URB2D    !urban local var Nakayoshi
+     REAL,  DIMENSION( ims:ime, jms:jme )  :: U10_URB2D   !urban local var
+     REAL,  DIMENSION( ims:ime, jms:jme )  :: V10_URB2D   !urban local var
+     REAL,  DIMENSION( ims:ime, jms:jme )  :: TH2_URB2D   !urban local var
+     REAL,  DIMENSION( ims:ime, jms:jme )  :: Q2_URB2D    !urban local var
+     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: UST_URB2D
      REAL,  DIMENSION( ims:ime, jms:jme )  :: T2_URB2D    !urban var Nakayoshi
      REAL,  DIMENSION( ims:ime, jms:jme )  :: TH2_RURAL   !rural var Nakayoshi
      REAL,  DIMENSION( ims:ime, jms:jme )  :: T2_RURAL    !rural var Nakayoshi
      REAL,  DIMENSION( ims:ime, jms:jme )  :: Q2_RURAL    !rural var Nakayoshi
-!     REAL,  DIMENSION( ims:ime, jms:jme )  :: UST_URB2D  !urban local var
-     REAL,  DIMENSION( ims:ime, jms:jme ),intent(out)  :: UST_URB2D  !Nakayoshi 20130114
 
-     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: T_025ZR_URB2D  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: T_050ZR_URB2D  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: T_075ZR_URB2D  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: T_100ZR_URB2D  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: T_200ZR_URB2D  !KAWANO  20150415
-     REAL,  DIMENSION( ims:ime, jms:jme )   :: TH_025ZR  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme )   :: TH_050ZR  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme )   :: TH_075ZR  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme )   :: TH_100ZR  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme )   :: TH_200ZR  !KAWANO  20150415
-     REAL,  DIMENSION( ims:ime, jms:jme )   :: T_025ZR  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme )   :: T_050ZR  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme )   :: T_075ZR  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme )   :: T_100ZR  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme )   :: T_200ZR  !KAWANO  20150415
-     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)   :: ZR_URB2D  !VARQUEZ 20150324
-     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)   :: Z0C_URB2D  !VARQUEZ 20150324
+     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: T_025ZR_URB2D
+     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: T_050ZR_URB2D
+     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: T_075ZR_URB2D
+     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: T_100ZR_URB2D
+     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: T_200ZR_URB2D
+     REAL,  DIMENSION( ims:ime, jms:jme )   :: TH_025ZR
+     REAL,  DIMENSION( ims:ime, jms:jme )   :: TH_050ZR
+     REAL,  DIMENSION( ims:ime, jms:jme )   :: TH_075ZR
+     REAL,  DIMENSION( ims:ime, jms:jme )   :: TH_100ZR
+     REAL,  DIMENSION( ims:ime, jms:jme )   :: TH_200ZR
+     REAL,  DIMENSION( ims:ime, jms:jme )   :: T_025ZR
+     REAL,  DIMENSION( ims:ime, jms:jme )   :: T_050ZR
+     REAL,  DIMENSION( ims:ime, jms:jme )   :: T_075ZR
+     REAL,  DIMENSION( ims:ime, jms:jme )   :: T_100ZR
+     REAL,  DIMENSION( ims:ime, jms:jme )   :: T_200ZR
+     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)   :: ZR_URB2D
+     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)   :: Z0C_URB2D
 
 ! Nakayoshi roughness length
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(INOUT):: Z0_GRD !grid dependent Z0
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT):: ZH_GRD !grid dependent ZH
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(INOUT):: VEG_GRD !grid dependent vegetation f
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN):: AVE_BH_GRD !grid dependent bld height
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: XLONG_URB2D  !urban
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: ZA          ! first atmospheric level [m]
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: PAI_GRD          ! plane area index [-]
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: FAI_GRD          ! frontal area index [-]
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::       SVF_3d_grid   !20121212
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::       TSP_grid      !20121212
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::       CD_ORG_GRID   !20121212
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::       CD_naka_GRID  !20121212
-     REAL, INTENT(IN)::XTIME
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(INOUT) :: Z0_GRD ! grid dependent Z0
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: ZH_GRD ! grid dependent ZH
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(INOUT) :: VEG_GRD !grid dependent vegetation f
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: AVE_BH_GRD ! grid dependent bld height
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: XLONG_URB2D  ! urban
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: ZA ! first atmospheric level [m]
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: PAI_GRD ! plan area index [-]
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: FAI_GRD ! frontal area index [-]
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: SVF_3d_grid
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: TSP_grid
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: CD_ORG_GRID
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: CD_naka_GRID
+     REAL, INTENT(IN) :: XTIME
 !
-! Nakayoshi 20120903 HB check output
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::SR_GRID,RR_GRID,HR_GRID,ELER_GRID,G0R_GRID
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::SG_GRID,RG_GRID,HG_GRID,ELEG_GRID,G0G_GRID
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::SB_GRID,RB_GRID,HB_GRID,ELEB_GRID,G0B_GRID
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::LNET_GRID,LW_GRID,SW_GRID,G_GRID,RN_GRID
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::FLXTH_GRID,FLXHUM_GRID,ALPHAC_GRID,CHS_GRID
-! to here
-! Nakayoshi 20130109 debug EB terms in natural category
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::sh1_rural
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::lh1_rural
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::grd1_rural
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::tsk1_rural
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::qqq1_rural ! mixing ratio
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::ust1_rural
-! Nakayoshi urban fraction change 20130119
-     real,optional,dimension(ims:ime,jms:jme),intent(in )::second
-     real,optional,dimension(ims:ime,jms:jme),intent(in)::mod_frc_urb2d
-!to here
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: &
+       SR_GRID, RR_GRID, HR_GRID, ELER_GRID, G0R_GRID, &
+       SG_GRID, RG_GRID, HG_GRID, ELEG_GRID, G0G_GRID, &
+       SB_GRID, RB_GRID, HB_GRID, ELEB_GRID, G0B_GRID, &
+       LNET_GRID, LW_GRID, SW_GRID, G_GRID, RN_GRID, &
+       FLXTH_GRID, FLXHUM_GRID, ALPHAC_GRID, CHS_GRID
+
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: &
+       sh1_rural, lh1_rural, grd1_rural, tsk1_rural, &
+       qqq1_rural, & ! mixing ratio
+       ust1_rural
+
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), intent(in) :: &
+       second, mod_frc_urb2d
 
      REAL, DIMENSION( ims:ime, jms:jme ) :: HFX_SEA
      REAL, DIMENSION( ims:ime, jms:jme ) :: QFX_SEA
@@ -830,20 +821,6 @@ CONTAINS
 !------------------------------------------------------------------
 !
 
-! Nakayoshi 20130517
-!  if(itimestep.eq.1)then
-!    print*,"initialization of U10_urb2d etc"
-!    u10_urb2d=0.
-!    v10_urb2d=0.
-!    TH2_URB2D=0.
-!    Q2_URB2D=0.
-!    ZH_GRD=0.
-!!    PSIM_URB2D=0.
-!    PSIH_URB2D=0.
-!    GZ1OZ0_URB2D=0.
-!    CHS_grid=0.
-!    AKMS_URB2D=0.
-!  endif
 
   if (sf_sfclay_physics .eq. 0) return
 
@@ -903,8 +880,8 @@ CONTAINS
 
          IF ( FRACTIONAL_SEAICE == 1 ) then
             IF ( ( XICE(I,J) .NE. XICEM(I,J) ) .AND. ( XICEM(I,J) .GT. XICE_THRESHOLD ) ) THEN
-               ! Fractional values of ALBEDO and EMISSIVITY are valid according to the 
-               ! earlier fractional seaice value, XICEM.  Recompute them for the new 
+               ! Fractional values of ALBEDO and EMISSIVITY are valid according to the
+               ! earlier fractional seaice value, XICEM.  Recompute them for the new
                ! seaice value XICE.
                ALBEDO(I,J) = 0.08 + XICE(I,J)/XICEM(I,J) * ( ALBEDO(I,J) - 0.08 )
                EMISS (I,J) = 0.98 + XICE(I,J)/XICEM(I,J) * ( EMISS (I,J) - 0.98 )
@@ -1306,7 +1283,7 @@ CONTAINS
 !!           ch(i,j) = flhc(i,j)/( cpm(i,j)*rho(i,kts,j) )
             END DO
          END DO
-#endif         
+#endif
 
         ENDIF
        ELSE
@@ -1378,8 +1355,8 @@ CONTAINS
 
        IF (PRESENT(qv_curr)    .AND.  PRESENT(qc_curr)     &
             & .AND.  PRESENT(qcg) ) THEN
-          
-          CALL wrf_debug(100,'in MYNNSFC')          
+
+          CALL wrf_debug(100,'in MYNNSFC')
 
           CALL SFCLAY_mynn(u_phytmp,v_phytmp,t_phy,qv_curr,&
                p_phy,dz8w,cp,g,rcp,r_d,xlv,psfc,chs,chs2,cqs2,cpm, &
@@ -1396,7 +1373,7 @@ CONTAINS
 
        ELSE
           CALL wrf_error_fatal('Lacking arguments for SFCLAY_mynn in surface driver')
- 
+
        ENDIF
 #endif
 
@@ -1594,8 +1571,8 @@ CONTAINS
          ENDIF
          IF ( FRACTIONAL_SEAICE == 1) THEN
             ! The fields passed to LSM need to represent the full ice values, not
-            ! the fractional values.  Convert ALBEDO and EMISS from the blended value 
-            ! to a value representing only the sea-ice portion.   Albedo over open 
+            ! the fractional values.  Convert ALBEDO and EMISS from the blended value
+            ! to a value representing only the sea-ice portion.   Albedo over open
             ! water is taken to be 0.08. Emissivity over open water is taken to be 0.98
             DO j = j_start(ij) , j_end(ij)
                DO i = i_start(ij) , i_end(ij)
@@ -1614,7 +1591,7 @@ CONTAINS
                ! just use what we have.  Use ice component of TSK
                !
                CALL get_local_ice_tsk( ims, ime, jms, jme,                   &
-                                       i_start(ij), i_end(ij),               & 
+                                       i_start(ij), i_end(ij),               &
                                        j_start(ij), j_end(ij),               &
                                        itimestep, .false., tice2tsk_if2cold, &
                                        XICE, XICE_THRESHOLD,                 &
@@ -1681,32 +1658,29 @@ CONTAINS
                 sfw1_urb3d,sfw2_urb3d,sfr_urb3d,sfg_urb3d,      & !H multi-layer urban
                 th_phy,rho,p_phy,ust,                           & !I multi-layer urban
                 gmt,julday,xlong,xlat,                          & !I multi-layer urban
-                a_u_bep,a_v_bep,a_t_bep,a_q_bep,                & !O multi-layer urban 
+                a_u_bep,a_v_bep,a_t_bep,a_q_bep,                & !O multi-layer urban
                 a_e_bep,b_u_bep,b_v_bep,                        & !O multi-layer urban
                 b_t_bep,b_q_bep,b_e_bep,dlg_bep,                & !O multi-layer urban
                 dl_u_bep,sf_bep,vl_bep                          & !O multi-layer urban
 
-!Nakayoshi roughness length Z0
-                ,z0_grd,zh_grd,veg_grd,ave_BH_grd	        &
-                ,xlong_urb2d,xtime,za,pai_grd,fai_grd           &
-                ,SVF_3d_grid,TSP_grid,CD_ORG_GRID,CD_naka_GRID  &  !20121212
-!   ,hfx_urb,hf_rural,qfx_urb,qfx_rural,tsk_urb,tsk_rural,qs_urb,qs_rural,urb_fraction &
-! Nakayoshi HB output test
-                   ,SR_GRID,RR_GRID,HR_GRID,ELER_GRID,G0R_GRID       &
-                   ,SB_GRID,RB_GRID,HB_GRID,ELEB_GRID,G0B_GRID       &
-                   ,SG_GRID,RG_GRID,HG_GRID,ELEG_GRID,G0G_GRID       &
-                   ,LNET_GRID,LW_GRID,SW_GRID,G_GRID,RN_GRID         &
-                   ,FLXTH_GRID,FLXHUM_GRID,ALPHAC_GRID,CHS_GRID      &
-! to here
-! Nakayoshi EB terms in natural category
-		   ,sh1_rural,lh1_rural,grd1_rural,tsk1_rural       &
-		   ,qqq1_rural,ust1_rural                           &
-! Nakayoshi urban fraction change 20130119
-                   ,second,mod_frc_urb2d                            &
-                   ,canopy_temp_profile                             & !VARQUEZ 20150324
-                   ,th_025zr,th_050zr,th_075zr,th_100zr,zr_urb2d,z0c_urb2d & !VARQUEZ 20150324
-                   ,th_200zr                                        ) !KAWANO  20150415
-! to here
+                !Nakayoshi roughness length Z0
+                , z0_grd, zh_grd, veg_grd, ave_BH_grd        &
+                , xlong_urb2d, xtime, za, pai_grd, fai_grd           &
+                , SVF_3d_grid, TSP_grid, CD_ORG_GRID, CD_naka_GRID  &  !20121212
+                ! Nakayoshi HB output test
+                , SR_GRID, RR_GRID, HR_GRID, ELER_GRID, G0R_GRID       &
+                , SB_GRID, RB_GRID, HB_GRID, ELEB_GRID, G0B_GRID       &
+                , SG_GRID, RG_GRID, HG_GRID, ELEG_GRID, G0G_GRID       &
+                , LNET_GRID, LW_GRID, SW_GRID, G_GRID, RN_GRID         &
+                , FLXTH_GRID, FLXHUM_GRID, ALPHAC_GRID, CHS_GRID      &
+                , sh1_rural, lh1_rural, grd1_rural, tsk1_rural       &
+                , qqq1_rural, ust1_rural                           &
+                , second, mod_frc_urb2d                            &
+                , canopy_temp_profile                             & !VARQUEZ 20150324
+                , th_025zr, th_050zr, th_075zr, th_100zr, zr_urb2d, z0c_urb2d & !VARQUEZ 20150324
+                , th_200zr              &
+                )
+
          IF ( FRACTIONAL_SEAICE == 1 ) THEN
             ! LSM Returns full land/ice values, no fractional values.
             ! We return to a fractional component here.  SFLX currently hard-wires
@@ -1726,7 +1700,7 @@ CONTAINS
                   DO i=i_start(ij),i_end(ij)
                      IF ( ( XICE(I,J) .GE. XICE_THRESHOLD) .AND. ( XICE(i,j) .LE. 1.0 ) ) THEN
                         !  Weighted average of fields between ice-cover values and open-water values.
-                        print*,"isisfc nakayoshi"
+                        call wrf_message("isisfc nakayoshi")
                         flhc(i,j) = ( flhc(i,j) * XICE(i,j) ) + ( (1.0-XICE(i,j)) * flhc_sea(i,j) )
                         flqc(i,j) = ( flqc(i,j) * XICE(i,j) ) + ( (1.0-XICE(i,j)) * flqc_sea(i,j) )
                         cpm(i,j)  = ( cpm(i,j)  * XICE(i,j) ) + ( (1.0-XICE(i,j)) * cpm_sea(i,j)  )
@@ -1748,7 +1722,7 @@ CONTAINS
                   DO i = i_start(ij) , i_end(ij)
                      IF ( ( XICE(I,J) .GE. XICE_THRESHOLD ) .AND. ( XICE(i,j) .LE. 1.0 ) ) THEN
                         ! Compute TSK as the open-water and ice-cover average
-                         print*,"no isisfc nakayoshi"
+                         call wrf_message("no isisfc nakayoshi")
                          tsk(i,j) = ( tsk(i,j) * XICE(i,j) ) + ( (1.0-XICE(i,j)) * tsk_sea(i,j) )
                      ENDIF
                   ENDDO
@@ -1766,80 +1740,74 @@ CONTAINS
            ENDDO
            ENDDO
 
-!Nakayoshi 20130515 t2, q2 calculation for rural part
-!          CALL SFCDIAGS(HFX,QFX,TSK,QSFC,CHS2,CQS2,T2,TH2,Q2,      &!land and sea
-!                     PSFC,CP,R_d,RCP,                              &
-!                     ids,ide, jds,jde, kds,kde,                    &
-!                     ims,ime, jms,jme, kms,kme,                    &
-!             i_start(ij),i_end(ij), j_start(ij),j_end(ij), kts,kte    )
-!          CALL SFCDIAGS_RURAL(SH1_RURAL,(LH1_RURAL/2.442E+06)   ,  & !2.442E06 latent heat  ;land rural part
-!	             TSK1_RURAL,QQQ1_RURAL,CHS2,CQS2,T2_RURAL,TH2_RURAL,Q2_RURAL,     &
-!                     PSFC,CP,R_d,RCP,                              &
-!                     ids,ide, jds,jde, kds,kde,                    &
-!                     ims,ime, jms,jme, kms,kme,                    &
-!             i_start(ij),i_end(ij), j_start(ij),j_end(ij), kts,kte ,&
-!             XLAND) !Add Nakayoshi
-          CALL SFCDIAGS(SH1_RURAL,(LH1_RURAL/2.442E+06)   ,  & !2.442E06 latent heat  ;land rural part
-	             TSK1_RURAL,QQQ1_RURAL,CHS2,CQS2,T2,TH2,Q2,     & !VARQUEZ 20170206
-                     PSFC,CP,R_d,RCP,                              &
-                     ids,ide, jds,jde, kds,kde,                    &
-                     ims,ime, jms,jme, kms,kme,                    &
+          CALL SFCDIAGS(SH1_RURAL, (LH1_RURAL / 2.442E+06),  & !2.442E06 latent heat; land rural part
+             TSK1_RURAL, QQQ1_RURAL,CHS2,CQS2,T2,TH2,Q2,    &
+             PSFC,CP,R_d,RCP,                              &
+             ids,ide, jds,jde, kds,kde,                    &
+             ims,ime, jms,jme, kms,kme,                    &
              i_start(ij),i_end(ij), j_start(ij),j_end(ij), kts,kte)
-
-!to here
 !urban
      IF(SF_URBAN_PHYSICS.eq.1) THEN
 
-       IF(CANOPY_TEMP_PROFILE == 1) THEN                      !VARQUEZ 20150324
-       DO j=j_start(ij),j_end(ij)                             !VARQUEZ 20150324
-         DO i=i_start(ij),i_end(ij)                           !VARQUEZ 20150324
-           T_025ZR(I,J)=TH_025ZR(I,J)			      !TH actually T2 (ucm)
-           T_050ZR(I,J)=TH_050ZR(I,J)
-           T_075ZR(I,J)=TH_075ZR(I,J)
-           T_100ZR(I,J)=TH_100ZR(I,J)
-           T_200ZR(I,J)=TH_200ZR(I,J)
-         IF(((XLAND(I,J)-1.5).LE.0.).and.(mod_frc_urb2d(I,J).ge.0.01))then !VARQUEZ 20150324
-           T_025ZR_URB2D(I,J)   = MOD_FRC_URB2D(I,J)*T_025ZR(I,J)+(1.-MOD_FRC_URB2D(I,J))*T2(I,J) !VARQUEZ 20150324;VARQUEZ 20170206
-           T_050ZR_URB2D(I,J)   = MOD_FRC_URB2D(I,J)*T_050ZR(I,J)+(1.-MOD_FRC_URB2D(I,J))*T2(I,J) !VARQUEZ 20150324;VARQUEZ 20170206
-           T_075ZR_URB2D(I,J)   = MOD_FRC_URB2D(I,J)*T_075ZR(I,J)+(1.-MOD_FRC_URB2D(I,J))*T2(I,J) !VARQUEZ 20150324;VARQUEZ 20170206
-           T_100ZR_URB2D(I,J)   = MOD_FRC_URB2D(I,J)*T_100ZR(I,J)+(1.-MOD_FRC_URB2D(I,J))*T2(I,J) !VARQUEZ 20150324;VARQUEZ 20170206
-           T_200ZR_URB2D(I,J)   = MOD_FRC_URB2D(I,J)*T_200ZR(I,J)+(1.-MOD_FRC_URB2D(I,J))*T2(I,J) !KAWANO  20150415;VARQUEZ 20170206
-         ENDIF
+       IF(CANOPY_TEMP_PROFILE == 1) THEN
+         DO j=j_start(ij),j_end(ij)
+           DO i=i_start(ij),i_end(ij)
+             T_025ZR(I,J)=TH_025ZR(I,J) ! TH actually T2 (ucm)
+             T_050ZR(I,J)=TH_050ZR(I,J)
+             T_075ZR(I,J)=TH_075ZR(I,J)
+             T_100ZR(I,J)=TH_100ZR(I,J)
+             T_200ZR(I,J)=TH_200ZR(I,J)
+           IF ((XLAND(I,J) <= 1.5) .and. (mod_frc_urb2d(I,J) >= 0.01)) THEN
+             T_025ZR_URB2D(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), T_025ZR(I,J), T2(I,J))
+             T_050ZR_URB2D(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), T_050ZR(I,J), T2(I,J))
+             T_075ZR_URB2D(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), T_075ZR(I,J), T2(I,J))
+             T_100ZR_URB2D(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), T_100ZR(I,J), T2(I,J))
+             T_200ZR_URB2D(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), T_200ZR(I,J), T2(I,J))
+           ENDIF
+           ENDDO
          ENDDO
-       ENDDO
        ENDIF
 
        DO j=j_start(ij),j_end(ij)                             !urban
          DO i=i_start(ij),i_end(ij)                           !urban
-           T2_URB2D(I,J)=TH2_URB2D(I,J)                       !TH2 actually T2.
-           TH2_URB2D(I,J)=T2_URB2D(I,J)*((1.E5/PSFC(I,J))**RCP) !Correct TH2
-	   SB_GRID(I,J)=TH2(I,J)!_RURAL(I,J) VARQUEZ20170206
-           RB_GRID(I,J)=T2(I,J)!_RURAL(I,J) VARQUEZ20170206
-           HB_GRID(I,J)=Q2(I,J)!_RURAL(I,J) VARQUEZ20170206
-           AKHS(I,J) =  CHS(I,J)  !rural value
-           IF(((XLAND(I,J)-1.5).LE.0.).and.(mod_frc_urb2d(I,J).ge.0.01))then ! area averaged
-              SR_GRID(I,J)=TH2_URB2D(I,J)
-              RR_GRID(I,J)=T2_URB2D(I,J)
-              HR_GRID(I,J)=Q2_URB2D(I,J)
-              U10(I,J)  = MOD_FRC_URB2D(I,J)*U10_URB2D(I,J)+(1.-MOD_FRC_URB2D(I,J))*U10(i,J)
-              V10(I,J)  = MOD_FRC_URB2D(I,J)*V10_URB2D(I,J)+(1.-MOD_FRC_URB2D(I,J))*V10(I,J)
-              PSIM(I,J) = MOD_FRC_URB2D(I,J)*PSIM_URB2D(I,J)+(1.-MOD_FRC_URB2D(I,J))*PSIM(I,J)
-              PSIH(I,J) = MOD_FRC_URB2D(I,J)*PSIH_URB2D(I,J)+(1.-MOD_FRC_URB2D(I,J))*PSIH(I,J)
-              GZ1OZ0(I,J) = MOD_FRC_URB2D(I,J)*GZ1OZ0_URB2D(I,J)+(1.-MOD_FRC_URB2D(I,J))*GZ1OZ0(I,J)
-              AKHS(I,J) = MOD_FRC_URB2D(I,J)*CHS_grid(I,J)+(1.-MOD_FRC_URB2D(I,J))*CHS(I,J)
-              AKMS(I,J) = MOD_FRC_URB2D(I,J)*AKMS_URB2D(I,J)+(1.-MOD_FRC_URB2D(I,J))*AKMS(I,J)
-	      T2(I,J)   = MOD_FRC_URB2D(I,J)*T2_URB2D(I,J)+(1.-MOD_FRC_URB2D(I,J))*T2(I,J)  !VARQUEZ 20170206 Correction
-	      TH2(I,J)  = MOD_FRC_URB2D(I,J)*TH2_URB2D(I,J)+(1.-MOD_FRC_URB2D(I,J))*TH2(I,J)!VARQUEZ 20170206 Correction
-	      Q2(I,J)   = MOD_FRC_URB2D(I,J)*Q2_URB2D(I,J)+(1.-MOD_FRC_URB2D(I,J))*Q2(I,J)  !VARQUEZ 20170206 Correction
-!to here
-           ELSE
-              SR_GRID(I,J)=0.
-              RR_GRID(I,J)=0.
-              HR_GRID(I,J)=0.
+#if 0
+          IF( IVGTYP(I,J) == ISURBAN .or. IVGTYP(I,J) == 31 .or. &  !urban
+              IVGTYP(I,J) == 32 .or. IVGTYP(I,J) == 33 ) THEN !urban
+             U10(I,J)  = U10_URB2D(I,J)                       !urban
+             V10(I,J)  = V10_URB2D(I,J)                       !urban
+             PSIM(I,J) = PSIM_URB2D(I,J)                      !urban
+             PSIH(I,J) = PSIH_URB2D(I,J)                      !urban
+             GZ1OZ0(I,J) = GZ1OZ0_URB2D(I,J)                  !urban
+!m             AKHS(I,J) = AKHS_URB2D(I,J)                    !urban
+             AKHS(I,J) = CHS(I,J)                             !urban
+             AKMS(I,J) = AKMS_URB2D(I,J)                      !urban
            END IF                                             !urban
-!           if(abs(Q2(i,j)).gt.1.or.abs(TH2(i,j)).gt.330.or.abs(TH2(i,j)).lt.270)then
-!              print*,"total",Q2(i,j),TH2(i,j),i,j,z0_grd(i,j),zh_grd(i,j)
-!           endif
+#endif
+           T2_URB2D(I,J) = TH2_URB2D(I,J)                       !TH2 actually T2.
+           TH2_URB2D(I,J) = T2_URB2D(I,J) * ((1.E5 / PSFC(I,J)) ** RCP) !Correct TH2
+           SB_GRID(I,J) = TH2(I,J)
+           RB_GRID(I,J) = T2(I,J)
+           HB_GRID(I,J) = Q2(I,J)
+           AKHS(I,J) = CHS(I,J)  !rural value
+           IF ((XLAND(I,J) <= 1.5) .and. (mod_frc_urb2d(I,J) >= 0.01)) THEN ! area averaged
+              SR_GRID(I,J) = TH2_URB2D(I,J)
+              RR_GRID(I,J) = T2_URB2D(I,J)
+              HR_GRID(I,J) = Q2_URB2D(I,J)
+              U10(I,J)  = weight_by_frc_urb(MOD_FRC_URB2D(I,J), U10_URB2D(I,J), U10(i,J))
+              V10(I,J)  = weight_by_frc_urb(MOD_FRC_URB2D(I,J), V10_URB2D(I,J), V10(I,J))
+              PSIM(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), PSIM_URB2D(I,J), PSIM(I,J))
+              PSIH(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), PSIH_URB2D(I,J), PSIH(I,J))
+              GZ1OZ0(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), GZ1OZ0_URB2D(I,J), GZ1OZ0(I,J))
+              AKHS(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), CHS_grid(I,J), CHS(I,J))
+              AKMS(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), AKMS_URB2D(I,J), AKMS(I,J))
+              T2(I,J)   = weight_by_frc_urb(MOD_FRC_URB2D(I,J), T2_URB2D(I,J), T2(I,J))
+              TH2(I,J)  = weight_by_frc_urb(MOD_FRC_URB2D(I,J), TH2_URB2D(I,J), TH2(I,J))
+              Q2(I,J)   = weight_by_frc_urb(MOD_FRC_URB2D(I,J), Q2_URB2D(I,J), Q2(I,J))
+           ELSE
+              SR_GRID(I,J) = 0.
+              RR_GRID(I,J) = 0.
+              HR_GRID(I,J) = 0.
+           END IF                                             !urban
          ENDDO                                                !urban
        ENDDO                                                  !urban
      ENDIF
@@ -1883,8 +1851,8 @@ CONTAINS
            CALL wrf_debug(100,'in RUC LSM')
            IF ( FRACTIONAL_SEAICE == 1 ) THEN
               ! The fields passed to LSMRUC need to represent the full ice values, not
-              ! the fractional values.  Convert ALBEDO and EMISS from the blended value 
-              ! to a value representing only the sea-ice portion.   Albedo over open 
+              ! the fractional values.  Convert ALBEDO and EMISS from the blended value
+              ! to a value representing only the sea-ice portion.   Albedo over open
               ! water is taken to be 0.08. Emissivity over open water is taken to be 0.98
               DO j = j_start(ij) , j_end(ij)
                  DO i = i_start(ij) , i_end(ij)
@@ -3476,8 +3444,8 @@ HFX_SEA, LH_SEA, QFX_SEA, QGH_SEA, QSFC_SEA, TSK_SEA,  &
          INTENT(IN   )   ::       XLAT,XLONG
    REAL, DIMENSION( ims:ime, jms:jme ),                           &
          INTENT(INOUT)   ::       SWDOWN,GSW,SWNORM,GSWSAVE
-   real,intent(in)  :: solcon   
-   REAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN   ) :: hrang2d,coszen 
+   real,intent(in)  :: solcon
+   REAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN   ) :: hrang2d,coszen
 
 
    REAL, INTENT(IN    )  ::       declin
@@ -3558,8 +3526,8 @@ HFX_SEA, LH_SEA, QFX_SEA, QGH_SEA, QSFC_SEA, TSK_SEA,  &
      XXLAT=XLAT1*DEGRAD
 
 ! RETURN IF NIGHT
-         IF(CSZA.LE.1.E-9) return 
-        
+         IF(CSZA.LE.1.E-9) return
+
 !  Parameterize diffuse fraction of global solar radiation as a function of the ratio between TOA radiation and surface global radiation
               diffuse_frac = min(1.,1./(max(0.1,2.1-2.8*log(log(csza*solcon/max(SWDOWN_IN,1.e-3))))))
         if ((slope.eq.0).or.(diffuse_frac.eq.1).or.(csza.lt.1.e-2)) then  ! no topographic effects when all radiation diffuse or sun too close to horizon
@@ -3598,7 +3566,7 @@ HFX_SEA, LH_SEA, QFX_SEA, QGH_SEA, QSFC_SEA, TSK_SEA,  &
                                   SST, TSK, TSK_SEA, TSK_ICE )
 !<DESCRIPTION>
 !
-! For grid cells with a fractional ice area, derive the ice surface 
+! For grid cells with a fractional ice area, derive the ice surface
 ! temperature from the area-averaged surface temperature (the blended
 ! result of the open-water values (SST) and the ice-covered value).
 !
@@ -3618,10 +3586,10 @@ HFX_SEA, LH_SEA, QFX_SEA, QGH_SEA, QSFC_SEA, TSK_SEA,  &
                                                    !-- ice fraction and surface temperature.
 
       REAL, DIMENSION( ims:ime , jms:jme ), INTENT(IN)    :: XICE        ! Ice fraction
-      REAL                                , INTENT(IN)    :: XICE_THRESHOLD 
+      REAL                                , INTENT(IN)    :: XICE_THRESHOLD
       REAL, DIMENSION( ims:ime , jms:jme ), INTENT(IN)    :: TSK         ! Surface temperature (K)
       REAL, DIMENSION( ims:ime , jms:jme ), INTENT(INOUT) :: SST         ! Sea surface temperature (K)
-      REAL, DIMENSION( ims:ime , jms:jme ), INTENT(OUT)   :: TSK_SEA     ! Sfc temp of open water portion of grid cell 
+      REAL, DIMENSION( ims:ime , jms:jme ), INTENT(OUT)   :: TSK_SEA     ! Sfc temp of open water portion of grid cell
       REAL, DIMENSION( ims:ime , jms:jme ), INTENT(OUT)   :: TSK_ICE     ! Sfc temp of ice oprtion of grid cell
 
 ! Local
@@ -3630,11 +3598,11 @@ HFX_SEA, LH_SEA, QFX_SEA, QGH_SEA, QSFC_SEA, TSK_SEA,  &
       DO j = JTS , JTE
          DO i = ITS , ITE
             IF ( ( XICE(i,j) >= XICE_THRESHOLD ) .AND. ( XICE(I,J) <= 1.0 ) ) THEN
- 
+
                IF ( SST(i,j) < 271.4 ) THEN
                   SST(i,j) = 271.4
                ENDIF
- 
+
                IF (sfc_layer_values) THEN
                   IF ( SST(i,j) > 273. .AND. itimestep <= 3) then
                      ! Why the dependence on the time step count, here?
@@ -3650,18 +3618,18 @@ HFX_SEA, LH_SEA, QFX_SEA, QGH_SEA, QSFC_SEA, TSK_SEA,  &
                   ENDIF
                ENDIF
                TSK_SEA(i,j) = SST(i,j)
- 
+
                IF ( tice2tsk_if2cold ) THEN
 !------------------------------------------------------------------------------------
 ! This avoids unphysically low ice temperatures for grid cells with low ice fractions
-! and low area-averaged temperatures.  This can happen when the initial ice fraction 
+! and low area-averaged temperatures.  This can happen when the initial ice fraction
 ! and surface temperature come from different data sets.
 !------------------------------------------------------------------------------------
                   TSK_ICE(i,j) = MIN( TSK(i,j), 273.15 )
                ELSE
                   TSK_ICE(i,j) = ( TSK(i,j) - (1.0-XICE(i,j)) * SST(i,j) ) / XICE(i,j)
                ENDIF
- 
+
                IF ( ( XICE(i,j) < 0.2 ) .AND. ( TSK(i,j) < 253.15 ) ) THEN
                   TSK_ICE(i,j) = 253.15
                ENDIF
@@ -3680,5 +3648,13 @@ HFX_SEA, LH_SEA, QFX_SEA, QGH_SEA, QSFC_SEA, TSK_SEA,  &
 
 !=======================================================================
 !=======================================================================
+
+  function weight_by_frc_urb(frc_urb, x, y)
+    implicit none
+    real :: frc_urb, x, y
+    real :: weight_by_frc_urb
+
+    weight_by_frc_urb = frc_urb * x + (1 - frc_urb) * y
+  end function weight_by_frc_urb
 
 END MODULE module_surface_driver
