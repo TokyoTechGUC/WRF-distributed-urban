@@ -409,15 +409,11 @@ CONTAINS
 
    REAL,       DIMENSION( ims:ime , jms:jme ),                    &
                INTENT(IN)    :: XICE, SNOW, LH
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-   INTEGER                                     :: IGMT
-   REAL, DIMENSION(ims:ime, 0:23, jms:jme), INTENT(IN) :: ahe24h, ame24h
-   REAL,       DIMENSION( ims:ime , jms:jme ),                    &
-               INTENT(OUT)                     :: AHE,  AME
-   REAL,       INTENT(IN)                      :: gmt,xtime
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+   INTEGER :: IGMT
+   REAL, DIMENSION(ims:ime, 0:23, jms:jme), INTENT(IN) :: AHE24H, AME24H
+   REAL, DIMENSION(ims:ime, jms:jme), INTENT(OUT) :: AHE, AME
+   REAL, INTENT(IN) :: GMT, XTIME
 
 
 ! Bep changes: variable added for urban
@@ -856,15 +852,12 @@ CONTAINS
    ENDDO
    !$OMP END PARALLEL DO
 !
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 ! Adding Anthropogenic Heat and Mositure emissions onto tendencies as sources
 !       by M.Kanda, 19 June 2007
 ! AHE and AME makes no direct effect on MOST, but just on Ta above the ground
-!
-    IGMT = MOD(INT(gmt+xtime/60.0),24)
-!    write(33,*) gmt,xtime,IGMT
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  IGMT = MOD(INT(gmt + xtime / 60.0), 24)
+
   !$OMP PARALLEL DO   &
   !$OMP PRIVATE ( ij, i,j,k, its, ite, jts, jte )
   DO ij = 1 , num_tiles
