@@ -76,11 +76,7 @@ CONTAINS
                   xlong_urb2d, xtime, za, pai_grd, fai_grd,           &
                   SVF_3d_grid, TSP_grid, CD_ORG_GRID, CD_naka_GRID,   &
 ! Nakayoshi HB output test
-                  SR_GRID, RR_GRID, HR_GRID, ELER_GRID, G0R_GRID,     &
-                  SB_GRID, RB_GRID, HB_GRID, ELEB_GRID, G0B_GRID,     &
-                  SG_GRID, RG_GRID, HG_GRID, ELEG_GRID, G0G_GRID,     &
-                  LNET_GRID, LW_GRID, SW_GRID, G_GRID, RN_GRID,       &
-                  FLXTH_GRID, FLXHUM_GRID, ALPHAC_GRID, CHS_GRID,     &
+                  CHS_GRID,     &
 ! Nakayoshi EB terms in natural category
                   sh1_rural, lh1_rural, grd1_rural, tsk1_rural,       &
                   qqq1_rural, ust1_rural,                             &
@@ -560,18 +556,9 @@ CONTAINS
      REAL :: UST_URB
 
 ! Nakayoshi 20120903 HB check output
-     REAL :: SR_naka, RR_naka, HR_naka, ELER_naka, G0R_naka
-     REAL :: SB_naka, RB_naka, HB_naka, ELEB_naka, G0B_naka
-     REAL :: SG_naka, RG_naka, HG_naka, ELEG_naka, G0G_naka
-     REAL :: LNET_naka, LW_naka, SW_naka, G_naka, RN_naka
-     REAL :: FLXTH_naka, FLXHUM_naka, ALPHAC_naka, CHS_naka
+     REAL :: CHS_naka
 
-     REAL, OPTIONAL, DIMENSION(ims:ime, jms:jme), INTENT(OUT) :: &
-       SR_GRID, RR_GRID, HR_GRID, ELER_GRID, G0R_GRID, &
-       SG_GRID, RG_GRID, HG_GRID, ELEG_GRID, G0G_GRID, &
-       SB_GRID, RB_GRID, HB_GRID, ELEB_GRID, G0B_GRID, &
-       LNET_GRID, LW_GRID, SW_GRID, G_GRID, RN_GRID, &
-       FLXTH_GRID, FLXHUM_GRID, ALPHAC_GRID, CHS_GRID
+     REAL, OPTIONAL, DIMENSION(ims:ime, jms:jme), INTENT(OUT) :: CHS_GRID
 ! to here
 
 ! Variables for multi-layer UCM (Martilli et al. 2002)
@@ -1196,11 +1183,7 @@ CONTAINS
                              ave_BH_grd_urb, xlong_urb, xtime, i, j,          &
                              pai_grd_urb, fai_grd_urb,                        &
                              SVF_3d, TSP, CD_ORG, CD_naka,                    &
-                             SR_naka, RR_naka, HR_naka, ELER_naka, G0R_naka,  &
-                             SB_naka, RB_naka, HB_naka, ELEB_naka, G0B_naka,  &
-                             SG_naka, RG_naka, HG_naka, ELEG_naka, G0G_naka,  &
-                             LNET_naka, LW_naka, SW_naka, G_naka, RN_naka,    &
-                             FLXTH_naka, FLXHUM_naka, ALPHAC_naka, CHS_naka,  &
+                             CHS_naka,                                        &
                              canopy_temp_profile,                             &
                              TH_025ZR_URB, TH_050ZR_URB,                      &
                              TH_075ZR_URB, TH_100ZR_URB, ZR_URB, Z0C_URB,     &
@@ -1235,29 +1218,6 @@ CONTAINS
 #endif
 
                         ! Local heat balance output
-                        SR_GRID(I, J) = SR_naka
-                        RR_GRID(I, J) = RR_naka
-                        HR_GRID(I, J) = HR_naka
-                        ELER_GRID(I, J) = ELER_naka
-                        G0R_GRID(I, J) = G0R_naka
-                        SG_GRID(I, J) = SG_naka
-                        RG_GRID(I, J) = RG_naka
-                        HG_GRID(I, J) = HG_naka
-                        ELEG_GRID(I, J) = ELEG_naka
-                        G0G_GRID(I, J) = G0G_naka
-                        SB_GRID(I, J) = SB_naka
-                        RB_GRID(I, J) = RB_naka
-                        HB_GRID(I, J) = HB_naka
-                        ELEB_GRID(I, J) = ELEB_naka
-                        G0B_GRID(I, J) = G0B_naka
-                        LNET_GRID(I, J) = LNET_naka
-                        LW_GRID (I, J) = LW_naka
-                        SW_GRID(I, J) = SW_naka
-                        G_GRID(I, J) = G_naka
-                        RN_GRID(I, J) = RN_naka
-                        FLXTH_GRID(I, J) = FLXTH_naka
-                        FLXHUM_GRID(I, J) = FLXHUM_naka
-                        ALPHAC_GRID(I, J) = ALPHAC_naka
                         CHS_GRID(I, J) = CHS_naka
                         SVF_3d_grid(I, J) = SVF_3d
                         TSP_grid(i, j) = TSP

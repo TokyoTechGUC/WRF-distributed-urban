@@ -279,11 +279,7 @@ MODULE module_sf_urban
                     , z0_grd, zh_grd, veg_grd, ave_BH_grd, xlong, xtime, inaka, jnaka &
                     , pai_grd, fai_grd                                &
                     , SVF_3d, TSP, CD_ORG, CD_naka                    &
-                    , SR_naka, RR_naka, HR_naka, ELER_naka, G0R_naka  &
-                    , SB_naka, RB_naka, HB_naka, ELEB_naka, G0B_naka  &
-                    , SG_naka, RG_naka, HG_naka, ELEG_naka, G0G_naka  &
-                    , LNET_naka, LW_naka, SW_naka, G_naka, RN_naka    &
-                    , FLXTH_naka, FLXHUM_naka, ALPHAC_naka, CHS_naka  &
+                    , CHS_naka  &
                     , canopy_temp_profile                             &
                     , TH_025ZR_URB, TH_050ZR_URB                      &
                     , TH_075ZR_URB, TH_100ZR_URB, ZR, Z0C             &
@@ -398,11 +394,7 @@ MODULE module_sf_urban
    REAL, INTENT(OUT) :: TH_100ZR_URB
    REAL, INTENT(OUT) :: TH_200ZR_URB
 
-   REAL, INTENT(OUT) :: SR_NAKA, RR_NAKA, HR_NAKA, ELER_NAKA, G0R_NAKA
-   REAL, INTENT(OUT) :: SB_NAKA, RB_NAKA, HB_NAKA, ELEB_NAKA, G0B_NAKA
-   REAL, INTENT(OUT) :: SG_NAKA, RG_NAKA, HG_NAKA, ELEG_NAKA, G0G_NAKA
-   REAL, INTENT(OUT) :: LNET_NAKA, LW_NAKA, SW_NAKA, G_NAKA, RN_NAKA
-   REAL, INTENT(OUT) :: FLXTH_NAKA, FLXHUM_NAKA, ALPHAC_NAKA, CHS_NAKA
+   REAL, INTENT(OUT) :: CHS_NAKA
 
    CHARACTER(LEN=512) :: MESSAGE
 
@@ -830,11 +822,6 @@ MODULE module_sf_urban
 
    END IF
 
-   SR_naka = SR
-   RR_naka = RR
-   HR_naka = HR
-   ELER_naka = ELER
-   G0R_naka = G0R
 
    FLXTHR=HR/RHO/CP/100.
    FLXHUMR=ELER/RHO/EL/100.
@@ -1098,17 +1085,6 @@ MODULE module_sf_urban
 
    END IF
 
-   SG_naka = SG
-   RG_naka = RG
-   HG_naka = HG
-   ELEG_naka = ELEG
-   G0G_naka = G0G
-   SB_naka = SB
-   RB_naka = RB
-   HB_naka = HB
-   ELEB_naka = ELEB
-   G0B_naka = G0B
-
 
    FLXTHB=HB/RHO/CP/100.
    FLXHUMB=ELEB/RHO/EL/100.
@@ -1151,14 +1127,6 @@ MODULE module_sf_urban
    TST = -FLXTH/UST               ! T* [K]
    QST = -FLXHUM/UST              ! q* [-]
 
-   LNET_naka = LNET*697.7*60
-   LW_naka = LW
-   SW_naka = SW
-   G_naka = G
-   RN_naka = RN
-   FLXTH_naka = SH
-   FLXHUM_naka = LH
-   ALPHAC_naka = ALPHAC/(RHO*CP)
 
 !------------------------------------------------------
 !  diagnostic GRID AVERAGED  PSIM  PSIH  TS QS --> WRF

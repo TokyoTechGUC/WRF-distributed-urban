@@ -545,20 +545,14 @@ BENCH_START(surf_driver_tim)
      &        ,za=grid%za                                          &
      &        ,PAI_GRD=grid%pai_grd                                          &
      &        ,FAI_GRD=grid%fai_grd                                          &
-     &        ,SVF_3D_GRID=grid%svf_3d_grid,TSP_GRID=grid%tsp_grid          &   !20121212
-     &        ,CD_ORG_GRID=grid%cd_org_grid,CD_NAKA_GRID=grid%cd_naka_grid  &  !20121212
-! Nakayoshi HB output test
-     &        ,SR_GRID=grid%sr_grid,RR_GRID=grid%rr_grid,HR_GRID=grid%hr_grid,ELER_GRID=grid%eler_grid,G0R_GRID=grid%g0r_grid &
-     &        ,SB_GRID=grid%sb_grid,RB_GRID=grid%rb_grid,HB_GRID=grid%hb_grid,ELEB_GRID=grid%eleb_grid,G0B_GRID=grid%g0b_grid &
-     &        ,SG_GRID=grid%sg_grid,RG_GRID=grid%rg_grid,HG_GRID=grid%hg_grid,ELEG_GRID=grid%eleg_grid,G0G_GRID=grid%g0g_grid &
-     &        ,LNET_GRID=grid%lnet_grid,LW_GRID=grid%lw_grid,SW_GRID=grid%sw_grid,G_GRID=grid%g_grid,RN_GRID=grid%rn_grid     &
-     &        ,FLXTH_GRID=grid%flxth_grid,FLXHUM_GRID=grid%flxhum_grid,ALPHAC_GRID=grid%alphac_grid,CHS_GRID=grid%chs_grid    &
-! to here
+     &        ,SVF_3D_GRID=grid%svf_3d_grid,TSP_GRID=grid%tsp_grid          &
+     &        ,CD_ORG_GRID=grid%cd_org_grid,CD_NAKA_GRID=grid%cd_naka_grid  &
+              , CHS_GRID=grid%chs_grid    &
 ! Nakayoshi EB terms in natural categor
-	      ,SH1_RURAL=grid%sh1_rural,LH1_RURAL=grid%lh1_rural,GRD1_RURAL=grid%grd1_rural,TSK1_RURAL=grid%tsk1_rural         &
+              ,SH1_RURAL=grid%sh1_rural,LH1_RURAL=grid%lh1_rural,GRD1_RURAL=grid%grd1_rural,TSK1_RURAL=grid%tsk1_rural         &
               ,QQQ1_RURAL=grid%qqq1_rural,UST1_RURAL=grid%ust1_rural,UST_URB2d=grid%ust_urb2d                                  &
 ! Nakayoshi urban fraction change 20130119
-	      ,SECOND=grid%second,MOD_FRC_URB2D=grid%mod_frc_urb2d   &
+              ,SECOND=grid%second,MOD_FRC_URB2D=grid%mod_frc_urb2d   &
               ,CANOPY_TEMP_PROFILE=config_flags%canopy_temp_profile  &  !VARQUEZ 20150324
               ,T_025ZR_URB2D=grid%t_025zr_urb2d                      &  !VARQUEZ 20150324
               ,T_050ZR_URB2D=grid%t_050zr_urb2d                      &  !VARQUEZ 20150324

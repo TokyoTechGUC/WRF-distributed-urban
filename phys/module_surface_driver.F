@@ -116,11 +116,7 @@ CONTAINS
                 , fai_grd                                             &
                 , SVF_3d_grid, TSP_grid                               &
                 , CD_ORG_GRID, CD_naka_GRID                           &
-                , SR_GRID, RR_GRID, HR_GRID, ELER_GRID, G0R_GRID      &
-                , SB_GRID, RB_GRID, HB_GRID, ELEB_GRID, G0B_GRID      &
-                , SG_GRID, RG_GRID, HG_GRID, ELEG_GRID, G0G_GRID      &
-                , LNET_GRID, LW_GRID, SW_GRID, G_GRID, RN_GRID        &
-                , FLXTH_GRID, FLXHUM_GRID, ALPHAC_GRID, CHS_GRID      &
+                , CHS_GRID                                            &
                 , sh1_rural, lh1_rural, grd1_rural, tsk1_rural        &
                 , qqq1_rural, ust1_rural, ust_urb2d                   &
                 , second, mod_frc_urb2d                               &
@@ -770,12 +766,7 @@ CONTAINS
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: CD_naka_GRID
      REAL, INTENT(IN) :: XTIME
 !
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: &
-       SR_GRID, RR_GRID, HR_GRID, ELER_GRID, G0R_GRID, &
-       SG_GRID, RG_GRID, HG_GRID, ELEG_GRID, G0G_GRID, &
-       SB_GRID, RB_GRID, HB_GRID, ELEB_GRID, G0B_GRID, &
-       LNET_GRID, LW_GRID, SW_GRID, G_GRID, RN_GRID, &
-       FLXTH_GRID, FLXHUM_GRID, ALPHAC_GRID, CHS_GRID
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: CHS_GRID
 
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: &
        sh1_rural, lh1_rural, grd1_rural, tsk1_rural, &
@@ -1666,18 +1657,14 @@ CONTAINS
                 !Nakayoshi roughness length Z0
                 , z0_grd, zh_grd, veg_grd, ave_BH_grd        &
                 , xlong_urb2d, xtime, za, pai_grd, fai_grd           &
-                , SVF_3d_grid, TSP_grid, CD_ORG_GRID, CD_naka_GRID  &  !20121212
+                , SVF_3d_grid, TSP_grid, CD_ORG_GRID, CD_naka_GRID  &
                 ! Nakayoshi HB output test
-                , SR_GRID, RR_GRID, HR_GRID, ELER_GRID, G0R_GRID       &
-                , SB_GRID, RB_GRID, HB_GRID, ELEB_GRID, G0B_GRID       &
-                , SG_GRID, RG_GRID, HG_GRID, ELEG_GRID, G0G_GRID       &
-                , LNET_GRID, LW_GRID, SW_GRID, G_GRID, RN_GRID         &
-                , FLXTH_GRID, FLXHUM_GRID, ALPHAC_GRID, CHS_GRID      &
+                , CHS_GRID      &
                 , sh1_rural, lh1_rural, grd1_rural, tsk1_rural       &
                 , qqq1_rural, ust1_rural                           &
                 , second, mod_frc_urb2d                            &
-                , canopy_temp_profile                             & !VARQUEZ 20150324
-                , th_025zr, th_050zr, th_075zr, th_100zr, zr_urb2d, z0c_urb2d & !VARQUEZ 20150324
+                , canopy_temp_profile                             &
+                , th_025zr, th_050zr, th_075zr, th_100zr, zr_urb2d, z0c_urb2d &
                 , th_200zr              &
                 )
 
@@ -1785,14 +1772,8 @@ CONTAINS
 #endif
            T2_URB2D(I,J) = TH2_URB2D(I,J)                       !TH2 actually T2.
            TH2_URB2D(I,J) = T2_URB2D(I,J) * ((1.E5 / PSFC(I,J)) ** RCP) !Correct TH2
-           SB_GRID(I,J) = TH2(I,J)
-           RB_GRID(I,J) = T2(I,J)
-           HB_GRID(I,J) = Q2(I,J)
            AKHS(I,J) = CHS(I,J)  !rural value
            IF ((XLAND(I,J) <= 1.5) .and. (mod_frc_urb2d(I,J) >= 0.01)) THEN ! area averaged
-              SR_GRID(I,J) = TH2_URB2D(I,J)
-              RR_GRID(I,J) = T2_URB2D(I,J)
-              HR_GRID(I,J) = Q2_URB2D(I,J)
               U10(I,J)  = weight_by_frc_urb(MOD_FRC_URB2D(I,J), U10_URB2D(I,J), U10(i,J))
               V10(I,J)  = weight_by_frc_urb(MOD_FRC_URB2D(I,J), V10_URB2D(I,J), V10(I,J))
               PSIM(I,J) = weight_by_frc_urb(MOD_FRC_URB2D(I,J), PSIM_URB2D(I,J), PSIM(I,J))
@@ -1803,10 +1784,6 @@ CONTAINS
               T2(I,J)   = weight_by_frc_urb(MOD_FRC_URB2D(I,J), T2_URB2D(I,J), T2(I,J))
               TH2(I,J)  = weight_by_frc_urb(MOD_FRC_URB2D(I,J), TH2_URB2D(I,J), TH2(I,J))
               Q2(I,J)   = weight_by_frc_urb(MOD_FRC_URB2D(I,J), Q2_URB2D(I,J), Q2(I,J))
-           ELSE
-              SR_GRID(I,J) = 0.
-              RR_GRID(I,J) = 0.
-              HR_GRID(I,J) = 0.
            END IF                                             !urban
          ENDDO                                                !urban
        ENDDO                                                  !urban
