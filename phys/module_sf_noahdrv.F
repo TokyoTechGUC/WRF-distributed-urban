@@ -74,7 +74,6 @@ CONTAINS
 ! Nakayoshi roughness lengh
                   z0_grd, zh_grd, veg_grd, ave_BH_grd,                &
                   xlong_urb2d, xtime, za, pai_grd, fai_grd,           &
-                  SVF_3d_grid, TSP_grid, CD_ORG_GRID, CD_naka_GRID,   &
 ! Nakayoshi HB output test
                   CHS_GRID,     &
 ! Nakayoshi EB terms in natural category
@@ -413,10 +412,6 @@ CONTAINS
      real,optional,dimension(ims:ime,jms:jme),intent(out)::za !output variable
      real,optional,dimension(ims:ime,jms:jme),intent(in)::pai_grd !input variable
      real,optional,dimension(ims:ime,jms:jme),intent(in)::fai_grd !input variable
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::SVF_3d_grid   !20121212
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::TSP_grid      !20121212
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::CD_ORG_GRID   !20121212
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::CD_naka_GRID  !20121212
 ! to here
 ! Nakayoshi 20130109 debug EB terms in natural category
      real,optional,dimension(ims:ime,jms:jme),intent(out)::sh1_rural
@@ -475,10 +470,6 @@ CONTAINS
      REAL :: AVE_BH_GRD_URB   ! building height                       [m]
      REAL :: PAI_GRD_URB     ! plane area index
      REAL :: FAI_GRD_URB     ! frontal area index
-     REAL :: SVF_3d     !20121212
-     REAL :: TSP        !20121212
-     REAL :: CD_ORG     !20121212
-     REAL :: CD_NAKA    !20121212
      REAL :: Max_vegfra ! 20130418  1-mod_frc_urb2d
      REAL, PARAMETER :: Min_vegfra = 0.1 ! 20130418 confirm if min_vegfra has consisitent with rural_urb_frc_v2.f90
      REAL, INTENT(IN) :: XTIME
@@ -1182,7 +1173,6 @@ CONTAINS
                              z0_grd_urb, zh_grd_urb, veg_grd_urb,             &
                              ave_BH_grd_urb, xlong_urb, xtime, i, j,          &
                              pai_grd_urb, fai_grd_urb,                        &
-                             SVF_3d, TSP, CD_ORG, CD_naka,                    &
                              CHS_naka,                                        &
                              canopy_temp_profile,                             &
                              TH_025ZR_URB, TH_050ZR_URB,                      &
@@ -1219,10 +1209,6 @@ CONTAINS
 
                         ! Local heat balance output
                         CHS_GRID(I, J) = CHS_naka
-                        SVF_3d_grid(I, J) = SVF_3d
-                        TSP_grid(i, j) = TSP
-                        CD_ORG_GRID(I, J) = CD_ORG
-                        CD_naka_GRID(I, J) = CD_naka
 
                         TS_URB2D(I,J) = TS_URB
 

@@ -278,7 +278,6 @@ MODULE module_sf_urban
                     U10,V10,TH2,Q2,UST                                & ! O
                     , z0_grd, zh_grd, veg_grd, ave_BH_grd, xlong, xtime, inaka, jnaka &
                     , pai_grd, fai_grd                                &
-                    , SVF_3d, TSP, CD_ORG, CD_naka                    &
                     , CHS_naka  &
                     , canopy_temp_profile                             &
                     , TH_025ZR_URB, TH_050ZR_URB                      &
@@ -502,12 +501,11 @@ MODULE module_sf_urban
    REAL :: PSIX, PSIT, PSIX2, PSIT2, PSIX10, PSIT10
 
    REAL :: TRP, TBP, TGP, TCP, QCP, TST, QST
-   REAL :: TSP, T1VS, CHC_1, HOVL, VLOC, VMOD, SVF_3D
+   REAL :: TSP, T1VS, CHC_1, HOVL, VLOC, VMOD
    REAL :: PAI_LOCAL, FAI_LOCAL
 
    INTEGER :: iteration, K
    INTEGER :: tloc
-   REAL :: CD_ORG, CHS_ORG, CD_NAKA
 
 !-------------------------------------------------------------------------------
 ! Set parameters
@@ -565,8 +563,7 @@ MODULE module_sf_urban
    HOVL = FAI_LOCAL * PAI_LOCAL ** (-0.5) / (1. - PAI_LOCAL ** 0.5)
    VLOC = COS(ATAN(2. * HOVL)) * (2. - 4. / PI * ATAN(COS(ATAN(2. * HOVL))))
    VMOD = 0.1120 * PAI_LOCAL * VLOC - 0.4817 * PAI_LOCAL + 0.0246 * VLOC + 0.9570
-   SVF_3D = VLOC * VMOD
-   SVF = SVF_3D
+   SVF = VLOC * VMOD
    IF (.NOT. SHADOW) THEN              ! NO SHADOW EFFECTS MODEL
       HGT = FAI_LOCAL
    ELSE
@@ -1153,8 +1150,6 @@ MODULE module_sf_urban
    GZ1OZ0 = ALOG(Z/Z0)
    ! CD = drag_coefficient [-]
    CD = 0.4**2./(ALOG(Z/Z0)-PSIM)**2.
-   CD_ORG = CDC
-   CD_NAKA = CMC_URB
    CHS_NAKA = 0.4 * UST / (ALOG(Z / Z0H) - PSIH) !CH*UA
 !
 !m   CH = 0.4**2./(ALOG(Z/Z0)-PSIM)/(ALOG(Z/Z0H)-PSIH)

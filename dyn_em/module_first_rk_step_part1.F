@@ -545,8 +545,6 @@ BENCH_START(surf_driver_tim)
      &        ,za=grid%za                                          &
      &        ,PAI_GRD=grid%pai_grd                                          &
      &        ,FAI_GRD=grid%fai_grd                                          &
-     &        ,SVF_3D_GRID=grid%svf_3d_grid,TSP_GRID=grid%tsp_grid          &
-     &        ,CD_ORG_GRID=grid%cd_org_grid,CD_NAKA_GRID=grid%cd_naka_grid  &
               , CHS_GRID=grid%chs_grid    &
 ! Nakayoshi EB terms in natural categor
               ,SH1_RURAL=grid%sh1_rural,LH1_RURAL=grid%lh1_rural,GRD1_RURAL=grid%grd1_rural,TSK1_RURAL=grid%tsk1_rural         &
