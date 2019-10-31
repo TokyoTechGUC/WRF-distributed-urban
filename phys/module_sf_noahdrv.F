@@ -1309,6 +1309,8 @@ CONTAINS
                         endif
 #endif
 
+
+
 ! Renew Urban State Varialbes
 
                         TR_URB2D(I,J) = TR_URB
@@ -1355,7 +1357,7 @@ CONTAINS
                          TH_200ZR(i, j) = TH_200ZR_URB
                          ZR_URB2D(i, j) = ZR_URB
                          Z0C_URB2D(i, j) = Z0C_URB
-                        ENDIF
+                        END IF
 
                         IF (PRESENT(CMR_SFCDIF)) THEN
                            CMR_SFCDIF(I,J) = CMR_URB

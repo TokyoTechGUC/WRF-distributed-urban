@@ -657,6 +657,7 @@ state    real   DZB             l        em      -            Z     r        "DZ
 state    real   DZG             l        em      -            Z     r        "DZG"            "THICKNESSES OF ROAD LAYERS"                      "m"
 
 # lsm State Variables
+
 # Nakayoshi 2012.08.23
 state    real   ZA             ij       misc        1        -     rh01du=(copy_fcnm)                "ZA"     "Height at first atmospheric level" "m"
 # to here

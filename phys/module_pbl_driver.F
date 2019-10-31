@@ -1422,25 +1422,22 @@ CONTAINS
 
      ENDIF       !idiff
 #endif
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Adding Anthropogenic Heat and Mositure emissions onto tendencies as sources
 !       by M.Kanda, 19 June 2007
 ! AHE and AME makes no direct effect on MOST, but just on Ta above the ground
-!
-     DO j=jts,jte
-       DO i=its,ite
-         AHE(i, j) = ahe24h(i, IGMT, j) / 1200.0
-         AME(i, j) = ame24h(i, IGMT, j) / 2.45e6
-       ENDDO
-     ENDDO
-!
-     DO j=jts,jte
-       DO i=its,ite
-         rthblten(i,1,j)=rthblten(i,1,j)+(AHE(i,j)/dz8w(i,1,j))
-         rqvblten(i,1,j)=rqvblten(i,1,j)+(AME(i,j)/dz8w(i,1,j))
-       ENDDO
-     ENDDO
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     DO j = jts, jte
+       DO i = its, ite
+         AHE(i, j) = AHE24H(i, IGMT, j) / 1200.0
+         AME(i, j) = AME24H(i, IGMT, j) / 2.45e6
+       END DO
+     END DO
+
+     DO j = jts, jte
+       DO i = its, ite
+         RTHBLTEN(i, 1, j) = RTHBLTEN(i, 1, j) + AHE(i, j) / DZ8W(i, 1, j)
+         RQVBLTEN(i, 1, j) = RQVBLTEN(i, 1, j) + AME(i, j) / DZ8W(i, 1, j)
+       END DO
+     END DO
 
    ENDDO
    !$OMP END PARALLEL DO
