@@ -114,8 +114,6 @@ CONTAINS
                 , xtime, za                                           &
                 , pai_grd                                             &
                 , fai_grd                                             &
-                , SVF_3d_grid, TSP_grid                               &
-                , CD_ORG_GRID, CD_naka_GRID                           &
                 , CHS_GRID                                            &
                 , sh1_rural, lh1_rural, grd1_rural, tsk1_rural        &
                 , qqq1_rural, ust1_rural, ust_urb2d                   &
@@ -760,10 +758,6 @@ CONTAINS
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: ZA ! first atmospheric level [m]
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: PAI_GRD ! plan area index [-]
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: FAI_GRD ! frontal area index [-]
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: SVF_3d_grid
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: TSP_grid
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: CD_ORG_GRID
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: CD_naka_GRID
      REAL, INTENT(IN) :: XTIME
 !
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: CHS_GRID
@@ -1657,7 +1651,6 @@ CONTAINS
                 !Nakayoshi roughness length Z0
                 , z0_grd, zh_grd, veg_grd, ave_BH_grd        &
                 , xlong_urb2d, xtime, za, pai_grd, fai_grd           &
-                , SVF_3d_grid, TSP_grid, CD_ORG_GRID, CD_naka_GRID  &
                 ! Nakayoshi HB output test
                 , CHS_GRID      &
                 , sh1_rural, lh1_rural, grd1_rural, tsk1_rural       &

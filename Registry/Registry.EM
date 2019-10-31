@@ -672,12 +672,6 @@ state    real   tsk1_rural     ij       misc        1        -     rh01du=(copy_
 state    real   qqq1_rural     ij       misc        1        -     rh01du=(copy_fcnm)                "qqq1_rural"   "q in natural category" "K"
 state    real   ust1_rural     ij       misc        1        -     rh01du=(copy_fcnm)                "ust1_rural"   "ust in natural category" "m s-1"
 state    real   ust_urb2d      ij       misc        1        -     rh01du=(copy_fcnm)                "ust_urb2d"    "ust in urban category" "m s-1"
-# Nakayoshi 20121212
-state    real   SVF_3D_GRID    ij       misc        1        -     r01du=(copy_fcnm)                "SVF_3D_GRID"    "sky view factor" ""
-state    real   TSP_GRID       ij       misc        1        -     r01du=(copy_fcnm)                "TSP_GRID"       "complete surface temperature" "K"
-state    real   CD_ORG_GRID    ij       misc        1        -     r01du=(copy_fcnm)                "CD_ORG_GRID"    "drag coefficient" ""
-state    real   CD_NAKA_GRID   ij       misc        1        -     r01du=(copy_fcnm)                "CD_NAKA_GRID"   "CMC_URB" "m s-1"
-#to here
 state    real   SMOIS            ilj     -          1         Z     i02rhd=(interp_mask_land_field:lu_index)u=(copy_fcnm)    "SMOIS"            "SOIL MOISTURE"     "m3 m-3"
 state    real   SH2O             ilj     -          1         Z     i02rhd=(interp_mask_land_field:lu_index)u=(copy_fcnm)    "SH2O"             "SOIL LIQUID WATER" "m3 m-3"
 state    real   SMCREL           ilj     -          1         Z     i02rhd=(interp_mask_land_field:lu_index)u=(copy_fcnm)    "SMCREL"           "RELATIVE SOIL MOISTURE" ""
