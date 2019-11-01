@@ -749,7 +749,7 @@ CONTAINS
                   ENDIF
                ENDIF
 !***
-               IF((XLAND(I,J)-1.5).GE.0.)THEN                   ! begining of land/sea if block
+               land_sea_if: IF (XLAND(I,J) >= 1.5) THEN
 ! Open water points
 ! In open water case,urban is not considered Nakayoshi
                   TSK_RURAL(I,J)=TSK(I,J)
@@ -765,7 +765,7 @@ CONTAINS
                   tsk1_rural(I,J)=TSK_RURAL(I,J)
                   qqq1_rural(I,J)=QSFC(I,J)
                   ust1_rural(I,J)=UST(I,J)
-               ELSE
+               ELSE land_sea_if
 ! Land or sea-ice case
 
                   IF (XICE(I,J) >= XICE_THRESHOLD) THEN
@@ -1337,7 +1337,7 @@ CONTAINS
                      SNOPCX(I,J)=SNOPCX(I,J)-SNOMLT/FDTLIW
                   ENDIF
 
-               ENDIF                                                           ! endif of land-sea test
+               ENDIF land_sea_if
 
  100      CONTINUE                               ! of I loop
 
