@@ -3621,7 +3621,7 @@ HFX_SEA, LH_SEA, QFX_SEA, QGH_SEA, QSFC_SEA, TSK_SEA,  &
 
   function weight_by_frc_urb(frc_urb, x, y)
     implicit none
-    real :: frc_urb, x, y
+    real, intent(in) :: frc_urb, x, y
     real :: weight_by_frc_urb
 
     weight_by_frc_urb = frc_urb * x + (1 - frc_urb) * y

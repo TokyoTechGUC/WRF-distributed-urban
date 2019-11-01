@@ -1524,7 +1524,7 @@ CONTAINS
 
   function weight_by_frc_urb(frc_urb, x, y)
     implicit none
-    real :: frc_urb, x, y
+    real, intent(in) :: frc_urb, x, y
     real :: weight_by_frc_urb
 
     weight_by_frc_urb = frc_urb * x + (1 - frc_urb) * y
