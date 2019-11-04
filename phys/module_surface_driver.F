@@ -1720,8 +1720,8 @@ CONTAINS
            ENDDO
            ENDDO
 
-          CALL SFCDIAGS(SH1_RURAL, (LH1_RURAL / 2.442E+06),  & !2.442E06 latent heat; land rural part
-             TSK1_RURAL, QQQ1_RURAL,CHS2,CQS2,T2,TH2,Q2,    &
+          CALL SFCDIAGS(HFX, (LH1_RURAL / 2.442E+06),  & !2.442E06 latent heat; land rural part
+             TSK,QSFC,CHS2,CQS2,T2,TH2,Q2,    &
              PSFC,CP,R_d,RCP,                              &
              ids,ide, jds,jde, kds,kde,                    &
              ims,ime, jms,jme, kms,kme,                    &
