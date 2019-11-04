@@ -658,19 +658,10 @@ state    real   DZG             l        em      -            Z     r        "DZ
 
 # lsm State Variables
 
-# Nakayoshi 2012.08.23
 state    real   ZA             ij       misc        1        -     rh01du=(copy_fcnm)                "ZA"     "Height at first atmospheric level" "m"
-# to here
 # Nakayoshi 20120904 local heat balance check from ucm
 state    real   CHS_GRID       ij       misc        1        -     rh01du=(copy_fcnm)                "CHS_GRID"    "scalar transfer above canopy2" "m s-1"
-# to here
 # Nakayoshi 20130109 debug EB terms in natural category
-state    real   sh1_rural      ij       misc        1        -     rh01du=(copy_fcnm)                "sh1_rural"    "hfx in natural category" "W m-2"
-state    real   lh1_rural      ij       misc        1        -     rh01du=(copy_fcnm)                "lh1_rural"    "lh in natural category" "W m-2"
-state    real   grd1_rural     ij       misc        1        -     rh01du=(copy_fcnm)                "grd1_rural"   "grd flux in natural category" "W m-2"
-state    real   tsk1_rural     ij       misc        1        -     rh01du=(copy_fcnm)                "tsk1_rural"   "tsk in natural category" "K"
-state    real   qqq1_rural     ij       misc        1        -     rh01du=(copy_fcnm)                "qqq1_rural"   "q in natural category" "K"
-state    real   ust1_rural     ij       misc        1        -     rh01du=(copy_fcnm)                "ust1_rural"   "ust in natural category" "m s-1"
 state    real   ust_urb2d      ij       misc        1        -     rh01du=(copy_fcnm)                "ust_urb2d"    "ust in urban category" "m s-1"
 state    real   SMOIS            ilj     -          1         Z     i02rhd=(interp_mask_land_field:lu_index)u=(copy_fcnm)    "SMOIS"            "SOIL MOISTURE"     "m3 m-3"
 state    real   SH2O             ilj     -          1         Z     i02rhd=(interp_mask_land_field:lu_index)u=(copy_fcnm)    "SH2O"             "SOIL LIQUID WATER" "m3 m-3"

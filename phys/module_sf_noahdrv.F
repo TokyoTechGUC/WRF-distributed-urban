@@ -77,8 +77,7 @@ CONTAINS
 ! Nakayoshi HB output test
                   CHS_GRID,     &
 ! Nakayoshi EB terms in natural category
-                  sh1_rural, lh1_rural, grd1_rural, tsk1_rural,       &
-                  qqq1_rural, ust1_rural,                             &
+                  hfx_rural, lh_rural, tsk_rural, qsfc_rural,         &
 ! Nakayoshi mod_urb_frc 20130122
                   second, mod_frc_urb2d,                              &
                   canopy_temp_profile,                                &
@@ -413,14 +412,6 @@ CONTAINS
      real,optional,dimension(ims:ime,jms:jme),intent(in)::pai_grd !input variable
      real,optional,dimension(ims:ime,jms:jme),intent(in)::fai_grd !input variable
 ! to here
-! Nakayoshi 20130109 debug EB terms in natural category
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::sh1_rural
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::lh1_rural
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::grd1_rural
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::tsk1_rural
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::qqq1_rural !mixing ratio
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::ust1_rural
-!to here
 ! Nakayoshi mod_frc_urb2d 20130122
      real,optional,dimension(ims:ime,jms:jme),intent(in) ::mod_frc_urb2d
      real,optional,dimension(ims:ime,jms:jme),intent(in) ::second
@@ -593,10 +584,11 @@ CONTAINS
    REAL, OPTIONAL, DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT(INOUT) ::sf_bep  !Fraction air at the face of grid cell
    REAL, OPTIONAL, DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT(INOUT) ::dl_u_bep  !Length scale
 
+   REAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: HFX_RURAL, LH_RURAL, TSK_RURAL, QSFC_RURAL
 ! Local variables for multi-layer UCM (Martilli et al. 2002)
-   REAL,    DIMENSION( ims:ime, jms:jme ) :: HFX_RURAL,LH_RURAL,GRDFLX_RURAL,RN_RURAL
-   REAL,    DIMENSION( ims:ime, jms:jme ) :: QFX_RURAL,QSFC_RURAL,UMOM_RURAL,VMOM_RURAL
-   REAL,    DIMENSION( ims:ime, jms:jme ) :: ALB_RURAL,EMISS_RURAL,UST_RURAL,TSK_RURAL
+   REAL,    DIMENSION( ims:ime, jms:jme ) :: GRDFLX_RURAL,RN_RURAL
+   REAL,    DIMENSION( ims:ime, jms:jme ) :: QFX_RURAL,UMOM_RURAL,VMOM_RURAL
+   REAL,    DIMENSION( ims:ime, jms:jme ) :: ALB_RURAL,EMISS_RURAL,UST_RURAL
 !   REAL,    DIMENSION( ims:ime, jms:jme ) :: GRDFLX_URB
 !   REAL,    DIMENSION( ims:ime, jms:jme ) :: QFX_URB,QSFC_URB,UMOM_URB,VMOM_URB
    REAL,    DIMENSION( ims:ime, jms:jme ) :: HFX_URB,UMOM_URB,VMOM_URB
@@ -759,12 +751,6 @@ CONTAINS
                   EMISS_RURAL(I,J)=EMISS(I,J)
                   GRDFLX_RURAL(I,J)=GRDFLX(I,J)
 
-                  sh1_rural(I,J)=HFX_RURAL(I,J)
-                  lh1_rural(I,J)=LH_RURAL(I,J)
-                  grd1_rural(I,J)=GRDFLX_RURAL(I,J)
-                  tsk1_rural(I,J)=TSK_RURAL(I,J)
-                  qqq1_rural(I,J)=QSFC(I,J)
-                  ust1_rural(I,J)=UST(I,J)
                ELSE land_sea_if
 ! Land or sea-ice case
 
@@ -1022,14 +1008,6 @@ CONTAINS
                   SNOWC(I,J)=SNCOVR
                   CHS2(I,J)=CQS2(I,J)
                   SNOTIME(I,J) = SNOTIME1
-
-! Nakayoshi 20130109 debug EB terms in natural category
-                  sh1_rural(i,j) = SHEAT
-                  lh1_rural(i,j) = eta
-                  grd1_rural(i,j) = ssoil
-                  tsk1_rural(i,j) = t1
-                  qqq1_rural(i,j) = Q1 / (1.0 - Q1)
-                  ust1_rural(i,j) = ust(i,j)
 
 !      prevent diagnostic ground q (q1) from being greater than qsat(tsk)
 !      as happens over snow cover where the cqs2 value also becomes irrelevant

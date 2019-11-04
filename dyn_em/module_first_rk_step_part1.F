@@ -545,20 +545,16 @@ BENCH_START(surf_driver_tim)
      &        ,za=grid%za                                          &
      &        ,PAI_GRD=grid%pai_grd                                          &
      &        ,FAI_GRD=grid%fai_grd                                          &
-              , CHS_GRID=grid%chs_grid    &
-! Nakayoshi EB terms in natural categor
-              ,SH1_RURAL=grid%sh1_rural,LH1_RURAL=grid%lh1_rural,GRD1_RURAL=grid%grd1_rural,TSK1_RURAL=grid%tsk1_rural         &
-              ,QQQ1_RURAL=grid%qqq1_rural,UST1_RURAL=grid%ust1_rural,UST_URB2d=grid%ust_urb2d                                  &
-! Nakayoshi urban fraction change 20130119
+              ,CHS_GRID=grid%chs_grid                                &
+              ,UST_URB2d=grid%ust_urb2d                              &
               ,SECOND=grid%second,MOD_FRC_URB2D=grid%mod_frc_urb2d   &
-              ,CANOPY_TEMP_PROFILE=config_flags%canopy_temp_profile  &  !VARQUEZ 20150324
-              ,T_025ZR_URB2D=grid%t_025zr_urb2d                      &  !VARQUEZ 20150324
-              ,T_050ZR_URB2D=grid%t_050zr_urb2d                      &  !VARQUEZ 20150324
-              ,T_075ZR_URB2D=grid%t_075zr_urb2d                      &  !VARQUEZ 20150324
-              ,T_100ZR_URB2D=grid%t_100zr_urb2d                      &  !VARQUEZ 20150324
-              ,T_200ZR_URB2D=grid%t_200zr_urb2d                      &  !KAWANO  20150415
-              ,ZR_URB2D=grid%zr_urb2d,Z0C_URB2D=grid%z0c_urb2d)                        !VARQUEZ 20150324
-! to here
+              ,CANOPY_TEMP_PROFILE=config_flags%canopy_temp_profile  &
+              ,T_025ZR_URB2D=grid%t_025zr_urb2d                      &
+              ,T_050ZR_URB2D=grid%t_050zr_urb2d                      &
+              ,T_075ZR_URB2D=grid%t_075zr_urb2d                      &
+              ,T_100ZR_URB2D=grid%t_100zr_urb2d                      &
+              ,T_200ZR_URB2D=grid%t_200zr_urb2d                      &
+              ,ZR_URB2D=grid%zr_urb2d,Z0C_URB2D=grid%z0c_urb2d)
 BENCH_END(surf_driver_tim)
 
 !*********

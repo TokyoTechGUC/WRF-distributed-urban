@@ -115,8 +115,7 @@ CONTAINS
                 , pai_grd                                             &
                 , fai_grd                                             &
                 , CHS_GRID                                            &
-                , sh1_rural, lh1_rural, grd1_rural, tsk1_rural        &
-                , qqq1_rural, ust1_rural, ust_urb2d                   &
+                , ust_urb2d                                           &
                 , second, mod_frc_urb2d                               &
                 , canopy_temp_profile, t_025zr_urb2d, t_050zr_urb2d   &
                 , t_075zr_urb2d, t_100zr_urb2d, zr_urb2d, z0c_urb2d   &
@@ -762,13 +761,13 @@ CONTAINS
 !
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: CHS_GRID
 
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: &
-       sh1_rural, lh1_rural, grd1_rural, tsk1_rural, &
-       qqq1_rural, & ! mixing ratio
-       ust1_rural
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: SECOND
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: MOD_FRC_URB2D
 
-     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), intent(in) :: &
-       second, mod_frc_urb2d
+     REAL, DIMENSION( ims:ime, jms:jme ) :: HFX_RURAL
+     REAL, DIMENSION( ims:ime, jms:jme ) :: LH_RURAL
+     REAL, DIMENSION( ims:ime, jms:jme ) :: TSK_RURAL
+     REAL, DIMENSION( ims:ime, jms:jme ) :: QSFC_RURAL
 
      REAL, DIMENSION( ims:ime, jms:jme ) :: HFX_SEA
      REAL, DIMENSION( ims:ime, jms:jme ) :: QFX_SEA
@@ -1653,8 +1652,7 @@ CONTAINS
                 , xlong_urb2d, xtime, za, pai_grd, fai_grd           &
                 ! Nakayoshi HB output test
                 , CHS_GRID      &
-                , sh1_rural, lh1_rural, grd1_rural, tsk1_rural       &
-                , qqq1_rural, ust1_rural                           &
+                , hfx_rural, lh_rural, tsk_rural, qsfc_rural         &
                 , second, mod_frc_urb2d                            &
                 , canopy_temp_profile                             &
                 , th_025zr, th_050zr, th_075zr, th_100zr, zr_urb2d, z0c_urb2d &
@@ -1720,8 +1718,8 @@ CONTAINS
            ENDDO
            ENDDO
 
-          CALL SFCDIAGS(HFX, (LH1_RURAL / 2.442E+06),  & !2.442E06 latent heat; land rural part
-             TSK,QSFC,CHS2,CQS2,T2,TH2,Q2,    &
+          CALL SFCDIAGS(HFX_RURAL, (LH_RURAL / 2.442E+06),  & !2.442E06 latent heat; land rural part
+             TSK_RURAL,QSFC_RURAL,CHS2,CQS2,T2,TH2,Q2,    &
              PSFC,CP,R_d,RCP,                              &
              ids,ide, jds,jde, kds,kde,                    &
              ims,ime, jms,jme, kms,kme,                    &
