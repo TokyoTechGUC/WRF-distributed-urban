@@ -2413,7 +2413,7 @@ CONTAINS
                IF (VEGTYP .eq. BARE) SHDFAC = 0.0
                IF (NROOT .gt. NSOIL) THEN
                   WRITE (err_message,*) 'Error: too many root layers ',  &
-                                                 NSOIL,NROOT,VEGTYP
+                                                 NSOIL,NROOT
                   CALL wrf_error_fatal ( err_message )
 ! ----------------------------------------------------------------------
 ! CALCULATE ROOT DISTRIBUTION.  PRESENT VERSION ASSUMES UNIFORM

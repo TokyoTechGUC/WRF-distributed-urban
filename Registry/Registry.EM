@@ -92,35 +92,27 @@ state    real   prho_gc        igj      dyn_em      1        Z     i1  "PTHETA" 
 state    real   xlat_gc        ij       dyn_em      1        -     i1  "XLAT_M" "latitude, positive north" "degrees"
 state    real   xlong_gc       ij       dyn_em      1        -     i1  "XLONG_M" "longitude, positive east" "degrees"
 state    real   ht_gc          ij       dyn_em      1        -     i1  "HGT_M" "topography elevation" "m"
-state    real   disphgt        ij       dyn_em      1        -     i012rhdus  "DISP" "Zero-plane Displacement" "m" #VARQUEZ 20150318
 state    real   tsk_gc         ij       dyn_em      1        -     i1  "SKINTEMP"  "skin temperature"  "K"
-# Nakayoshi 2012.08.23
+state    real   disphgt        ij       dyn_em      1        -     i012rdus  "DISP" "Zero-plane Displacement" "m"
+state    real   z0_grd         ij       misc        1        -     i01r01d=(interp_mask_land_field:lu_index)u=(copy_fcnm)             "Z0_GRD" "roughness length for momentum"  "m"
+state    real   ave_bh_grd     ij       misc        1        -     i01r01d=(interp_mask_land_field:lu_index)u=(copy_fcnm)             "AVE_BH_GRD" "average building height" "m"
+state    real   fai_grd        ij       misc        1        -     i01r01d=(interp_mask_land_field:lu_index)u=(copy_fcnm)             "FAI_GRD" "Flane Area Index" "-"
+state    real   pai_grd        ij       misc        1        -     i01r01d=(interp_mask_land_field:lu_index)u=(copy_fcnm)             "PAI_GRD" "Plane Area Index" "-"
+state    real   AHE24H         i{hr}j   misc        1        -     ir "AHE24H" "Anthropogenic heat emission" "W m-2"
+state    real   AME24H         i{hr}j   misc        1        -     ir "AME24H" "Anthropogenic moisture emission" "W m-2"
 state    real   ZH_GRD         ij       misc        1        -     rh01du=(copy_fcnm)                "ZH_GRD" "roughness length for heat"       "m"
-state    real   Z0_GRD         ij       misc        1        -     i01r01d=(interp_mask_land_field:lu_index)u=(copy_fcnm)             "Z0_GRD" "roughness length for momentum"  "m"
 state    real   VEG_GRD        ij       misc        1        -     i01rh01d=(interp_mask_land_field:lu_index)u=(copy_fcnm)             "VEG_GRD" "vegetation fraction in urban patch" "-"
-state    real   ave_BH_GRD     ij       misc        1        -     i01r01d=(interp_mask_land_field:lu_index)u=(copy_fcnm)             "ave_BH_GRD" "average building height" "m"
-# Nakayoshi 2012.08.23
-# Nakayoshi 2012.12.12
-state    real   PAI_GRD        ij       misc        1        -     i01r01d=(interp_mask_land_field:lu_index)u=(copy_fcnm)             "PAI_GRD" "Plane Area Index" "-"
-state    real   FAI_GRD        ij       misc        1        -     i01r01d=(interp_mask_land_field:lu_index)u=(copy_fcnm)             "FAI_GRD" "Flane Area Index" "-"
-# Nakayoshi end
-# Nakayoshi 20130122 mod_frc_urb
 state    real   SECOND          ij       misc        1        -    i01r01d=(interp_mask_land_field:lu_index)u=(copy_fcnm)  "SECOND" "2nd dominant landuse category" "-"
-state    real   RURAL_URB_RATIO ij       misc        1        -    i01r01d=(interp_mask_land_field:lu_index)u=(copy_fcnm)  "RURAL_URB_RATIO" "ratio btw rural and urban" "-"
 state    real   MOD_FRC_URB2D  ij        misc        1         -   i01r01d=(interp_mask_land_field:lu_index)u=(copy_fcnm)  "MOD_FRC_URB2D" "modified urban fraction" "-"
-#to here
-#to here
-state    real   T_025ZR_URB2D   ij       misc        1        -     i01rhd    "T_025ZR_URB2D"                   "TEMP at 0.25 ZR from ground w T2 from rural"       "K" #VARQUEZ 20150324
-state    real   T_050ZR_URB2D   ij       misc        1        -     i01rhd    "T_050ZR_URB2D"                   "TEMP at 0.50 ZR from ground w T2 from rural"       "K" #VARQUEZ 20150324
-state    real   T_075ZR_URB2D   ij       misc        1        -     i01rhd    "T_075ZR_URB2D"                   "TEMP at 0.75 ZR from ground w T2 from rural"       "K" #VARQUEZ 20150324
-state    real   T_100ZR_URB2D   ij       misc        1        -     i01rhd    "T_100ZR_URB2D"                   "TEMP at 1.00 ZR from ground w T2 from rural"       "K" #VARQUEZ 20150324
-state    real   T_200ZR_URB2D   ij       misc        1        -     i01rhd    "T_200ZR_URB2D"                   "TEMP at 2.00 ZR from ground w T2 from rural"       "K" #KAWANO  20150416
 state    real   ZR_URB2D             ij       misc        1        -     rh01du=(copy_fcnm)                "ZR_URB2D"     "Assumed Average Building Height" "m"
 state    real   Z0C_URB2D            ij       misc        1        -     rh01du=(copy_fcnm)                "Z0C_URB2D"     "Assumed Roughness Length for Momentum at the Canyon" "m"
-state    real   AHE            ij       misc        1        -     rh01du=(copy_fcnm)  "AHE "   "anthropogenic heat emission"  "w m-2"
-state    real   AME            ij       misc        1        -     rh01du=(copy_fcnm)  "AME "   "anthropogenic mositure emission"  "w m-2"
-state    real   AHE24h         i{hr}j   misc        1        -     i01r "AHE24H" "Anthropogenic heat emission" "W m-2"
-state    real   AME24h         i{hr}j   misc        1        -     i01r "AME24H" "Anthropogenic moisture emission" "W m-2"
+state    real   T_025ZR_URB2D   ij       misc        1        -     h    "T_025ZR_URB2D"                   "TEMP at 0.25 ZR from ground w T2 from rural"       "K"
+state    real   T_050ZR_URB2D   ij       misc        1        -     h    "T_050ZR_URB2D"                   "TEMP at 0.50 ZR from ground w T2 from rural"       "K"
+state    real   T_075ZR_URB2D   ij       misc        1        -     h    "T_075ZR_URB2D"                   "TEMP at 0.75 ZR from ground w T2 from rural"       "K"
+state    real   T_100ZR_URB2D   ij       misc        1        -     h    "T_100ZR_URB2D"                   "TEMP at 1.00 ZR from ground w T2 from rural"       "K"
+state    real   T_200ZR_URB2D   ij       misc        1        -     h    "T_200ZR_URB2D"                   "TEMP at 2.00 ZR from ground w T2 from rural"       "K"
+state    real   AHE            ij       misc        1        -     -  "AHE"   "anthropogenic heat emission"  "w m-2"
+state    real   AME            ij       misc        1        -     -  "AME"   "anthropogenic mositure emission"  "w m-2"
 state    real   tavgsfc        ij       dyn_em      1        -     i1  "TAVGSFC"  "daily mean of surface air temperature"  "K"
 state    real   tmn_gc         ij       dyn_em      1        -     i1  "SOILTEMP"  "annual mean deep soil temperature"  "K"
 state    real   pslv_gc        ij       dyn_em      1        -     i1  "PMSL"  "sea level pressure"  "Pa"

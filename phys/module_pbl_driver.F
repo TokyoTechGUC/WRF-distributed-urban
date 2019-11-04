@@ -38,8 +38,8 @@ CONTAINS
                  ,ims,ime, jms,jme, kms,kme                        &
                  ,i_start,i_end, j_start,j_end, kts,kte, num_tiles &
              !  AHE and AME
-                 , ahe24h, ame24h &
-                 ,AHE,AME,gmt,xtime                                &
+                 , ahe24h, ame24h                                  &
+                 , AHE, AME, gmt, xtime                            &
              ! Optional
                  ,hol, mol, regime                                 &
              ! Optional gravity-wave drag

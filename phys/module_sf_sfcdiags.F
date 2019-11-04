@@ -35,14 +35,14 @@ CONTAINS
 
       DO J=jts,jte
         DO I=its,ite
-          RHO = PSFC(I,J)/(R_d * TSK(I,J)) !Density Thermodynamics first law
+          RHO = PSFC(I,J)/(R_d * TSK(I,J))
           if(CQS2(I,J).lt.1.E-5) then
              Q2(I,J)=QSFC(I,J)
           else
              Q2(I,J) = QSFC(I,J) - QFX(I,J)/(RHO*CQS2(I,J))
           endif
           if(CHS2(I,J).lt.1.E-5) then
-             T2(I,J) = TSK(I,J)
+             T2(I,J) = TSK(I,J) 
           else
              T2(I,J) = TSK(I,J) - HFX(I,J)/(RHO*CP*CHS2(I,J))
           endif
