@@ -276,7 +276,7 @@ MODULE module_sf_urban
                     GZ1OZ0,                                           & ! O
                     CMR_URB,CHR_URB,CMC_URB,CHC_URB,                  & ! I/O
                     U10,V10,TH2,Q2,UST                                & ! O
-                    , z0_grd, zh_grd, veg_grd, ave_BH_grd, xlong, xtime, inaka, jnaka &
+                    , z0_grd, zh_grd, veg_grd, ave_BH_grd             &
                     , pai_grd, fai_grd                                &
                     , CHS_LOCAL  &
                     , canopy_temp_profile                             &
@@ -353,10 +353,8 @@ MODULE module_sf_urban
    REAL, INTENT(INOUT) :: CMC_URB
    REAL, INTENT(INOUT) :: CHC_URB
 
-   REAL, INTENT(IN)    :: XLONG, VEG_GRD, Z0_GRD, AVE_BH_GRD, PAI_GRD, FAI_GRD
+   REAL, INTENT(IN)    :: VEG_GRD, Z0_GRD, AVE_BH_GRD, PAI_GRD, FAI_GRD
    REAL, INTENT(OUT)   :: ZH_GRD
-   REAL, INTENT(IN)    :: XTIME
-   INTEGER             :: INAKA, JNAKA
    REAL                :: CHS2_LOCAL
    REAL                :: VEG_LOCAL
    REAL, PARAMETER     :: VEG_MAX = 1.0
@@ -541,7 +539,7 @@ MODULE module_sf_urban
    endif
    AH = 0.
    IF (Z0C + 2. >= ZA) THEN
-    write(MESSAGE, *), "Z0C =", Z0C, "ZA =", ZA, "i =", inaka, "j =", jnaka
+    write(MESSAGE, *), "Z0C =", Z0C, "ZA =", ZA
     CALL wrf_error_fatal ("Z0C + 2m is larger than the 1st WRF level "// &
                            "Stop in subroutine urban " // MESSAGE )
    END IF

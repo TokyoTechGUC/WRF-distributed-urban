@@ -541,7 +541,6 @@ BENCH_START(surf_driver_tim)
      &        ,VEG_GRD=grid%veg_grd                                &
      &        ,ave_BH_GRD=grid%ave_BH_GRD                          &
      &        ,xlong_urb2d=grid%XLONG                              & !I urban
-     &        ,xtime=grid%xtime                                    &
      &        ,za=grid%za                                          &
      &        ,PAI_GRD=grid%pai_grd                                          &
      &        ,FAI_GRD=grid%fai_grd                                          &

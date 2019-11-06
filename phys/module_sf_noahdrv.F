@@ -73,7 +73,7 @@ CONTAINS
                   dl_u_bep,sf_bep,vl_bep,                       & !O multi-layer urban
 ! Nakayoshi roughness lengh
                   z0_grd, zh_grd, veg_grd, ave_BH_grd,                &
-                  xlong_urb2d, xtime, za, pai_grd, fai_grd,           &
+                  xlong_urb2d, za, pai_grd, fai_grd,           &
 ! Nakayoshi HB output test
                   CHS_GRID,     &
 ! Nakayoshi EB terms in natural category
@@ -402,20 +402,16 @@ CONTAINS
      REAL, OPTIONAL, DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT(IN) :: P_PHY
      REAL, OPTIONAL, DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT(IN) :: RHO
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(INOUT) :: UST
-! NAKAYOSHI roughness length
-     real,optional,dimension(ims:ime,jms:jme),intent(in)::z0_grd
-     real,optional,dimension(ims:ime,jms:jme),intent(inout)::zh_grd !output variable
-     real,optional,dimension(ims:ime,jms:jme),intent(inout)::veg_grd
-     real,optional,dimension(ims:ime,jms:jme),intent(in)::ave_BH_grd
-     real,optional,dimension(ims:ime,jms:jme),intent(in)::xlong_urb2d
-     real,optional,dimension(ims:ime,jms:jme),intent(out)::za !output variable
-     real,optional,dimension(ims:ime,jms:jme),intent(in)::pai_grd !input variable
-     real,optional,dimension(ims:ime,jms:jme),intent(in)::fai_grd !input variable
-! to here
-! Nakayoshi mod_frc_urb2d 20130122
-     real,optional,dimension(ims:ime,jms:jme),intent(in) ::mod_frc_urb2d
-     real,optional,dimension(ims:ime,jms:jme),intent(in) ::second
-!to here
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: Z0_GRD
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(INOUT):: ZH_GRD !output variable
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(INOUT) :: VEG_GRD
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: AVE_BH_GRD
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: XLONG_URB2D
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: ZA !output variable
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: PAI_GRD !input variable
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: FAI_GRD !input variable
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: MOD_FRC_URB2D
+     REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: SECOND
 
      LOGICAL, intent(in) :: rdlai2d
      LOGICAL, intent(in) :: USEMONALB
@@ -454,7 +450,6 @@ CONTAINS
      REAL, DIMENSION(1:num_road_layers) :: TGL_URB  ! road layer temp [K]
      LOGICAL  :: LSOLAR_URB
 ! NAKAYOSHI roughness length
-     REAL :: XLONG_URB      ! longitude                               [deg]
      REAL :: Z0_GRD_URB     ! roughness length                        [m]
      REAL :: ZH_GRD_URB     ! roughness length                        [m]
      REAL :: VEG_GRD_URB     ! vegetation fraction
@@ -463,7 +458,6 @@ CONTAINS
      REAL :: FAI_GRD_URB     ! frontal area index
      REAL :: Max_vegfra ! 20130418  1-mod_frc_urb2d
      REAL, PARAMETER :: Min_vegfra = 0.1 ! 20130418 confirm if min_vegfra has consisitent with rural_urb_frc_v2.f90
-     REAL, INTENT(IN) :: XTIME
 
 ! state variable surface_driver <--> lsm <--> urban
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(INOUT) :: TR_URB2D
@@ -1074,7 +1068,6 @@ CONTAINS
                         ZNT_URB   = ZNT(I,J)
 
 ! Nakayoshi roughness length
-                        XLONG_URB = XLONG_URB2D(I,J)  ! [deg]
                         Z0_GRD_URB = Z0_GRD(I,J)       ! [m]
                         Max_vegfra = 1 - mod_frc_urb2d(i, j)
                         VEG_GRD_URB = max(min_vegfra, &
@@ -1149,7 +1142,7 @@ CONTAINS
                              U10_URB, V10_URB, TH2_URB, Q2_URB,               & ! O
                              UST_URB,                                         & !O
                              z0_grd_urb, zh_grd_urb, veg_grd_urb,             &
-                             ave_BH_grd_urb, xlong_urb, xtime, i, j,          &
+                             ave_BH_grd_urb,                                  &
                              pai_grd_urb, fai_grd_urb,                        &
                              CHS_naka,                                        &
                              canopy_temp_profile,                             &

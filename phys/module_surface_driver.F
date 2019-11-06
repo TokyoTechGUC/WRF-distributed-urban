@@ -111,7 +111,7 @@ CONTAINS
                 , veg_grd                                             &
                 , ave_BH_grd                                          &
                 , xlong_urb2d                                         &
-                , xtime, za                                           &
+                , za                                                  &
                 , pai_grd                                             &
                 , fai_grd                                             &
                 , CHS_GRID                                            &
@@ -756,7 +756,6 @@ CONTAINS
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: ZA ! first atmospheric level [m]
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: PAI_GRD ! plan area index [-]
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(IN) :: FAI_GRD ! frontal area index [-]
-     REAL, INTENT(IN) :: XTIME
 !
      REAL, OPTIONAL, DIMENSION( ims:ime, jms:jme ), INTENT(OUT) :: CHS_GRID
 
@@ -1648,7 +1647,7 @@ CONTAINS
 
                 !Nakayoshi roughness length Z0
                 , z0_grd, zh_grd, veg_grd, ave_BH_grd        &
-                , xlong_urb2d, xtime, za, pai_grd, fai_grd           &
+                , xlong_urb2d, za, pai_grd, fai_grd           &
                 ! Nakayoshi HB output test
                 , CHS_GRID      &
                 , hfx_rural, lh_rural, tsk_rural, qsfc_rural         &
