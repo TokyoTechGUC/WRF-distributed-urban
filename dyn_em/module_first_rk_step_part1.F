@@ -546,7 +546,6 @@ BENCH_START(surf_driver_tim)
      &        ,PAI_GRD=grid%pai_grd                                          &
      &        ,FAI_GRD=grid%fai_grd                                          &
               ,CHS_GRID=grid%chs_grid                                &
-              ,UST_URB2d=grid%ust_urb2d                              &
               ,SECOND=grid%second,MOD_FRC_URB2D=grid%mod_frc_urb2d   &
               ,CANOPY_TEMP_PROFILE=config_flags%canopy_temp_profile  &
               ,T_025ZR_URB2D=grid%t_025zr_urb2d                      &

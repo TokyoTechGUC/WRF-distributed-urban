@@ -278,7 +278,7 @@ MODULE module_sf_urban
                     U10,V10,TH2,Q2,UST                                & ! O
                     , z0_grd, zh_grd, veg_grd, ave_BH_grd, xlong, xtime, inaka, jnaka &
                     , pai_grd, fai_grd                                &
-                    , CHS_naka  &
+                    , CHS_LOCAL  &
                     , canopy_temp_profile                             &
                     , TH_025ZR_URB, TH_050ZR_URB                      &
                     , TH_075ZR_URB, TH_100ZR_URB, ZR, Z0C             &
@@ -357,8 +357,7 @@ MODULE module_sf_urban
    REAL, INTENT(OUT)   :: ZH_GRD
    REAL, INTENT(IN)    :: XTIME
    INTEGER             :: INAKA, JNAKA
-   REAL                :: CHS_NAKA1, CHS2_NAKA, CHS_DEFAULT, CHS2_DEFAULT
-   REAL                :: TS_COMPLETE_NAKA
+   REAL                :: CHS2_LOCAL
    REAL                :: VEG_LOCAL
    REAL, PARAMETER     :: VEG_MAX = 1.0
    INTEGER, INTENT(IN) :: CANOPY_TEMP_PROFILE
@@ -393,7 +392,7 @@ MODULE module_sf_urban
    REAL, INTENT(OUT) :: TH_100ZR_URB
    REAL, INTENT(OUT) :: TH_200ZR_URB
 
-   REAL, INTENT(OUT) :: CHS_NAKA
+   REAL, INTENT(OUT) :: CHS_LOCAL
 
    CHARACTER(LEN=512) :: MESSAGE
 
@@ -1150,7 +1149,7 @@ MODULE module_sf_urban
    GZ1OZ0 = ALOG(Z/Z0)
    ! CD = drag_coefficient [-]
    CD = 0.4**2./(ALOG(Z/Z0)-PSIM)**2.
-   CHS_NAKA = 0.4 * UST / (ALOG(Z / Z0H) - PSIH) !CH*UA
+   CHS_LOCAL = 0.4 * UST / (ALOG(Z / Z0H) - PSIH) !CH*UA
 !
 !m   CH = 0.4**2./(ALOG(Z/Z0)-PSIM)/(ALOG(Z/Z0H)-PSIH)
 !m   CHS = 0.4*UST/(ALOG(Z/Z0H)-PSIH)
@@ -1183,8 +1182,6 @@ MODULE module_sf_urban
 !
 !m   CHS2 = 0.4*UST/(ALOG(2./Z0H)-PSIH2)
 !
-
-   CHS2_NAKA = 0.4 * UST / (ALOG(2. / Z0H) - PSIH2) !CH*U
 
    XXX10 = (10./Z)*XXX
    IF ( XXX10 >= 1. ) XXX10 = 1.
@@ -1226,41 +1223,41 @@ MODULE module_sf_urban
    Q2 = QS + (QA-QS)*(PSIT2/PSIT)    ! humidity at 2 m       [-]
 #endif
 
-   TH2 = TS + (TA-TS) *(CHS_naka/CHS2_naka)
-
-   Q2 = QS + (QA-QS)*(CHS_naka/CHS2_naka)     ! humidity at 2 m       [-]
+   CHS2_LOCAL = 0.4 * UST / (ALOG(2. / Z0H) - PSIH2) !CH*U
+   TH2 = TS + (TA-TS) *(CHS_LOCAL/CHS2_LOCAL)
+   Q2 = QS + (QA-QS)*(CHS_LOCAL/CHS2_LOCAL)     ! humidity at 2 m       [-]
 
 !   TS = (LW/SIG_SI/0.88)**0.25       ! Radiative temperature [K]
 
-   IF( CANOPY_TEMP_PROFILE == 1 ) THEN !VARQUEZ 20150324
-     CALL th_k_zr_urb(0.25, ZR, Z, XXX, CHS_NAKA, UST, TA, TS, Z0H, TH_025ZR_URB)
-     CALL th_k_zr_urb(0.50, ZR, Z, XXX, CHS_NAKA, UST, TA, TS, Z0H, TH_050ZR_URB)
-     CALL th_k_zr_urb(0.75, ZR, Z, XXX, CHS_NAKA, UST, TA, TS, Z0H, TH_075ZR_URB)
-     CALL th_k_zr_urb(1.00, ZR, Z, XXX, CHS_NAKA, UST, TA, TS, Z0H, TH_100ZR_URB)
-     CALL th_k_zr_urb(2.00, ZR, Z, XXX, CHS_NAKA, UST, TA, TS, Z0H, TH_200ZR_URB)
+   IF ( CANOPY_TEMP_PROFILE == 1 ) THEN
+     TH_025ZR_URB = th_k_zr_urb(0.25, ZR, Z, XXX, CHS_LOCAL, UST, TA, TS, Z0H)
+     TH_050ZR_URB = th_k_zr_urb(0.50, ZR, Z, XXX, CHS_LOCAL, UST, TA, TS, Z0H)
+     TH_075ZR_URB = th_k_zr_urb(0.75, ZR, Z, XXX, CHS_LOCAL, UST, TA, TS, Z0H)
+     TH_100ZR_URB = th_k_zr_urb(1.00, ZR, Z, XXX, CHS_LOCAL, UST, TA, TS, Z0H)
+     TH_200ZR_URB = th_k_zr_urb(2.00, ZR, Z, XXX, CHS_LOCAL, UST, TA, TS, Z0H)
    ENDIF
 
    END SUBROUTINE urban
 
-   SUBROUTINE th_k_zr_urb(K, ZR, Z, XXX, CHS_NAKA, UST, TA, TS, Z0H, TH)
+   FUNCTION th_k_zr_urb(K, ZR, Z, XXX, CHS, UST, TA, TS, Z0H) RESULT (TH)
      IMPLICIT NONE
-     REAL, INTENT(IN) :: K, ZR, Z, XXX, CHS_NAKA, UST, TA, TS, Z0H
-     REAL, INTENT(OUT) :: TH
-     REAL :: XXX2, PSIH2, X, CHS2_NAKA
+     REAL, INTENT(IN) :: K, ZR, Z, XXX, CHS, UST, TA, TS, Z0H
+     REAL :: TH
+     REAL :: XXX2, PSIH2, X, CHSK
 
-     XXX2 = (K*ZR/Z)*XXX
+     XXX2 = (K * ZR / Z) * XXX
      IF ( XXX2 >= 1. ) XXX2 = 1.
      IF ( XXX2 <= -5. ) XXX2 = -5.
 
      IF ( XXX2 > 0 ) THEN
        PSIH2 = -5. * XXX2
      ELSE
-       X = (1.-16.*XXX2)**0.25
-       PSIH2 = 2.*ALOG((1.+X*X)/2.)
+       X = (1. - 16. * XXX2) ** 0.25
+       PSIH2 = 2. * LOG((1. + X * X) / 2.)
      END IF
-     CHS2_NAKA = 0.4*UST/(ALOG(K*ZR/Z0H)-PSIH2)
-     TH = TS + (TA-TS) *(CHS_NAKA/CHS2_NAKA)
-   END SUBROUTINE th_k_zr_urb
+     CHSK = 0.4 * UST / (LOG(K * ZR / Z0H) - PSIH2)
+     TH = TS + (TA - TS) * (CHS / CHSK)
+   END FUNCTION th_k_zr_urb
 !===============================================================================
 !
 !  mos

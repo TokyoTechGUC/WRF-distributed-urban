@@ -653,8 +653,6 @@ state    real   DZG             l        em      -            Z     r        "DZ
 state    real   ZA             ij       misc        1        -     rh01du=(copy_fcnm)                "ZA"     "Height at first atmospheric level" "m"
 # Nakayoshi 20120904 local heat balance check from ucm
 state    real   CHS_GRID       ij       misc        1        -     rh01du=(copy_fcnm)                "CHS_GRID"    "scalar transfer above canopy2" "m s-1"
-# Nakayoshi 20130109 debug EB terms in natural category
-state    real   ust_urb2d      ij       misc        1        -     rh01du=(copy_fcnm)                "ust_urb2d"    "ust in urban category" "m s-1"
 state    real   SMOIS            ilj     -          1         Z     i02rhd=(interp_mask_land_field:lu_index)u=(copy_fcnm)    "SMOIS"            "SOIL MOISTURE"     "m3 m-3"
 state    real   SH2O             ilj     -          1         Z     i02rhd=(interp_mask_land_field:lu_index)u=(copy_fcnm)    "SH2O"             "SOIL LIQUID WATER" "m3 m-3"
 state    real   SMCREL           ilj     -          1         Z     i02rhd=(interp_mask_land_field:lu_index)u=(copy_fcnm)    "SMCREL"           "RELATIVE SOIL MOISTURE" ""

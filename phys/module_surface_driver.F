@@ -115,7 +115,6 @@ CONTAINS
                 , pai_grd                                             &
                 , fai_grd                                             &
                 , CHS_GRID                                            &
-                , ust_urb2d                                           &
                 , second, mod_frc_urb2d                               &
                 , canopy_temp_profile, t_025zr_urb2d, t_050zr_urb2d   &
                 , t_075zr_urb2d, t_100zr_urb2d, zr_urb2d, z0c_urb2d   &
@@ -724,11 +723,11 @@ CONTAINS
      REAL,  DIMENSION( ims:ime, jms:jme )  :: V10_URB2D   !urban local var
      REAL,  DIMENSION( ims:ime, jms:jme )  :: TH2_URB2D   !urban local var
      REAL,  DIMENSION( ims:ime, jms:jme )  :: Q2_URB2D    !urban local var
-     REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: UST_URB2D
-     REAL,  DIMENSION( ims:ime, jms:jme )  :: T2_URB2D    !urban var Nakayoshi
-     REAL,  DIMENSION( ims:ime, jms:jme )  :: TH2_RURAL   !rural var Nakayoshi
-     REAL,  DIMENSION( ims:ime, jms:jme )  :: T2_RURAL    !rural var Nakayoshi
-     REAL,  DIMENSION( ims:ime, jms:jme )  :: Q2_RURAL    !rural var Nakayoshi
+     REAL,  DIMENSION( ims:ime, jms:jme )  :: UST_URB2D  !urban local var
+     REAL,  DIMENSION( ims:ime, jms:jme )  :: T2_URB2D    !urban var
+     REAL,  DIMENSION( ims:ime, jms:jme )  :: TH2_RURAL   !rural var
+     REAL,  DIMENSION( ims:ime, jms:jme )  :: T2_RURAL    !rural var
+     REAL,  DIMENSION( ims:ime, jms:jme )  :: Q2_RURAL    !rural var
 
      REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: T_025ZR_URB2D
      REAL,  DIMENSION( ims:ime, jms:jme ), INTENT(OUT)  :: T_050ZR_URB2D
