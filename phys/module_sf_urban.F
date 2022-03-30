@@ -545,6 +545,9 @@ MODULE module_sf_urban
    END IF
 
    ! Nakayoshi debug pai fai
+
+   SHADOW = .false.
+
    if ((PAI_GRD < 0.05) .or. (FAI_GRD < 0.05)) then
       PAI_LOCAL = 0.05
       FAI_LOCAL = 0.05
@@ -631,9 +634,6 @@ MODULE module_sf_urban
 !-------------------------------------------------------------------------------
 ! Net Short Wave Radiation at roof, wall, and road
 !-------------------------------------------------------------------------------
-
-   SHADOW = .false.
-!   SHADOW = .true.
 
    IF (SSG > 0.0) THEN
 
