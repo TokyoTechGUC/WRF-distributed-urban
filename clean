@@ -52,7 +52,6 @@ if ( "$arg" == '-a' || "$arg" == '-aa' ) then
 	  */ozone.formatted */ozone_lat.formatted */ozone_plev.formatted \
 	  */gribmap.txt */tr??t?? */co2_trans) >& /dev/null
   endif
-  cp ./configure.wrf.dnk ./configure.wrf
 endif
 
 #cms++
