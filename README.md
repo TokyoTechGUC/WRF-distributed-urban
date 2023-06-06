@@ -16,6 +16,7 @@ Refer to the documentation of WRF v3.3.1 on how to compile the model.
 * Download the geogrid files for urban parameters from <https://doi.org/10.6084/m9.figshare.17108981>
 * (Optional) Download the anthropogenic heat dataset (AH4GUC) geogrid from <https://urbanclimate.tse.ens.titech.ac.jp/database/AHE/AH4GUC/>.
 * Compile the `modify_geo_em.f90` file. NetCDF Fortran library is required.
+This script is used to modify `geo_em` files so that most dominant land category and second dominant land category can be simulated.
 ```bash
 gfortran modify_geo_em.f90 -o modify_geo_em.exe $(nf-config --fflags) $(nf-config --flibs)
 ```
@@ -23,7 +24,7 @@ gfortran modify_geo_em.f90 -o modify_geo_em.exe $(nf-config --fflags) $(nf-confi
 * Note that the `rel_path` in `AHE24H` needs to be changed depending on the month of the year.
 ```
 ===============================
-name = DISP # Displacement height
+name = DISP # Displacement height (m)
         priority = 1
         dest_type = continuous
         fill_missing = 0
@@ -32,7 +33,7 @@ name = DISP # Displacement height
         interp_option = default:average_gcell(4.0)+four_pt+average_4pt
         rel_path = default:urban_params/2010/d
 ===============================
-name = Z0_GRD # Roughness length
+name = Z0_GRD # Roughness length for momentum (m)
         priority = 1
         dest_type = continuous
         fill_missing = 0
@@ -41,7 +42,7 @@ name = Z0_GRD # Roughness length
         interp_option = default:average_gcell(4.0)+four_pt+average_4pt
         rel_path = default:urban_params/2010/z_0
 ===============================
-name = AVE_BH_GRD # Average building height
+name = AVE_BH_GRD # Average building height (m)
         priority = 1
         dest_type = continuous
         fill_missing = 0
@@ -50,7 +51,7 @@ name = AVE_BH_GRD # Average building height
         interp_option = default:average_gcell(4.0)+four_pt+average_4pt
         rel_path = default:urban_params/2010/H_avg
 ===============================
-name = FAI_GRD # Frontal area index
+name = FAI_GRD # Frontal area index (dimensionless)
         priority = 1
         dest_type = continuous
         fill_missing = -1
@@ -59,7 +60,7 @@ name = FAI_GRD # Frontal area index
         interp_option = default:average_gcell(4.0)+four_pt+average_4pt
         rel_path = default:urban_params/2010/lambda_f
 ===============================
-name = PAI_GRD # Plan area index
+name = PAI_GRD # Plan area index (dimensionless)
         priority = 1
         dest_type = continuous
         masked=water
@@ -68,13 +69,13 @@ name = PAI_GRD # Plan area index
         interp_option = default:average_gcell(4.0)+four_pt+average_4pt
         rel_path = default:urban_params/2010/lambda_p
 ===============================
-name = AHE24H # Anthropogenic heat
+name = AHE24H # Anthropogenic heat (W/m^2)
         priority = 1
         dest_type = continuous
         fill_missing = 0
         interp_option =     30s:average_gcell(4.0)+four_pt+average_4pt
         interp_option = default:average_gcell(4.0)+four_pt+average_4pt
-        rel_path = default:AHE/01_24
+        rel_path = default:AHE/01_24 # 01 means January, 24 means 24 hours
         z_dim_name = utc_hour
 ==============================
 ```
@@ -89,7 +90,7 @@ name = AHE24H # Anthropogenic heat
 ```
 &domains
 # Your options (e.g., time_step, e_we, e_sn)
-offset_zd = 1
+offset_zd = 1 # Add zero-plane displacement height to topography.
 /
 ```
 * Run WRF as usual.
