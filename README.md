@@ -1,3 +1,8 @@
+# Update since May 2024
+
+This version is now merged into the official WRF 4.6.0 version in WRF.
+Kindly download directly from there and follow the instructions for running.
+
 # WRF with distributed urban parameters
 
 This is a modified version of the WRF v3.3.1 used in Tokyo Tech GUC lab.
